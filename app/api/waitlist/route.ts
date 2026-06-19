@@ -5,7 +5,6 @@ import path from "path";
 
 // ── Resend client ──────────────────────────────────────────
 const resend = new Resend(process.env.RESEND_API_KEY);
-const EMAIL_FROM = process.env.EMAIL_FROM;
 
 // ── Simple file-based storage ──────────────────────────────
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -199,7 +198,7 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email via Resend
     const { error: emailError } = await resend.emails.send({
-      from: `IGUDAR <${EMAIL_FROM}>`,
+      from: `IGUDAR <waitlist@contact.igudar.tech>`,
       to: [normalizedEmail],
       subject: "Welcome to the IGUDAR Waitlist! 🏠",
       html: buildConfirmationEmail(normalizedEmail),
