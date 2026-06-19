@@ -3,8 +3,8 @@ import WaitlistForm from '@/components/WaitlistForm';
 
 export default function FinalCtaSection() {
   return (
-    <section className="py-24 lg:py-32 bg-white">
-      <div className="max-w-2xl mx-auto text-center px-5 sm:px-6 lg:px-8">
+    <section id="waitlist-cta" className="py-24 lg:py-32 bg-white">
+      <div className="max-w-2xl mx-auto text-center px-5 sm:px-6 lg:px-8 scroll-mt-24">
         <AnimatedSection>
           <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight mb-5">
             Stop watching from the sidelines.{' '}

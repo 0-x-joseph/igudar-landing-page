@@ -104,7 +104,6 @@ export default function LandingHero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.28 }}
-          id="waitlist"
           className="mx-auto mt-8 max-w-md"
         >
       <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -120,6 +119,10 @@ export default function LandingHero() {
       hover:shadow-[0_20px_60px_rgba(93,24,233,0.5)]
       active:translate-y-0
     "
+		type="button"
+		onClick={() => {
+		  window.location.href = "https://app.igudar.tech/auth/login";
+		}}
   >
     <span className="relative z-10">
       Access MVP
@@ -140,7 +143,12 @@ export default function LandingHero() {
   </button>
 
   <button
-    id="waitlist"
+    type="button"
+    onClick={() => {
+      document
+        .getElementById("waitlist-cta")
+        ?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    }}
     className="
       rounded-2xl
       border border-slate-200

@@ -90,7 +90,7 @@ const Navbar = () => {
             <p className="text-slate-600 text-[13px] font-medium text-center">
               Igudar early access is now live!
             </p>
-            <a href="https://app.igudar.tech/auth/register" className="text-[#7B3FFF] text-[13px] font-semibold hover:text-[#9B6FFF] transition-colors whitespace-nowrap">
+            <a href="https://app.igudar.tech/auth/login" className="text-[#7B3FFF] text-[13px] font-semibold hover:text-[#9B6FFF] transition-colors whitespace-nowrap">
               Get Started →
             </a>
             <button 
@@ -176,12 +176,12 @@ const Navbar = () => {
 
           {/* Right Actions */}
           <div className="hidden lg:flex items-center">
-            <button 
+            <a 
               onClick={() => setIsWaitlistOpen(true)}
               className="px-5 text-[13px] font-medium text-white bg-[#5D18E9] hover:bg-[#4A13BA] transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-[#5D18E9]/15"
             >
               Join Waitlist
-            </button>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}

@@ -33,11 +33,20 @@ function getWaitlist(): WaitlistEntry[] {
   }
 }
 
-function saveWaitlist(entries: WaitlistEntry[]) {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+function saveWaitlist(entries: WaitlistEntry[]): boolean {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(WAITLIST_FILE, JSON.stringify(entries, null, 2), "utf-8");
+    return true;
+  } catch (error) {
+    // Storage is best-effort. On read-only/ephemeral filesystems (e.g. Vercel)
+    // this write will fail — but the confirmation email has already been sent,
+    // so we must not turn this into a 500 for the user.
+    console.error("Failed to persist waitlist entry:", error);
+    return false;
   }
-  fs.writeFileSync(WAITLIST_FILE, JSON.stringify(entries, null, 2), "utf-8");
 }
 
 // ── Rate limiter (in-memory, per IP) ───────────────────────
