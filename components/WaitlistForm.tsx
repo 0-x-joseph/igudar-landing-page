@@ -103,7 +103,6 @@ export default function WaitlistForm({ className = "", onSuccess }: WaitlistForm
                 type="submit"
                 disabled={status === "loading"}
                 className="bg-[#5D18E9] text-white rounded-full px-8 py-4 text-sm font-medium tracking-wide uppercase hover:bg-[#4A13BA] transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-[#5D18E9]/20"
-								onclick="location.hash=#waitlist-form"
               >
                 {status === "loading" ? (
                   <>
