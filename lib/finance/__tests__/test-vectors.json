@@ -1,0 +1,351 @@
+{
+  "source": "IGUDAR_Financial_Model_Gate2_Final_5.xlsx \u2014 Simulator sheet (verified 2026-10-09: reproduces sections C/D/F exactly)",
+  "tolerance": {
+    "mad": 0.01,
+    "rate": 0.0001
+  },
+  "defaults": {
+    "raise_mad": 5000000,
+    "hold_years": 5,
+    "acquisition_costs": 0.065,
+    "fees": {
+      "D1_entry": 0,
+      "D2_platform_per_year_HT": 0.0075,
+      "D3_exit_HT": 0.015,
+      "D4_transfer_HT": 0.015,
+      "D5_performance": 0.15,
+      "D5_hurdle": 0.06,
+      "S1_syndication_seller": 0.035,
+      "S2_structuring_operator": 0.015
+    },
+    "tva_on_fees": 0.2,
+    "is_rate": 0.2,
+    "cotisation_minimale": {
+      "rate": 0.0025,
+      "floor_mad": 3000,
+      "exempt_years": 3
+    },
+    "withholding_individual": 0.1,
+    "depreciation": {
+      "building_share": 0.7,
+      "rate": 0.04
+    },
+    "bank_deposit_benchmark": 0.026
+  },
+  "scenarios": {
+    "pessimistic": {
+      "gross_yield": 0.0731,
+      "rent_indexation": 0.0,
+      "vacancy": 0.05,
+      "rent_reserve": 0.08,
+      "price_growth": 0.0,
+      "seller_costs_at_exit": 0.02,
+      "use_depreciation": false
+    },
+    "base": {
+      "gross_yield": 0.08,
+      "rent_indexation": 0.0,
+      "vacancy": 0.0,
+      "rent_reserve": 0.05,
+      "price_growth": 0.005,
+      "seller_costs_at_exit": 0.0,
+      "use_depreciation": false
+    },
+    "optimistic": {
+      "gross_yield": 0.088,
+      "rent_indexation": 0.01,
+      "vacancy": 0.0,
+      "rent_reserve": 0.05,
+      "price_growth": 0.015,
+      "seller_costs_at_exit": 0.0,
+      "use_depreciation": true
+    }
+  },
+  "cases": [
+    {
+      "scenario": "pessimistic",
+      "ticket_mad": 10000,
+      "net_irr": 0.017851,
+      "net_cash_year1_mad": 365.15,
+      "net_cash_yield_year1": 0.036515,
+      "net_exit_proceeds_mad": 9032.86,
+      "net_profit_mad": 858.62,
+      "money_multiple": 1.085862,
+      "cash_flows_mad": [
+        -10000.0,
+        365.15,
+        365.15,
+        365.15,
+        365.15,
+        9398.02
+      ],
+      "bank_deposit_profit_mad": 1369.38
+    },
+    {
+      "scenario": "pessimistic",
+      "ticket_mad": 25000,
+      "net_irr": 0.017851,
+      "net_cash_year1_mad": 912.88,
+      "net_cash_yield_year1": 0.036515,
+      "net_exit_proceeds_mad": 22582.16,
+      "net_profit_mad": 2146.55,
+      "money_multiple": 1.085862,
+      "cash_flows_mad": [
+        -25000.0,
+        912.88,
+        912.88,
+        912.88,
+        912.88,
+        23495.04
+      ],
+      "bank_deposit_profit_mad": 3423.45
+    },
+    {
+      "scenario": "pessimistic",
+      "ticket_mad": 50000,
+      "net_irr": 0.017851,
+      "net_cash_year1_mad": 1825.76,
+      "net_cash_yield_year1": 0.036515,
+      "net_exit_proceeds_mad": 45164.32,
+      "net_profit_mad": 4293.11,
+      "money_multiple": 1.085862,
+      "cash_flows_mad": [
+        -50000.0,
+        1825.76,
+        1825.76,
+        1825.76,
+        1825.76,
+        46990.08
+      ],
+      "bank_deposit_profit_mad": 6846.9
+    },
+    {
+      "scenario": "pessimistic",
+      "ticket_mad": 100000,
+      "net_irr": 0.017851,
+      "net_cash_year1_mad": 3651.52,
+      "net_cash_yield_year1": 0.036515,
+      "net_exit_proceeds_mad": 90328.64,
+      "net_profit_mad": 8586.22,
+      "money_multiple": 1.085862,
+      "cash_flows_mad": [
+        -100000.0,
+        3651.52,
+        3651.52,
+        3651.52,
+        3651.52,
+        93980.15
+      ],
+      "bank_deposit_profit_mad": 13693.81
+    },
+    {
+      "scenario": "pessimistic",
+      "ticket_mad": 500000,
+      "net_irr": 0.017851,
+      "net_cash_year1_mad": 18257.58,
+      "net_cash_yield_year1": 0.036515,
+      "net_exit_proceeds_mad": 451643.19,
+      "net_profit_mad": 42931.08,
+      "money_multiple": 1.085862,
+      "cash_flows_mad": [
+        -500000.0,
+        18257.58,
+        18257.58,
+        18257.58,
+        18257.58,
+        469900.77
+      ],
+      "bank_deposit_profit_mad": 68469.03
+    },
+    {
+      "scenario": "base",
+      "ticket_mad": 10000,
+      "net_irr": 0.034703,
+      "net_cash_year1_mad": 449.0,
+      "net_cash_yield_year1": 0.0449,
+      "net_exit_proceeds_mad": 9453.49,
+      "net_profit_mad": 1698.5,
+      "money_multiple": 1.16985,
+      "cash_flows_mad": [
+        -10000.0,
+        449.0,
+        449.0,
+        449.0,
+        449.0,
+        9902.49
+      ],
+      "bank_deposit_profit_mad": 1369.38
+    },
+    {
+      "scenario": "base",
+      "ticket_mad": 25000,
+      "net_irr": 0.034703,
+      "net_cash_year1_mad": 1122.51,
+      "net_cash_yield_year1": 0.0449,
+      "net_exit_proceeds_mad": 23633.73,
+      "net_profit_mad": 4246.26,
+      "money_multiple": 1.16985,
+      "cash_flows_mad": [
+        -25000.0,
+        1122.51,
+        1122.51,
+        1122.51,
+        1122.51,
+        24756.23
+      ],
+      "bank_deposit_profit_mad": 3423.45
+    },
+    {
+      "scenario": "base",
+      "ticket_mad": 50000,
+      "net_irr": 0.034703,
+      "net_cash_year1_mad": 2245.01,
+      "net_cash_yield_year1": 0.0449,
+      "net_exit_proceeds_mad": 47267.45,
+      "net_profit_mad": 8492.52,
+      "money_multiple": 1.16985,
+      "cash_flows_mad": [
+        -50000.0,
+        2245.01,
+        2245.01,
+        2245.01,
+        2245.01,
+        49512.47
+      ],
+      "bank_deposit_profit_mad": 6846.9
+    },
+    {
+      "scenario": "base",
+      "ticket_mad": 100000,
+      "net_irr": 0.034703,
+      "net_cash_year1_mad": 4490.03,
+      "net_cash_yield_year1": 0.0449,
+      "net_exit_proceeds_mad": 94534.9,
+      "net_profit_mad": 16985.05,
+      "money_multiple": 1.16985,
+      "cash_flows_mad": [
+        -100000.0,
+        4490.03,
+        4490.03,
+        4490.03,
+        4490.03,
+        99024.93
+      ],
+      "bank_deposit_profit_mad": 13693.81
+    },
+    {
+      "scenario": "base",
+      "ticket_mad": 500000,
+      "net_irr": 0.034703,
+      "net_cash_year1_mad": 22450.14,
+      "net_cash_yield_year1": 0.0449,
+      "net_exit_proceeds_mad": 472674.52,
+      "net_profit_mad": 84925.23,
+      "money_multiple": 1.16985,
+      "cash_flows_mad": [
+        -500000.0,
+        22450.14,
+        22450.14,
+        22450.14,
+        22450.14,
+        495124.66
+      ],
+      "bank_deposit_profit_mad": 68469.03
+    },
+    {
+      "scenario": "optimistic",
+      "ticket_mad": 10000,
+      "net_irr": 0.050134,
+      "net_cash_year1_mad": 547.71,
+      "net_cash_yield_year1": 0.054771,
+      "net_exit_proceeds_mad": 9683.7,
+      "net_profit_mad": 2479.32,
+      "money_multiple": 1.247932,
+      "cash_flows_mad": [
+        -10000.0,
+        547.71,
+        553.36,
+        559.07,
+        564.83,
+        10254.36
+      ],
+      "bank_deposit_profit_mad": 1369.38
+    },
+    {
+      "scenario": "optimistic",
+      "ticket_mad": 25000,
+      "net_irr": 0.050134,
+      "net_cash_year1_mad": 1369.27,
+      "net_cash_yield_year1": 0.054771,
+      "net_exit_proceeds_mad": 24209.26,
+      "net_profit_mad": 6198.31,
+      "money_multiple": 1.247932,
+      "cash_flows_mad": [
+        -25000.0,
+        1369.27,
+        1383.4,
+        1397.67,
+        1412.08,
+        25635.9
+      ],
+      "bank_deposit_profit_mad": 3423.45
+    },
+    {
+      "scenario": "optimistic",
+      "ticket_mad": 50000,
+      "net_irr": 0.050134,
+      "net_cash_year1_mad": 2738.54,
+      "net_cash_yield_year1": 0.054771,
+      "net_exit_proceeds_mad": 48418.51,
+      "net_profit_mad": 12396.62,
+      "money_multiple": 1.247932,
+      "cash_flows_mad": [
+        -50000.0,
+        2738.54,
+        2766.79,
+        2795.34,
+        2824.16,
+        51271.79
+      ],
+      "bank_deposit_profit_mad": 6846.9
+    },
+    {
+      "scenario": "optimistic",
+      "ticket_mad": 100000,
+      "net_irr": 0.050134,
+      "net_cash_year1_mad": 5477.07,
+      "net_cash_yield_year1": 0.054771,
+      "net_exit_proceeds_mad": 96837.02,
+      "net_profit_mad": 24793.24,
+      "money_multiple": 1.247932,
+      "cash_flows_mad": [
+        -100000.0,
+        5477.07,
+        5533.59,
+        5590.67,
+        5648.33,
+        102543.58
+      ],
+      "bank_deposit_profit_mad": 13693.81
+    },
+    {
+      "scenario": "optimistic",
+      "ticket_mad": 500000,
+      "net_irr": 0.050134,
+      "net_cash_year1_mad": 27385.35,
+      "net_cash_yield_year1": 0.054771,
+      "net_exit_proceeds_mad": 484185.12,
+      "net_profit_mad": 123966.2,
+      "money_multiple": 1.247932,
+      "cash_flows_mad": [
+        -500000.0,
+        27385.35,
+        27667.94,
+        27953.36,
+        28241.63,
+        512717.91
+      ],
+      "bank_deposit_profit_mad": 68469.03
+    }
+  ]
+}
