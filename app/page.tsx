@@ -10,7 +10,7 @@ import SiteFooter from '@/components/SiteFooter';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen w-full bg-slate-50 text-slate-900 overflow-x-hidden">
+    <div className="min-h-screen w-full bg-muted/50 text-foreground overflow-x-hidden">
       <Navbar />
       <LandingHero />
       <PainPointsSection />

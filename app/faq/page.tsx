@@ -65,7 +65,7 @@ export default function FAQ() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       <Navbar />
 
       {/* Hero Section */}
@@ -75,7 +75,7 @@ export default function FAQ() {
             <div className="text-center">
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 mb-8 text-dark-600 hover:text-brand-purple transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-2 mb-8 text-muted-foreground hover:text-primary transition-colors text-sm font-medium"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -83,12 +83,12 @@ export default function FAQ() {
                 Back to home
               </Link>
 
-              <h1 className="text-4xl lg:text-5xl font-extrabold text-dark-800 leading-tight mb-6">
+              <h1 className="text-4xl lg:text-5xl font-extrabold text-foreground leading-tight mb-6">
                 Everything you need to know about{' '}
                 <GradientText>IGUDAR</GradientText>
               </h1>
 
-              <p className="text-lg text-dark-600 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
                 IGUDAR is a Moroccan fintech platform transforming property ownership through AI-driven,
                 Sharia-compliant fractional real estate investment.
               </p>
@@ -98,15 +98,15 @@ export default function FAQ() {
       </section>
 
       {/* Key Features */}
-      <section className="py-16 bg-surface-50">
+      <section className="py-16 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 title: 'Sharia Compliant',
                 desc: 'All investments follow Islamic financial principles with certified Sharia advisor oversight.',
-                bg: 'bg-primary-50',
-                accent: 'text-brand-purple',
+                bg: 'bg-accent',
+                accent: 'text-primary',
               },
               {
                 title: 'Accessible to All',
@@ -124,7 +124,7 @@ export default function FAQ() {
               <AnimatedSection key={i} delay={i * 120}>
                 <div className={`${item.bg} p-8 rounded-3xl h-full hover:scale-[1.02] transition-transform duration-300`}>
                   <h3 className={`text-xl font-bold ${item.accent} mb-3`}>{item.title}</h3>
-                  <p className="text-dark-600 leading-relaxed">{item.desc}</p>
+                  <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
                 </div>
               </AnimatedSection>
             ))}
@@ -137,30 +137,30 @@ export default function FAQ() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="text-center mb-14">
-              <h2 className="text-3xl lg:text-[2.75rem] font-extrabold text-dark-800 mb-4">
+              <h2 className="text-3xl lg:text-[2.75rem] font-extrabold text-foreground mb-4">
                 Frequently Asked <GradientText>Questions</GradientText>
               </h2>
-              <p className="text-lg text-dark-600">Get answers to common questions about IGUDAR</p>
+              <p className="text-lg text-muted-foreground">Get answers to common questions about IGUDAR</p>
             </div>
           </AnimatedSection>
 
           <div className="space-y-3">
             {faqs.map((faq, index) => (
               <AnimatedSection key={index} delay={index * 60}>
-                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-primary-200 transition-colors duration-300">
+                <div className="bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/20 transition-colors duration-300">
                   <button
                     onClick={() => toggleItem(index)}
-                    className="w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-surface-50 transition-colors duration-200"
+                    className="w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-muted/50 transition-colors duration-200"
                   >
-                    <h3 className="text-[15px] font-semibold text-dark-800 pr-2">{faq.question}</h3>
+                    <h3 className="text-[15px] font-semibold text-foreground pr-2">{faq.question}</h3>
                     <div
                       className={`flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                        openItems.includes(index) ? 'bg-brand-purple rotate-180' : 'bg-surface-100'
+                        openItems.includes(index) ? 'bg-primary rotate-180' : 'bg-muted'
                       }`}
                     >
                       <svg
                         className={`w-4 h-4 transition-colors ${
-                          openItems.includes(index) ? 'text-white' : 'text-dark-600'
+                          openItems.includes(index) ? 'text-white' : 'text-muted-foreground'
                         }`}
                         fill="none"
                         viewBox="0 0 24 24"
@@ -182,8 +182,8 @@ export default function FAQ() {
                         className="overflow-hidden"
                       >
                         <div className="px-6 pb-5">
-                          <div className="border-t border-gray-100 pt-4">
-                            <p className="text-dark-600 leading-relaxed text-[15px]">{faq.answer}</p>
+                          <div className="border-t border-border pt-4">
+                            <p className="text-muted-foreground leading-relaxed text-[15px]">{faq.answer}</p>
                           </div>
                         </div>
                       </motion.div>
@@ -197,26 +197,26 @@ export default function FAQ() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 relative overflow-hidden bg-slate-50 border-y border-slate-200">
+      <section className="py-20 relative overflow-hidden bg-muted/50 border-y border-border">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(93,24,233,0.08),transparent_55%)]" />
         <div className="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <h2 className="text-3xl lg:text-[2.75rem] font-extrabold text-dark-800 mb-6">
+            <h2 className="text-3xl lg:text-[2.75rem] font-extrabold text-foreground mb-6">
               Still Have Questions?
             </h2>
-            <p className="text-lg text-dark-600 mb-10">
+            <p className="text-lg text-muted-foreground mb-10">
               Our team is here to help you understand how IGUDAR can work for you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="https://app.igudar.tech/auth/register"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white text-brand-purple font-semibold rounded-2xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center px-8 py-4 bg-card text-primary font-semibold rounded-2xl hover:bg-muted/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
               >
                 Get Started Today
               </a>
               <a
                 href="#"
-                className="inline-flex items-center justify-center px-8 py-4 border-2 border-slate-300 text-dark-700 font-semibold rounded-2xl hover:bg-slate-100 transition-all duration-300"
+                className="inline-flex items-center justify-center px-8 py-4 border-2 border-border text-foreground font-semibold rounded-2xl hover:bg-muted transition-all duration-300"
               >
                 Contact Support
               </a>
@@ -226,7 +226,7 @@ export default function FAQ() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-100 text-slate-900 pt-16 pb-8 border-t border-slate-200">
+      <footer className="bg-muted text-foreground pt-16 pb-8 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div>
@@ -237,44 +237,44 @@ export default function FAQ() {
                   className="h-12 w-auto object-contain"
                 />
               </Link>
-              <p className="text-slate-600 text-[15px] leading-relaxed">
+              <p className="text-muted-foreground text-[15px] leading-relaxed">
                 Democratizing real estate investment in Morocco through AI-powered, Sharia-compliant fractional ownership.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-5 text-slate-900">Platform</h4>
+              <h4 className="font-semibold mb-5 text-foreground">Platform</h4>
               <ul className="space-y-3">
-                <li><Link href="/" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">How it Works</Link></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">AI Technology</a></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">Properties</a></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">Security</a></li>
+                <li><Link href="/" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">How it Works</Link></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">AI Technology</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Properties</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Security</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-5 text-slate-900">Support</h4>
+              <h4 className="font-semibold mb-5 text-foreground">Support</h4>
               <ul className="space-y-3">
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">Help Center</a></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">Contact Us</a></li>
-                <li><Link href="/faq" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">FAQ</Link></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">Privacy</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Help Center</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Contact Us</a></li>
+                <li><Link href="/faq" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">FAQ</Link></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Privacy</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-5 text-slate-900">Company</h4>
+              <h4 className="font-semibold mb-5 text-foreground">Company</h4>
               <ul className="space-y-3">
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">About</a></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">Careers</a></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">Press</a></li>
-                <li><a href="#" className="text-slate-600 hover:text-slate-900 transition-colors text-[15px]">Partners</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">About</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Careers</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Press</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Partners</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-slate-200 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-slate-500">&copy; 2025 IGUDAR. All rights reserved.</p>
+          <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-muted-foreground">&copy; 2025 IGUDAR. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Terms</a>
-              <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Privacy</a>
-              <a href="#" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Cookies</a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms</a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Cookies</a>
             </div>
           </div>
         </div>

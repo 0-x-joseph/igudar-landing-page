@@ -72,18 +72,18 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm"
+            className="absolute inset-0 bg-foreground/30 backdrop-blur-sm"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-2xl shadow-slate-200/70 overflow-hidden"
+            className="relative w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl shadow-foreground/10 overflow-hidden"
           >
             <div className="relative p-8">
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition-colors p-2"
+                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-2"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -99,14 +99,14 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                     exit={{ opacity: 0, y: -10 }}
                     className="text-center py-6"
                   >
-                    <div className="w-16 h-16 bg-[#5D18E9]/10 border border-[#5D18E9]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-[#7B3FFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-2">You&apos;re on the list!</h3>
-                    <p className="text-slate-600 text-[15px]">
-                      We&apos;ve sent a confirmation email to <span className="font-semibold text-slate-900">{email}</span>. We&apos;ll notify you when early access begins.
+                    <h3 className="text-2xl font-bold text-foreground mb-2">You&apos;re on the list!</h3>
+                    <p className="text-muted-foreground text-[15px]">
+                      We&apos;ve sent a confirmation email to <span className="font-semibold text-foreground">{email}</span>. We&apos;ll notify you when early access begins.
                     </p>
                   </motion.div>
                 ) : (
@@ -117,8 +117,8 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                     exit={{ opacity: 0, y: -10 }}
                   >
                     <div className="text-center mb-6">
-                      <h3 className="text-2xl font-bold text-slate-900 mb-2">Join the Waitlist</h3>
-                      <p className="text-slate-600 text-[15px]">
+                      <h3 className="text-2xl font-bold text-foreground mb-2">Join the Waitlist</h3>
+                      <p className="text-muted-foreground text-[15px]">
                         Be the first to know when we launch and get exclusive early access benefits.
                       </p>
                     </div>
@@ -137,7 +137,7 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                       />
 
                       <div>
-                        <label htmlFor="modal-email" className="block text-sm font-medium text-slate-600 mb-1">
+                        <label htmlFor="modal-email" className="block text-sm font-medium text-muted-foreground mb-1">
                           Email Address
                         </label>
                         <input
@@ -148,13 +148,13 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                           onChange={(e) => setEmail(e.target.value)}
                           disabled={status === 'loading'}
                           placeholder="Enter your best email"
-                          className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-[#5D18E9]/50 focus:ring-2 focus:ring-[#5D18E9]/20 outline-none transition-all text-slate-900 placeholder:text-slate-400 disabled:opacity-50"
+                          className="w-full px-4 py-3 rounded-xl bg-card border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-foreground placeholder:text-muted-foreground disabled:opacity-50"
                         />
                       </div>
                       <button
                         type="submit"
                         disabled={status === 'loading'}
-                        className="w-full py-3.5 px-4 bg-[#5D18E9] hover:bg-[#4A13BA] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-[#5D18E9]/20 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full py-3.5 px-4 bg-primary hover:bg-accent-foreground text-white font-semibold rounded-xl transition-colors shadow-lg shadow-primary/20 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
                       >
                         {status === 'loading' ? (
                           <>

@@ -23,28 +23,28 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section id="ai-powered" className="scroll-mt-28 py-24 lg:py-32 border-y border-slate-200 bg-white">
+    <section id="ai-powered" className="scroll-mt-28 py-24 lg:py-32 border-y border-border bg-card">
       <div className="max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
           <AnimatedSection direction="left">
             <div>
-              <p className="text-[#7B3FFF] text-sm font-semibold tracking-wide mb-4">Platform Features</p>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight mb-5">
+              <p className="text-primary text-sm font-semibold tracking-wide mb-4">Platform Features</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight mb-5">
                 Data-Driven Investment Intelligence
               </h2>
-              <p className="text-slate-600 leading-relaxed mb-10">
+              <p className="text-muted-foreground leading-relaxed mb-10">
                 Market analytics, AI-powered insights, and rigorous compliance screening — all in one platform.
               </p>
 
               <div className="space-y-1">
                 {features.map((f, i) => (
-                  <div key={i} className="flex gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors group/item">
-                    <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover/item:bg-[#5D18E9]/10 group-hover/item:text-[#7B3FFF] transition-colors">
+                  <div key={i} className="flex gap-4 p-4 rounded-xl hover:bg-muted/50 transition-colors group/item">
+                    <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-muted text-muted-foreground flex items-center justify-center group-hover/item:bg-primary/10 group-hover/item:text-primary transition-colors">
                       {f.icon}
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-900 mb-0.5">{f.title}</h4>
-                      <p className="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
+                      <h4 className="text-sm font-semibold text-foreground mb-0.5">{f.title}</h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -53,14 +53,14 @@ export default function FeaturesSection() {
           </AnimatedSection>
 
           <AnimatedSection direction="right">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
               <div className="p-6 pb-5">
                 <div className="flex items-center justify-between mb-7">
                   <div>
-                    <p className="text-xs text-slate-500 mb-1">AI Recommendation Score</p>
-                    <p className="text-3xl font-bold text-slate-900">92<span className="text-base text-slate-400 font-medium">/100</span></p>
+                    <p className="text-xs text-muted-foreground mb-1">AI Recommendation Score</p>
+                    <p className="text-3xl font-bold text-foreground">92<span className="text-base text-muted-foreground font-medium">/100</span></p>
                   </div>
-                  <div className="w-11 h-11 rounded-xl bg-[#5D18E9] flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center">
                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
                   </div>
                 </div>
@@ -73,16 +73,16 @@ export default function FeaturesSection() {
                   ].map((bar, i) => (
                     <div key={i}>
                       <div className="flex justify-between text-xs mb-1.5">
-                        <span className="text-slate-500">{bar.label}</span>
-                        <span className="font-semibold text-slate-700">{bar.value}%</span>
+                        <span className="text-muted-foreground">{bar.label}</span>
+                        <span className="font-semibold text-foreground">{bar.value}%</span>
                       </div>
-                      <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           whileInView={{ width: `${bar.value}%` }}
                           viewport={{ once: true }}
                           transition={{ duration: 1, delay: 0.2 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-                          className="h-full bg-[#5D18E9] rounded-full"
+                          className="h-full bg-primary rounded-full"
                         />
                       </div>
                     </div>
@@ -90,11 +90,11 @@ export default function FeaturesSection() {
                 </div>
               </div>
 
-              <div className="border-t border-slate-200 px-6 py-4 flex items-center gap-3 bg-[#5D18E9]/5">
-                <div className="w-2 h-2 rounded-full bg-[#5D18E9]" />
+              <div className="border-t border-border px-6 py-4 flex items-center gap-3 bg-primary/5">
+                <div className="w-2 h-2 rounded-full bg-primary" />
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">Strong Buy Recommendation</p>
-                  <p className="text-xs text-slate-500">Based on 47 data points</p>
+                  <p className="text-sm font-semibold text-foreground">Strong Buy Recommendation</p>
+                  <p className="text-xs text-muted-foreground">Based on 47 data points</p>
                 </div>
               </div>
             </div>

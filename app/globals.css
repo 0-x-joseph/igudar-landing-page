@@ -2,28 +2,37 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #ffffff;
-  --color-foreground: #111827;
-  --color-muted: #f3f4f6;
-  --color-muted-foreground: #6b7280;
-  --color-accent: #5D18E9;
-  --color-accent-dark: #4A13BA;
-  --color-accent-light: #7B3FFF;
-  --color-accent-glow: rgba(93, 24, 233, 0.3);
-  --color-border: rgba(17, 24, 39, 0.08);
-  --color-border-hover: rgba(17, 24, 39, 0.14);
-  --color-secondary: #f8fafc;
-  --color-destructive: #ef4444;
-  --color-card: #ffffff;
-  --color-card-hover: #f8fafc;
+  --color-background: #F7F5EF;
+  --color-foreground: #17131F;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #17131F;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #17131F;
+  --color-muted: #EDE9DF;
+  --color-muted-foreground: #615D6E;
+  --color-border: #E2DDD2;
+  --color-input: #E2DDD2;
+  --color-primary: #5D18E9;
+  --color-primary-foreground: #FFFFFF;
+  --color-accent: #F3EEFF;
+  --color-accent-foreground: #4A13BA;
+  --color-success: #207F72;
+  --color-success-foreground: #FFFFFF;
+  --color-highlight: #ECA72C;
+  --color-highlight-foreground: #17131F;
+  --color-destructive: #C1402A;
+  --color-destructive-foreground: #FFFFFF;
+  --color-ring: #5D18E9;
 
-  --font-sans: "Inter", "system-ui", "sans-serif";
-  --font-serif: "Playfair Display", "Georgia", "serif";
+  --font-sans: var(--font-public-sans), "system-ui", "sans-serif";
+  --font-display: var(--font-fraunces), "Georgia", "serif";
+  --font-serif: var(--font-fraunces), "Georgia", "serif";
 
   --animate-fade-in: fadeIn 0.8s ease-out forwards;
   --animate-fade-in-up: fadeInUp 0.8s ease-out forwards;
   --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
 
+  --radius-xl: 1rem;
   --radius-4xl: 2rem;
 }
 
@@ -32,9 +41,9 @@ html {
 }
 
 body {
-  background: #ffffff;
-  color: #111827;
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -42,16 +51,22 @@ body {
 }
 
 ::selection {
-  background: rgba(93, 24, 233, 0.25);
-  color: #111827;
+  background: rgb(93 24 233 / 0.25);
+  color: var(--color-foreground);
 }
 
 /* ── Serif Italic ────────────────────────────── */
 
 .font-serif-italic {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
+}
+
+/* ── Numbers ─────────────────────────────────── */
+
+.financial-number {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Keyframes ───────────────────────────────── */
@@ -120,14 +135,37 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: var(--color-muted);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--color-border);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--color-muted-foreground);
+}
+
+/* ── Reduced motion ───────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .animate-on-scroll {
+    opacity: 1;
+    transform: none;
+  }
 }

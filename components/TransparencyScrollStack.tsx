@@ -51,8 +51,8 @@ export default function TransparencyScrollStack() {
             itemClassName="
               !h-[390px]
               !rounded-[28px]
-              border border-[#7B3FFF]/15
-              bg-white
+              border border-primary/15
+              bg-card
               p-5
               shadow-[0_24px_70px_rgba(93,24,233,0.12)]
               will-change-transform
@@ -66,31 +66,31 @@ export default function TransparencyScrollStack() {
           >
             <div className="flex h-full min-w-0 flex-col justify-between gap-5 sm:gap-6">
               <div className="flex items-center justify-between gap-4">
-                <span className="min-w-0 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#7B3FFF] sm:text-xs sm:tracking-[0.18em]">
+                <span className="min-w-0 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-primary sm:text-xs sm:tracking-[0.18em]">
                   {card.eyebrow}
                 </span>
 
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#7B3FFF]/10 text-xs font-semibold text-[#7B3FFF] sm:size-10 sm:text-sm">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary sm:size-10 sm:text-sm">
                   0{index + 1}
                 </span>
               </div>
 
               <div className="min-w-0">
-                <h3 className="text-[1.65rem] font-semibold leading-[1.08] tracking-normal text-slate-950 sm:text-4xl lg:text-5xl">
+                <h3 className="text-[1.65rem] font-semibold leading-[1.08] tracking-normal text-foreground sm:text-4xl lg:text-5xl">
                   {card.title}
                 </h3>
 
-                <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
+                <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                   {card.body}
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#7B3FFF]/10 pt-4 text-xs sm:text-sm">
-                <span className="font-medium text-slate-500">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-primary/10 pt-4 text-xs sm:text-sm">
+                <span className="font-medium text-muted-foreground">
                   Built for trust
                 </span>
 
-                <span className="font-semibold text-[#5D18E9]">
+                <span className="font-semibold text-primary">
                   {card.stat}
                 </span>
               </div>

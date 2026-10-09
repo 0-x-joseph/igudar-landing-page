@@ -62,12 +62,12 @@ export default function WaitlistForm({ className = "", onSuccess }: WaitlistForm
             exit={{ opacity: 0, y: -8 }}
             className="flex items-center gap-3 justify-center py-4"
           >
-            <div className="w-8 h-8 rounded-full bg-[#5D18E9]/15 border border-[#5D18E9]/25 flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-[#7B3FFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <div className="w-8 h-8 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p className="text-sm text-slate-700">{message}</p>
+            <p className="text-sm text-foreground">{message}</p>
           </motion.div>
         ) : (
           <motion.form
@@ -97,12 +97,12 @@ export default function WaitlistForm({ className = "", onSuccess }: WaitlistForm
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status === "loading"}
-                className="flex-1 bg-white border border-slate-200 rounded-full px-6 py-4 text-slate-900 text-sm placeholder:text-slate-400 outline-none focus:border-[#5D18E9]/50 transition-colors disabled:opacity-50 shadow-sm"
+                className="flex-1 bg-card border border-border rounded-full px-6 py-4 text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors disabled:opacity-50 shadow-sm"
               />
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="bg-[#5D18E9] text-white rounded-full px-8 py-4 text-sm font-medium tracking-wide uppercase hover:bg-[#4A13BA] transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-[#5D18E9]/20"
+                className="bg-primary text-white rounded-full px-8 py-4 text-sm font-medium tracking-wide uppercase hover:bg-accent-foreground transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
               >
                 {status === "loading" ? (
                   <>

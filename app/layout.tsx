@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Public_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import {Providers} from "./providers";
 
-const inter = Inter({
-  variable: "--font-inter",
+const publicSans = Public_Sans({
+  variable: "--font-public-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+// Display serif for hero titles only, never for numbers.
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
   display: "swap",
   style: ["normal", "italic"],
+  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
@@ -25,7 +27,7 @@ export const metadata: Metadata = {
     apple: "/images/Logo-IGUDAR-2-Photoroom.svg",
   },
   other: {
-    "theme-color": "#ffffff",
+    "theme-color": "#F7F5EF",
   },
 };
 
@@ -37,9 +39,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} h-full`}
+      className={`${publicSans.variable} ${fraunces.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col antialiased font-sans bg-white text-slate-900">
+      <body className="min-h-full flex flex-col antialiased font-sans bg-card text-foreground">
         <Providers>
           {children}
         </Providers>

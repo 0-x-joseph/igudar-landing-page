@@ -50,10 +50,10 @@ export default function LandingHero() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.08 }}
-          className="mx-auto mt-7 max-w-5xl text-center text-[clamp(3rem,8vw,7rem)] font-black leading-[0.88] tracking-[-0.07em] text-slate-950"
+          className="mx-auto mt-7 max-w-5xl text-center text-[clamp(3rem,8vw,7rem)] font-black leading-[0.88] tracking-[-0.07em] text-foreground"
         >
           Build your wealth through real 
-          <span className="relative mx-auto mt-2 block h-[0.95em] w-full overflow-hidden text-[#5D18E9]">
+          <span className="relative mx-auto mt-2 block h-[0.95em] w-full overflow-hidden text-primary">
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
                 key={wealthTerms[activeTerm]}
@@ -73,7 +73,7 @@ export default function LandingHero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.16 }}
-          className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-slate-600 sm:text-xl"
+          className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-muted-foreground sm:text-xl"
         >
           Join future investors building passive income from vetted Moroccan
           properties, starting from just 1,000 MAD.
@@ -87,14 +87,14 @@ export default function LandingHero() {
         >
           <Link
             href="#waitlist"
-            className="rounded-full bg-[#5D18E9] px-7 py-4 text-sm font-bold text-white shadow-xl shadow-[#5D18E9]/25 transition hover:bg-[#4A13BA]"
+            className="rounded-full bg-primary px-7 py-4 text-sm font-bold text-white shadow-xl shadow-primary/25 transition hover:bg-accent-foreground"
           >
             Join the waitlist
           </Link>
 
           <Link
             href="#how-it-works"
-            className="rounded-full border border-slate-300 bg-white px-7 py-4 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50"
+            className="rounded-full border border-border bg-card px-7 py-4 text-sm font-bold text-foreground shadow-sm transition hover:bg-muted/50"
           >
             See how it works
           </Link>
@@ -110,7 +110,7 @@ export default function LandingHero() {
   <button
     className="
       group relative overflow-hidden
-      rounded-2xl bg-[#5D18E9]
+      rounded-2xl bg-primary
       px-8 py-4
       text-base font-semibold text-white
       shadow-[0_10px_40px_rgba(93,24,233,0.35)]
@@ -134,7 +134,7 @@ export default function LandingHero() {
         bg-gradient-to-r
         from-[#6D28FF]
         via-[#7C3AED]
-        to-[#5D18E9]
+        to-primary
         opacity-0
         transition-opacity duration-300
         group-hover:opacity-100
@@ -151,15 +151,15 @@ export default function LandingHero() {
     }}
     className="
       rounded-2xl
-      border border-slate-200
+      border border-border
       bg-white/70
       backdrop-blur-xl
       px-8 py-4
-      text-base font-semibold text-slate-900
+      text-base font-semibold text-foreground
       transition-all duration-300
       hover:-translate-y-1
-      hover:border-[#5D18E9]/40
-      hover:bg-white
+      hover:border-primary/40
+      hover:bg-card
       hover:shadow-xl
     "
   >
@@ -175,7 +175,7 @@ export default function LandingHero() {
           transition={{ duration: 0.75, delay: 0.34 }}
           className="relative mt-16"
         >
-          <div className="absolute left-1/2 top-10 -z-10 h-72 w-[85%] -translate-x-1/2 rounded-full bg-[#5D18E9]/20 blur-3xl" />
+          <div className="absolute left-1/2 top-10 -z-10 h-72 w-[85%] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
 
           <div className="grid gap-5 md:grid-cols-3">
             {cards.map((card, index) => (
@@ -188,7 +188,7 @@ export default function LandingHero() {
                   rotate: index === 0 ? -3 : index === 2 ? 3 : 0,
                 }}
                 transition={{ duration: 0.7, delay: 0.42 + index * 0.08 }}
-                className="overflow-hidden rounded-[2rem] border border-white bg-white p-3 shadow-[0_30px_80px_rgba(15,23,42,0.12)]"
+                className="overflow-hidden rounded-[2rem] border border-white bg-card p-3 shadow-[0_30px_80px_rgba(15,23,42,0.12)]"
               >
                 <div className="relative h-[270px] overflow-hidden rounded-[1.5rem]">
                   <img
@@ -199,7 +199,7 @@ export default function LandingHero() {
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-                  <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-slate-900 backdrop-blur">
+                  <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-foreground backdrop-blur">
                     {card.return}
                   </div>
 
@@ -213,16 +213,16 @@ export default function LandingHero() {
 
                 <div className="grid grid-cols-3 gap-2 p-3">
                   <div>
-                    <p className="text-xs text-slate-500">Entry</p>
-                    <p className="text-sm font-bold text-slate-900">1,000 MAD</p>
+                    <p className="text-xs text-muted-foreground">Entry</p>
+                    <p className="text-sm font-bold text-foreground">1,000 MAD</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Type</p>
-                    <p className="text-sm font-bold text-slate-900">Halal</p>
+                    <p className="text-xs text-muted-foreground">Type</p>
+                    <p className="text-sm font-bold text-foreground">Halal</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Screening</p>
-                    <p className="text-sm font-bold text-slate-900">AI</p>
+                    <p className="text-xs text-muted-foreground">Screening</p>
+                    <p className="text-sm font-bold text-foreground">AI</p>
                   </div>
                 </div>
               </motion.div>

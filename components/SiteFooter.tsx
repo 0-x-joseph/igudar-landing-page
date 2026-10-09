@@ -32,7 +32,7 @@ export default function SiteFooter() {
   ];
 
   return (
-    <footer className="bg-slate-100 text-slate-900 pt-16 pb-8 border-t border-slate-200">
+    <footer className="bg-muted text-foreground pt-16 pb-8 border-t border-border">
       <div className="max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <div className="lg:col-span-1">
@@ -43,7 +43,7 @@ export default function SiteFooter() {
                 className="h-10 w-auto object-contain"
               />
             </Link>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Democratizing real estate investment in Morocco through
               Sharia-compliant fractional ownership.
             </p>
@@ -51,14 +51,14 @@ export default function SiteFooter() {
 
           {columns.map((col) => (
             <div key={col.heading}>
-              <h4 className="text-sm font-semibold text-slate-900 mb-4">{col.heading}</h4>
+              <h4 className="text-sm font-semibold text-foreground mb-4">{col.heading}</h4>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
                     {link.isLink ? (
-                      <Link href={link.href} className="text-sm text-slate-600 hover:text-slate-900 transition-colors">{link.label}</Link>
+                      <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{link.label}</Link>
                     ) : (
-                      <a href={link.href} className="text-sm text-slate-600 hover:text-slate-900 transition-colors">{link.label}</a>
+                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{link.label}</a>
                     )}
                   </li>
                 ))}
@@ -67,12 +67,12 @@ export default function SiteFooter() {
           ))}
         </div>
 
-        <div className="border-t border-slate-200 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-slate-500">&copy; 2025 IGUDAR. All rights reserved.</p>
+        <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-muted-foreground">&copy; 2025 IGUDAR. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="text-xs text-slate-500 hover:text-slate-900 transition-colors">Terms</a>
-            <a href="#" className="text-xs text-slate-500 hover:text-slate-900 transition-colors">Privacy</a>
-            <a href="#" className="text-xs text-slate-500 hover:text-slate-900 transition-colors">Cookies</a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Terms</a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Cookies</a>
           </div>
         </div>
       </div>

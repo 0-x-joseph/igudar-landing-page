@@ -85,17 +85,17 @@ const Navbar = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="bg-white border-b border-slate-200 w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 px-10 relative overflow-hidden shadow-sm"
+            className="bg-card border-b border-border w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 px-10 relative overflow-hidden shadow-sm"
           >
-            <p className="text-slate-600 text-[13px] font-medium text-center">
+            <p className="text-muted-foreground text-[13px] font-medium text-center">
               Igudar early access is now live!
             </p>
-            <a href="https://app.igudar.tech/auth/login" className="text-[#7B3FFF] text-[13px] font-semibold hover:text-[#9B6FFF] transition-colors whitespace-nowrap">
+            <a href="https://app.igudar.tech/auth/login" className="text-primary text-[13px] font-semibold hover:text-primary/80 transition-colors whitespace-nowrap">
               Get Started →
             </a>
             <button 
               onClick={() => setIsBannerVisible(false)}
-              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 transition-colors"
+              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 transition-colors"
               aria-label="Close banner"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,7 +109,7 @@ const Navbar = () => {
       <header
         className={`w-full transition-all duration-300 ${
           isScrolled
-            ? 'bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm'
+            ? 'bg-white/90 backdrop-blur-xl border-b border-border shadow-sm'
             : 'bg-transparent'
         }`}
       >
@@ -141,14 +141,14 @@ const Navbar = () => {
                   key={item.id}
                   onClick={() => handleSectionClick(item.id as SectionId)}
                   className={`relative text-[13px] font-medium transition-colors ${
-                      isActive(item) ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'
+                      isActive(item) ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {item.label}
                   {isActive(item) && (
                     <motion.div
                       layoutId="nav-indicator"
-                      className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-[#5D18E9] rounded-full"
+                      className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-primary rounded-full"
                       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                     />
                   )}
@@ -158,14 +158,14 @@ const Navbar = () => {
                   key={item.id}
                   href={`/${item.id}`}
                   className={`relative text-[13px] font-medium transition-colors ${
-                      isActive(item) ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'
+                      isActive(item) ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {item.label}
                   {isActive(item) && (
                     <motion.div
                       layoutId="nav-indicator"
-                      className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-[#5D18E9] rounded-full"
+                      className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-primary rounded-full"
                       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                     />
                   )}
@@ -178,7 +178,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center">
             <a 
               onClick={() => setIsWaitlistOpen(true)}
-              className="px-5 text-[13px] font-medium text-white bg-[#5D18E9] hover:bg-[#4A13BA] transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-[#5D18E9]/15"
+              className="px-5 text-[13px] font-medium text-white bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-primary/15"
             >
               Join Waitlist
             </a>
@@ -186,23 +186,23 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors"
+            className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
             <div className="w-5 flex flex-col gap-[5px]">
               <span
-                className={`block h-[1.5px] bg-slate-800 rounded-full transition-all duration-300 origin-center ${
+                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-300 origin-center ${
                   isMenuOpen ? 'rotate-45 translate-y-[7px]' : ''
                 }`}
               />
               <span
-                className={`block h-[1.5px] bg-slate-800 rounded-full transition-all duration-300 ${
+                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-300 ${
                   isMenuOpen ? 'opacity-0 scale-0' : ''
                 }`}
               />
               <span
-                className={`block h-[1.5px] bg-slate-800 rounded-full transition-all duration-300 origin-center ${
+                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-300 origin-center ${
                   isMenuOpen ? '-rotate-45 -translate-y-[7px]' : ''
                 }`}
               />
@@ -218,7 +218,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:hidden overflow-hidden bg-white rounded-b-xl shadow-lg shadow-slate-200/70 absolute left-0 right-0 border-b border-slate-200"
+              className="lg:hidden overflow-hidden bg-card rounded-b-xl shadow-lg shadow-foreground/10 absolute left-0 right-0 border-b border-border"
             >
               <div className="py-3 px-4 sm:px-6 space-y-0.5">
                 {navLinks.map((item) =>
@@ -227,7 +227,7 @@ const Navbar = () => {
                       key={item.id}
                       onClick={() => handleSectionClick(item.id as SectionId)}
                       className={`w-full flex items-center px-4 py-2.5 text-[14px] font-medium rounded-lg transition-colors ${
-                        isActive(item) ? 'text-slate-900 bg-slate-100' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                        isActive(item) ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                       }`}
                     >
                       {item.label}
@@ -238,7 +238,7 @@ const Navbar = () => {
                       href={`/${item.id}`}
                       onClick={() => setIsMenuOpen(false)}
                       className={`w-full flex items-center px-4 py-2.5 text-[14px] font-medium rounded-lg transition-colors ${
-                        isActive(item) ? 'text-slate-900 bg-slate-100' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                        isActive(item) ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                       }`}
                     >
                       {item.label}
@@ -246,13 +246,13 @@ const Navbar = () => {
                   )
                 )}
                 
-                <div className="pt-3 mt-2 border-t border-slate-200">
+                <div className="pt-3 mt-2 border-t border-border">
                   <button 
                     onClick={() => {
                       setIsWaitlistOpen(true);
                       setIsMenuOpen(false);
                     }}
-                    className="w-full px-4 py-2.5 text-[14px] font-medium text-white bg-[#5D18E9] rounded-lg hover:bg-[#4A13BA] transition-colors flex items-center justify-center"
+                    className="w-full px-4 py-2.5 text-[14px] font-medium text-white bg-primary rounded-lg hover:bg-accent-foreground transition-colors flex items-center justify-center"
                   >
                     Join Waitlist
                   </button>

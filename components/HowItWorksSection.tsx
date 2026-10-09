@@ -15,13 +15,13 @@ export default function HowItWorksSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         <AnimatedSection>
           <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="mb-3 text-sm font-semibold text-[#5D18E9]">
+            <p className="mb-3 text-sm font-semibold text-primary">
               Your investment journey
             </p>
-            <h2 className="mb-4 text-3xl font-bold tracking-normal text-slate-900 lg:text-4xl">
+            <h2 className="mb-4 text-3xl font-bold tracking-normal text-foreground lg:text-4xl">
               How It Works
             </h2>
-            <p className="leading-relaxed text-slate-600">
+            <p className="leading-relaxed text-muted-foreground">
               Four simple steps to start building your real estate portfolio.
             </p>
           </div>
@@ -29,7 +29,7 @@ export default function HowItWorksSection() {
 
         <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-3">
           <WobbleCard
-            containerClassName="min-h-[520px] bg-[#5D18E9] lg:col-span-2 lg:min-h-[460px]"
+            containerClassName="min-h-[520px] bg-primary lg:col-span-2 lg:min-h-[460px]"
             className="flex h-full flex-col justify-between"
           >
             <div className="relative z-20 max-w-sm">

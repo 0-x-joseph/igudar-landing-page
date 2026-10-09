@@ -2,6 +2,10 @@ import React, { useLayoutEffect, useRef, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import Lenis from 'lenis';
 
+const prefersReducedMotion = (): boolean =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export interface ScrollStackItemProps {
   itemClassName?: string;
   children: ReactNode;
@@ -55,7 +59,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
   const animationFrameRef = useRef<number | null>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const cardsRef = useRef<HTMLElement[]>([]);
-  const lastTransformsRef = useRef(new Map<number, any>());
+  const lastTransformsRef = useRef(new Map<number, { translateY: number; scale: number; rotation: number; blur: number }>());
   const isUpdatingRef = useRef(false);
 
   const calculateProgress = useCallback((scrollTop: number, start: number, end: number) => {
@@ -217,12 +221,12 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       const lenis = new Lenis({
         duration: 1.2,
         easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
+        smoothWheel: !prefersReducedMotion(),
         touchMultiplier: 2,
         infinite: false,
         wheelMultiplier: 1,
         lerp: 0.1,
-        syncTouch: true,
+        syncTouch: !prefersReducedMotion(),
         syncTouchLerp: 0.075
       });
 
@@ -245,13 +249,13 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         content: scroller.querySelector('.scroll-stack-inner') as HTMLElement,
         duration: 1.2,
         easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
+        smoothWheel: !prefersReducedMotion(),
         touchMultiplier: 2,
         infinite: false,
         gestureOrientation: 'vertical',
         wheelMultiplier: 1,
         lerp: 0.1,
-        syncTouch: true,
+        syncTouch: !prefersReducedMotion(),
         syncTouchLerp: 0.075
       });
 

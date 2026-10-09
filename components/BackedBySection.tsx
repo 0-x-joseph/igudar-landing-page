@@ -12,10 +12,10 @@ const logos = [
 
 export default function BackedBySection() {
   return (
-    <section className="py-16 border-y border-slate-200 bg-white">
+    <section className="py-16 border-y border-border bg-card">
       <div className="max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8">
         <AnimatedSection>
-          <h2 className="text-center text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight mb-12">
+          <h2 className="text-center text-3xl lg:text-4xl font-bold text-foreground tracking-tight mb-12">
             Backed & Supported By
           </h2>
         </AnimatedSection>
