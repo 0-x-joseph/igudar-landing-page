@@ -12,6 +12,7 @@ const navLinks: { label: string; type: 'section' | 'page'; id: SectionId | strin
   { label: 'Simulator', type: 'page', id: 'simulator' },
   { label: 'Calculator', type: 'page', id: 'calculator' },
   { label: 'Pricing', type: 'page', id: 'pricing' },
+  { label: 'Beta', type: 'page', id: 'beta' },
   { label: 'FAQ', type: 'page', id: 'faq' },
 ];
 
@@ -89,11 +90,11 @@ const Navbar = () => {
             className="bg-card border-b border-border w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 px-10 relative overflow-hidden"
           >
             <p className="text-muted-foreground text-[13px] font-medium text-center">
-              Igudar early access is now live!
+              The IGUDAR closed beta is open for applications. Demo money only.
             </p>
-            <a href="https://app.igudar.tech/auth/login" className="text-primary text-[13px] font-semibold hover:text-primary/80 transition-colors whitespace-nowrap">
-              Get Started →
-            </a>
+            <Link href="/beta" className="text-primary text-[13px] font-semibold hover:text-primary/80 transition-colors whitespace-nowrap">
+              Apply for the beta →
+            </Link>
             <button 
               onClick={() => setIsBannerVisible(false)}
               className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 transition-colors"
@@ -181,7 +182,7 @@ const Navbar = () => {
               onClick={() => setIsWaitlistOpen(true)}
               className="px-5 text-[13px] font-medium text-primary-foreground bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer"
             >
-              Join Waitlist
+              Join the waitlist
             </button>
           </div>
 
@@ -255,7 +256,7 @@ const Navbar = () => {
                     }}
                     className="w-full px-4 py-2.5 text-[14px] font-medium text-white bg-primary rounded-lg hover:bg-accent-foreground transition-colors flex items-center justify-center"
                   >
-                    Join Waitlist
+                    Join the waitlist
                   </button>
                 </div>
               </div>

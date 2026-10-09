@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { LIMITS, formatMad, simulate, yieldLabel } from "@/lib/finance";
 import { ArchFrame, TifinaghMark, ZelligePattern } from "@/components/brand";
 
 // Engine output at the minimum ticket: labelled, never a bare percentage.
 const BASE_YIELD = simulate({ ticketMad: LIMITS.MIN_TICKET_MAD, scenario: "base" }).netCashYieldYear1;
-
-const wealthTerms = ["estate", "trust", "transparency"];
 
 const ctaPrimary =
   "inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors duration-200 ease-out hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
@@ -17,18 +14,7 @@ const ctaSecondary =
   "inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-card px-8 text-base font-semibold text-foreground transition-colors duration-200 ease-out hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 export default function LandingHero() {
-  const [activeTerm, setActiveTerm] = useState(0);
   const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (reduceMotion) return;
-
-    const interval = window.setInterval(() => {
-      setActiveTerm((current) => (current + 1) % wealthTerms.length);
-    }, 2800);
-
-    return () => window.clearInterval(interval);
-  }, [reduceMotion]);
 
   return (
     <section className="relative isolate overflow-hidden bg-background px-5 pb-12 pt-32 sm:px-6 sm:pt-40 lg:pb-16">
@@ -44,21 +30,8 @@ export default function LandingHero() {
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="font-display text-[clamp(2.75rem,7.2vw,5.5rem)] font-semibold leading-[1.02] tracking-tight text-foreground"
             >
-              Build your wealth through real
-              <span className="relative mt-1 block h-[1.15em] overflow-hidden italic text-primary">
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.span
-                    key={wealthTerms[activeTerm]}
-                    initial={reduceMotion ? false : { opacity: 0, y: "40%" }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={reduceMotion ? undefined : { opacity: 0, y: "-40%" }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="absolute inset-0 flex items-center"
-                  >
-                    {wealthTerms[activeTerm]}
-                  </motion.span>
-                </AnimatePresence>
-              </span>
+              Real property. Real rent.{" "}
+              <span className="mt-1 block italic text-primary">Clear rules.</span>
             </motion.h1>
           </div>
 
@@ -79,10 +52,10 @@ export default function LandingHero() {
           >
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
               <a href="https://app.igudar.tech/auth/login" className={ctaPrimary}>
-                Access MVP
+                Access the demo
               </a>
               <a href="#waitlist-cta" className={ctaSecondary}>
-                Join Waitlist
+                Join the waitlist
               </a>
             </div>
             <p className="financial-number mt-8 w-fit max-w-full rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground">

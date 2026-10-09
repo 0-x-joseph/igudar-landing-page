@@ -9,7 +9,8 @@ export type AnalyticsEvent =
   | "sim_scenario_change"
   | "sim_explainer_open"
   | "calc_view"
-  | "interest_submit";
+  | "interest_submit"
+  | "beta_apply";
 
 export type AnalyticsProps = Record<string, string | number | boolean>;
 
