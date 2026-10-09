@@ -21,7 +21,7 @@ export default function ComplianceSection() {
                       : 'bg-muted/50 border-border hover:border-foreground/20'
                   }`}
                 >
-                  <h4 className={`text-base font-semibold mb-1 ${item.accent ? 'text-primary' : 'text-foreground'}`}>{item.title}</h4>
+                  <h3 className={`text-base font-semibold mb-1 ${item.accent ? 'text-primary' : 'text-foreground'}`}>{item.title}</h3>
                   <p className="text-sm text-muted-foreground">{item.desc}</p>
                 </div>
               ))}
@@ -51,7 +51,7 @@ export default function ComplianceSection() {
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-foreground mb-0.5">{item.title}</h4>
+                      <h3 className="text-sm font-semibold text-foreground mb-0.5">{item.title}</h3>
                       <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                     </div>
                   </div>

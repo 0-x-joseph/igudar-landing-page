@@ -43,7 +43,7 @@ export default function FeaturesSection() {
                       {f.icon}
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-foreground mb-0.5">{f.title}</h4>
+                      <h3 className="text-sm font-semibold text-foreground mb-0.5">{f.title}</h3>
                       <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
                     </div>
                   </div>

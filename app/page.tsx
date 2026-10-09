@@ -14,6 +14,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen w-full bg-muted/50 text-foreground overflow-x-hidden">
       <Navbar />
+      <main>
       <LandingHero />
       <HeroSimulator />
       <PainPointsSection />
@@ -23,6 +24,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <StatsSection />
       <FinalCtaSection />
+      </main>
       <SiteFooter />
     </div>
   );

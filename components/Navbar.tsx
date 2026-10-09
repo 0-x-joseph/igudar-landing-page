@@ -178,12 +178,12 @@ const Navbar = () => {
 
           {/* Right Actions */}
           <div className="hidden lg:flex items-center">
-            <a 
+            <button type="button"
               onClick={() => setIsWaitlistOpen(true)}
               className="px-5 text-[13px] font-medium text-white bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-primary/15"
             >
               Join Waitlist
-            </a>
+            </button>
           </div>
 
           {/* Mobile Menu Button */}

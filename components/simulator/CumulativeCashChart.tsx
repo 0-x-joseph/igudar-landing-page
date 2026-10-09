@@ -1,11 +1,12 @@
 "use client";
 
+import useMeasure from "react-use-measure";
 import { motion, useReducedMotion } from "framer-motion";
 import { formatMad, scenarioLabel, type SimulationResult } from "@/lib/finance";
 import { cumulativeSeries } from "@/lib/simulator";
 
-const W = 640;
-const H = 300;
+const DEFAULT_W = 640;
+const H = 280;
 const M = { top: 28, right: 16, bottom: 40, left: 16 };
 
 /**
@@ -14,6 +15,9 @@ const M = { top: 28, right: 16, bottom: 40, left: 16 };
  * Bars grow from the "ticket" floor; the dashed line is break-even.
  */
 export function CumulativeCashChart({ result }: { result: SimulationResult }) {
+  const [measureRef, bounds] = useMeasure();
+  const W = bounds.width > 0 ? Math.round(bounds.width) : DEFAULT_W;
+  const narrow = W < 480;
   const reduce = useReducedMotion();
   const key = result.input.scenarioKey === "custom" ? "base" : result.input.scenarioKey;
   const ticket = result.input.ticketMad;
@@ -44,15 +48,14 @@ export function CumulativeCashChart({ result }: { result: SimulationResult }) {
         {result.input.holdYears}.
       </p>
 
-      <svg
+      <div ref={measureRef} className="w-full"><svg
         viewBox={`0 0 ${W} ${H}`}
         role="img"
         aria-labelledby="sim-chart-svg-title"
         className="h-auto w-full"
       >
         <title id="sim-chart-svg-title">
-          Cumulative cash position by year, {scenarioLabel(key)} scenario: starts at {formatMad(-ticket)} and ends at{" "}
-          {formatMad(last.positionMad)} after the sale in year {result.input.holdYears}.
+          {`Cumulative cash position by year, ${scenarioLabel(key)} scenario: starts at ${formatMad(-ticket)} and ends at ${formatMad(last.positionMad)} after the sale in year ${result.input.holdYears}.`}
         </title>
 
         {/* break-even */}
@@ -65,8 +68,8 @@ export function CumulativeCashChart({ result }: { result: SimulationResult }) {
           strokeWidth={1}
           strokeDasharray="4 4"
         />
-        <text x={W - M.right} y={zeroY - 6} textAnchor="end" className="fill-muted-foreground text-[11px]">
-          Break-even: your {formatMad(ticket, { decimals: 0 })} back
+        <text x={M.left} y={zeroY - 6} textAnchor="start" className="fill-muted-foreground text-xs">
+          {narrow ? "Break-even" : `Break-even: your ${formatMad(ticket, { decimals: 0 })} back`}
         </text>
 
         {/* ticket floor */}
@@ -119,18 +122,18 @@ export function CumulativeCashChart({ result }: { result: SimulationResult }) {
         ))}
 
         {/* labels */}
-        <text x={cx(0)} y={y(series[0].positionMad) + 22} textAnchor="middle" className="financial-number fill-foreground text-[11px] font-semibold">
+        <text x={M.left} y={y(series[0].positionMad) - 12} textAnchor="start" className="financial-number fill-foreground text-xs font-semibold">
           {formatMad(series[0].positionMad, { decimals: 0 })}
         </text>
-        <text x={cx(series.length - 1)} y={y(last.positionMad) - 12} textAnchor="end" className="financial-number fill-foreground text-[12px] font-semibold">
+        <text x={cx(series.length - 1)} y={y(last.positionMad) - 12} textAnchor="end" className="financial-number fill-foreground text-xs font-semibold">
           {formatMad(last.positionMad, { decimals: 0 })} net
         </text>
         {series.map((p, i) => (
-          <text key={p.year} x={cx(i)} y={H - 16} textAnchor="middle" className="fill-muted-foreground text-[12px]">
-            {p.year === 0 ? "Year 0" : p.year === result.input.holdYears ? `Year ${p.year} · sale` : `Year ${p.year}`}
+          <text key={p.year} x={cx(i)} y={H - 16} textAnchor="middle" className="fill-muted-foreground text-xs">
+            {narrow ? `Yr ${p.year}` : p.year === 0 ? "Year 0" : p.year === result.input.holdYears ? `Year ${p.year} · sale` : `Year ${p.year}`}
           </text>
         ))}
-      </svg>
+      </svg></div>
 
       <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
         <li className="flex items-center gap-2">
@@ -144,7 +147,7 @@ export function CumulativeCashChart({ result }: { result: SimulationResult }) {
         </li>
       </ul>
 
-      <table className="sr-only">
+      <div className="sr-only"><table>
         <caption>Cumulative cash by year</caption>
         <thead>
           <tr>
@@ -162,7 +165,7 @@ export function CumulativeCashChart({ result }: { result: SimulationResult }) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
     </section>
   );
 }

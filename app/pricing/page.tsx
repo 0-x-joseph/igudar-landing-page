@@ -293,7 +293,7 @@ export default function Pricing() {
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-5 text-foreground">Platform</h4>
+              <h3 className="font-semibold mb-5 text-foreground">Platform</h3>
               <ul className="space-y-3">
                 <li><Link href="/" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">How it Works</Link></li>
                 <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">AI Technology</a></li>
@@ -302,7 +302,7 @@ export default function Pricing() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-5 text-foreground">Support</h4>
+              <h3 className="font-semibold mb-5 text-foreground">Support</h3>
               <ul className="space-y-3">
                 <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Help Center</a></li>
                 <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Contact Us</a></li>
@@ -311,7 +311,7 @@ export default function Pricing() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-5 text-foreground">Company</h4>
+              <h3 className="font-semibold mb-5 text-foreground">Company</h3>
               <ul className="space-y-3">
                 <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">About</a></li>
                 <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-[15px]">Careers</a></li>
