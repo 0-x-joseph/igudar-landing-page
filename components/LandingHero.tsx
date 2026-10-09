@@ -2,30 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import WaitlistForm from "@/components/WaitlistForm";
+import { LIMITS, formatMad, simulate, yieldLabel } from "@/lib/finance";
+
+// Engine output at the minimum ticket: labelled, never a bare percentage.
+const BASE_YIELD = simulate({ ticketMad: LIMITS.MIN_TICKET_MAD, scenario: "base" }).netCashYieldYear1;
 
 const wealthTerms = ["estate", "trust", "transparency"];
-
-const cards = [
-  {
-    title: "Agdal Residence",
-    city: "Rabat, Morocco",
-    image: "/images/hero-bg.png",
-    return: "+10.4%",
-  },
-  {
-    title: "Marina Apartment",
-    city: "Casablanca, Morocco",
-    image: "/images/hero-bg.png",
-    return: "+8.7%",
-  },
-  {
-    title: "Palm Urban Fund",
-    city: "Marrakech, Morocco",
-    image: "/images/hero-bg.png",
-    return: "+12.1%",
-  },
-];
 
 export default function LandingHero() {
   const [activeTerm, setActiveTerm] = useState(0);
@@ -42,7 +24,7 @@ export default function LandingHero() {
   }, [reduceMotion]);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#F7F5EF] px-4 pt-28 pb-20 sm:px-6 sm:pt-32 lg:pb-28">
+    <section className="relative isolate overflow-hidden bg-background px-4 pt-28 pb-20 sm:px-6 sm:pt-32 lg:pb-28">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(93,24,233,0.14),transparent_35%),linear-gradient(180deg,#F7F5EF_0%,#FFFFFF_70%)]" />
 
       <div className="mx-auto max-w-7xl">
@@ -75,8 +57,8 @@ export default function LandingHero() {
           transition={{ duration: 0.6, delay: 0.16 }}
           className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-muted-foreground sm:text-xl"
         >
-          Join future investors building passive income from vetted Moroccan
-          properties, starting from just 1,000 MAD.
+          Own real, rented Moroccan property alongside professionals, from{" "}
+          {formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })}.
         </motion.p>
 
         {/* <motion.div
@@ -166,69 +148,11 @@ export default function LandingHero() {
     Join Waitlist
   </button>
 </div>
-          {/* <WaitlistForm /> */}
+          <p className="financial-number mx-auto mt-6 w-fit max-w-full rounded-full border border-border bg-card px-4 py-2 text-center text-sm font-medium text-foreground">
+            {yieldLabel(BASE_YIELD, "base")}
+          </p>
         </motion.div>
 
-        {/* <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75, delay: 0.34 }}
-          className="relative mt-16"
-        >
-          <div className="absolute left-1/2 top-10 -z-10 h-72 w-[85%] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
-
-          <div className="grid gap-5 md:grid-cols-3">
-            {cards.map((card, index) => (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 40, rotate: 0 }}
-                animate={{
-                  opacity: 1,
-                  y: index === 1 ? -20 : 0,
-                  rotate: index === 0 ? -3 : index === 2 ? 3 : 0,
-                }}
-                transition={{ duration: 0.7, delay: 0.42 + index * 0.08 }}
-                className="overflow-hidden rounded-[2rem] border border-white bg-card p-3 shadow-[0_30px_80px_rgba(15,23,42,0.12)]"
-              >
-                <div className="relative h-[270px] overflow-hidden rounded-[1.5rem]">
-                  <img
-                    src={card.image}
-                    alt={card.title}
-                    className="h-full w-full object-cover"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-                  <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-foreground backdrop-blur">
-                    {card.return}
-                  </div>
-
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-black text-white">
-                      {card.title}
-                    </h3>
-                    <p className="text-sm text-white/80">{card.city}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 p-3">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Entry</p>
-                    <p className="text-sm font-bold text-foreground">1,000 MAD</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Type</p>
-                    <p className="text-sm font-bold text-foreground">Halal</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Screening</p>
-                    <p className="text-sm font-bold text-foreground">AI</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div> */}
       </div>
     </section>
   );

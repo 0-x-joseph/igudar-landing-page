@@ -10,6 +10,8 @@ const navLinks: { label: string; type: 'section' | 'page'; id: SectionId | strin
   { label: 'How It Works', type: 'section', id: 'how-it-works' },
   { label: 'Features', type: 'section', id: 'ai-powered' },
   { label: 'AI Engine', type: 'section', id: 'ai-engine' },
+  { label: 'Simulator', type: 'page', id: 'simulator' },
+  { label: 'Calculator', type: 'page', id: 'calculator' },
   { label: 'Pricing', type: 'page', id: 'pricing' },
   { label: 'FAQ', type: 'page', id: 'faq' },
 ];

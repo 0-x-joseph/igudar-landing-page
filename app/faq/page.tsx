@@ -6,6 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import AnimatedSection from '@/components/AnimatedSection';
 import GradientText from '@/components/GradientText';
+import { IndicativeNotice } from '@/components/simulator/IndicativeNotice';
+import { FEE_GRID, LIMITS, formatMad, formatPercent, simulateAll } from '@/lib/finance';
+
+const MODEL = simulateAll(LIMITS.MIN_TICKET_MAD);
 
 export default function FAQ() {
   const [openItems, setOpenItems] = useState<number[]>([]);
@@ -17,6 +21,22 @@ export default function FAQ() {
   };
 
   const faqs = [
+    {
+      question: 'Is my return guaranteed?',
+      answer: `No. Rent can arrive late, a property can stay empty and its price can fall. That is why every figure on this site is labelled net, indicative and not guaranteed, and why we always show the Pessimistic case next to the Base case. At ${formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })}, the Pessimistic scenario makes ${formatMad(MODEL.pessimistic.netProfitMad)} over ${LIMITS.HOLD_YEARS} years, ${MODEL.pessimistic.beatsBankDeposit ? 'more' : 'less'} than the ${formatMad(MODEL.pessimistic.bankDepositProfitMad)} a bank deposit would earn. A return nobody can guarantee should not be promised, and not promising it protects you from a number that could be broken.`,
+    },
+    {
+      question: 'Can I get my money out early?',
+      answer: `Not at any time. Your money is locked up while the property is held, for ${LIMITS.HOLD_YEARS} years. After the first year, exit windows open every ${LIMITS.EXIT_WINDOW_MONTHS} months, where you can offer your share to other associates. A buyer is not guaranteed, and selling early costs a transfer fee of ${formatPercent(FEE_GRID.D4_TRANSFER_HT)} of the amount traded, plus registration duty and tax on any gain (to confirm with counsel).`,
+    },
+    {
+      question: 'What happens if the raise fails?',
+      answer: 'Your money waits in an escrow account at a regulated bank, one account per project, and is only released to the property company if the raise reaches its target. If it fails, or the deadline passes, the bank refunds you in full and IGUDAR keeps no fee from you.',
+    },
+    {
+      question: 'Why is the IRR lower than the cash yield?',
+      answer: `The cash yield is the rent you receive in a year divided by what you invested (${formatPercent(MODEL.base.netCashYieldYear1)} in the Base scenario). The IRR also counts the ${formatPercent(LIMITS.ACQUISITION_COSTS)} purchase costs (registration, land registry and notary) that are paid from the capital, and what you get back when the property is sold, so it is lower (${MODEL.base.netIrr === null ? 'n/a' : formatPercent(MODEL.base.netIrr)} in the Base scenario). Both are net of fees and taxes, and neither is guaranteed.`,
+    },
     {
       question: 'How does the IGUDAR platform work?',
       answer:
@@ -193,6 +213,12 @@ export default function FAQ() {
               </AnimatedSection>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <IndicativeNotice />
         </div>
       </section>
 
