@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import fs from "fs";
 import path from "path";
+import { formatMad, scenarioLabel } from "@/lib/finance";
+import { parseInterestPayload, type Interest } from "@/lib/waitlist-validation";
 
 // ── Resend client ──────────────────────────────────────────
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Created lazily, inside the handler: `new Resend(undefined)` throws at module load,
+// which would break `next build` ("Collecting page data") when RESEND_API_KEY is unset.
+function getResend(): Resend {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 // ── Simple file-based storage ──────────────────────────────
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -14,6 +20,8 @@ interface WaitlistEntry {
   email: string;
   joinedAt: string;
   ip: string;
+  /** Non-binding stated interest from the simulator, with the consent timestamp. */
+  interest?: Interest;
 }
 
 function getWaitlist(): WaitlistEntry[] {
@@ -86,7 +94,15 @@ function isValidEmail(email: string): boolean {
 }
 
 // ── Confirmation email HTML ────────────────────────────────
-function buildConfirmationEmail(email: string): string {
+function buildConfirmationEmail(email: string, interest: Interest | null): string {
+  const interestBlock = interest
+    ? `
+          <div style="background:rgba(93,24,233,0.06);border:1px solid rgba(93,24,233,0.15);border-radius:12px;padding:20px;margin:0 0 24px;">
+            <p style="font-size:13px;color:#7B3FFF;font-weight:600;margin:0 0 4px;">YOUR NON-BINDING INTEREST</p>
+            <p style="font-size:15px;color:#ffffff;margin:0;">${formatMad(interest.amountMad, { decimals: 0 })}, ${scenarioLabel(interest.scenario)} scenario</p>
+            <p style="font-size:12px;color:#888;margin:8px 0 0;">Indicative only. No money is collected and nothing is committed before the AMMC licence.</p>
+          </div>`
+    : "";
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -116,6 +132,7 @@ function buildConfirmationEmail(email: string): string {
             <p style="font-size:15px;color:#ffffff;margin:0;">${email}</p>
           </div>
 
+${interestBlock}
           <p style="font-size:14px;color:#888;line-height:1.6;margin:0 0 8px;text-align:center;">
             <strong style="color:#fff;">What happens next?</strong>
           </p>
@@ -138,6 +155,22 @@ function buildConfirmationEmail(email: string): string {
   </table>
 </body>
 </html>`;
+}
+
+/** Optional heads-up to the team when someone states an amount (no-op unless WAITLIST_NOTIFY_TO is set). */
+async function notifyTeam(resend: Resend, email: string, interest: Interest): Promise<void> {
+  const notifyTo = process.env.WAITLIST_NOTIFY_TO;
+  if (!notifyTo) return;
+  const { error } = await resend.emails.send({
+    from: `IGUDAR <waitlist@contact.igudar.tech>`,
+    to: [notifyTo],
+    subject: `Simulator interest: ${formatMad(interest.amountMad, { decimals: 0 })} (${scenarioLabel(interest.scenario)})`,
+    text: `${email}
+${formatMad(interest.amountMad, { decimals: 0 })}, ${scenarioLabel(interest.scenario)}
+Source: ${interest.source}
+Consent: ${interest.consentAt}`,
+  });
+  if (error) console.error("Team notification failed:", JSON.stringify(error));
 }
 
 // ── POST handler ───────────────────────────────────────────
@@ -166,6 +199,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
+    // Optional simulator interest (amount, scenario, consent timestamp, source)
+    const interestResult = parseInterestPayload(body);
+    if (!interestResult.ok) {
+      return NextResponse.json({ error: interestResult.error }, { status: 400 });
+    }
+    const interest = interestResult.value;
+
     // Validate email
     if (!email || typeof email !== "string") {
       return NextResponse.json(
@@ -185,23 +225,33 @@ export async function POST(request: NextRequest) {
 
     // Check for duplicates
     const waitlist = getWaitlist();
-    const alreadyExists = waitlist.some(
-      (entry) => entry.email === normalizedEmail
-    );
+    const existing = waitlist.find((entry) => entry.email === normalizedEmail);
 
-    if (alreadyExists) {
+    if (existing && !interest) {
       return NextResponse.json(
         { error: "This email is already on the waitlist." },
         { status: 409 }
       );
     }
 
+    // Already on the list and now stating an amount: keep the latest stated interest.
+    if (existing && interest) {
+      existing.interest = interest;
+      saveWaitlist(waitlist);
+      await notifyTeam(getResend(), normalizedEmail, interest);
+      return NextResponse.json({
+        success: true,
+        message: "Thank you, we noted your interest.",
+      });
+    }
+
     // Send confirmation email via Resend
+    const resend = getResend();
     const { error: emailError } = await resend.emails.send({
       from: `IGUDAR <waitlist@contact.igudar.tech>`,
       to: [normalizedEmail],
       subject: "Welcome to the IGUDAR Waitlist! 🏠",
-      html: buildConfirmationEmail(normalizedEmail),
+      html: buildConfirmationEmail(normalizedEmail, interest),
     });
 
     if (emailError) {
@@ -217,8 +267,11 @@ export async function POST(request: NextRequest) {
       email: normalizedEmail,
       joinedAt: new Date().toISOString(),
       ip,
+      ...(interest ? { interest } : {}),
     });
     saveWaitlist(waitlist);
+
+    if (interest) await notifyTeam(resend, normalizedEmail, interest);
 
     return NextResponse.json({
       success: true,
