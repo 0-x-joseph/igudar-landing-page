@@ -6,6 +6,7 @@ const pages = [
   { path: "/calculator", slug: "calculator" },
   { path: "/faq", slug: "faq" },
   { path: "/pricing", slug: "pricing" },
+  { path: "/beta", slug: "beta" },
 ];
 const NOTICE = "Indicative simulation based on the IGUDAR financial model";
 const FEE_ROWS = 8;
@@ -42,16 +43,23 @@ for (const { path, slug } of pages) {
     await page.goto(path);
     await page.waitForLoadState("networkidle");
 
-    if (path === "/" || path === "/simulator" || path === "/calculator" || path === "/pricing") {
+    if (path === "/" || path === "/simulator" || path === "/calculator" || path === "/pricing" || path === "/beta") {
       await expect(page.getByText(NOTICE).first()).toBeVisible();
     }
+    // The pre-licence sentence is also in every footer.
+    await expect(page.locator("footer").getByText(NOTICE)).toHaveCount(1);
+    await expect(page.getByText(/sharia|halal|certified/i).filter({ hasNotText: /Sharia board review in progress|Is IGUDAR Sharia-compliant/ })).toHaveCount(0);
     if (path === "/") {
       await expect(page.getByText("1,122.51 MAD").first()).toBeVisible();
       await expect(page.getByText("4,246.26 MAD").first()).toBeVisible();
 
       // Hero: sand headline, arch-framed visual, simulator right below.
       const h1 = page.getByRole("heading", { level: 1 });
-      await expect(h1).toContainText("Build your wealth through real");
+      await expect(h1).toContainText("Real property. Real rent.");
+      await expect(h1).not.toContainText("wealth");
+      await expect(page.getByRole("link", { name: "Access the demo" }).first()).toBeVisible();
+      await expect(page.getByRole("link", { name: "Apply for the beta" }).first()).toHaveAttribute("href", "/beta");
+      await expect(page.getByRole("heading", { name: "Programmes & partners" })).toBeVisible();
       await expect(page.getByRole("heading", { name: /Own real, rented property alongside professionals/ })).toBeVisible();
       await expect(page.locator("main img[alt^='Aerial view']")).toHaveCount(1);
 
@@ -62,6 +70,44 @@ for (const { path, slug } of pages) {
       await expect(page.getByRole("link", { name: "Simulate", exact: true })).toBeVisible();
       await expect(page.getByText("Invest now", { exact: false })).toHaveCount(0);
       expect(await page.locator("[data-zellige-band]").count(), "ZelligeBand dividers").toBeGreaterThanOrEqual(2);
+    }
+    if (path === "/beta") {
+      await expect(page.getByRole("heading", { level: 1 })).toContainText("Try IGUDAR with demo money.");
+      await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "8");
+      await expect(page.getByText("up to a year of activity in about two weeks")).toBeVisible();
+      expect(await page.locator("[data-zellige-band]").count(), "ZelligeBand dividers").toBeGreaterThanOrEqual(2);
+      await expect(page.getByRole("link", { name: "Access the demo" })).toHaveAttribute(
+        "href",
+        "https://app.igudar.tech/auth/register",
+      );
+
+      // Form: consent is never pre-checked and the submit stays disabled until it is ticked.
+      const form = page.getByRole("form", { name: "Apply for the beta" });
+      const submit = form.getByRole("button", { name: "Apply for the beta" });
+      const consent = form.getByRole("checkbox");
+      await expect(consent).not.toBeChecked();
+      await expect(submit).toBeDisabled();
+      await form.getByLabel("First name", { exact: true }).fill("Salma");
+      await form.getByLabel("Email", { exact: true }).fill("salma@example.com");
+      await form.getByLabel("City and country").fill("Paris, France");
+      await form.getByLabel(/realistically consider/).selectOption("25-50k");
+      await form.getByLabel(/experience with property/).selectOption("some");
+      await expect(submit).toBeDisabled();
+      await consent.check();
+      await expect(submit).toBeEnabled();
+      await consent.uncheck();
+      await expect(submit).toBeDisabled();
+
+      // Submit against a stubbed endpoint: the real one sends email.
+      let posted: Record<string, unknown> | null = null;
+      await page.route("**/api/waitlist", async (route) => {
+        posted = route.request().postDataJSON();
+        await route.fulfill({ json: { success: true } });
+      });
+      await consent.check();
+      await submit.click();
+      await expect(page.getByText("Thanks — a founder reviews every application by hand.")).toBeVisible();
+      expect(posted).toMatchObject({ source: "beta", firstName: "Salma", ticketBucket: "25-50k", experience: "some" });
     }
     if (path === "/simulator") {
       await page.getByText("Pessimistic", { exact: true }).first().click();

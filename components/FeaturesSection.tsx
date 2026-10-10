@@ -9,7 +9,7 @@ const features = [
   },
   {
     title: "Risk Assessment",
-    desc: "Comprehensive risk evaluation for each investment with transparent scoring.",
+    desc: "A plain-language view of the main risks of each property, next to the numbers.",
     icon: ShieldCheck,
   },
   {
@@ -27,10 +27,10 @@ export default function FeaturesSection() {
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold text-primary">Platform Features</p>
             <h2 className="mt-3 font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Data-Driven Investment Intelligence
+              Clear data on every property
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Market analytics, AI-powered insights, and rigorous compliance screening, all in one platform.
+              Market context, a plain view of the risks and the fees, all in one place.
             </p>
           </div>
         </AnimatedSection>

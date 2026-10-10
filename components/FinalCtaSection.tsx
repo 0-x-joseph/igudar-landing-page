@@ -15,8 +15,8 @@ export default function FinalCtaSection() {
             <span className="italic text-primary">Start with a simulation.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-            See what {formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })} could look like, or join the waitlist to hear
-            when IGUDAR opens.
+            See what {formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })} could look like, try the closed beta with
+            demo money, or join the waitlist to hear when IGUDAR opens.
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-4">
@@ -25,6 +25,12 @@ export default function FinalCtaSection() {
               className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors duration-200 ease-out hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               Simulate
+            </Link>
+            <Link
+              href="/beta"
+              className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-card px-8 text-base font-semibold text-foreground transition-colors duration-200 ease-out hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              Apply for the beta
             </Link>
             <p className="text-sm text-muted-foreground">or join the waitlist</p>
           </div>

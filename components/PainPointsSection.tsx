@@ -4,7 +4,7 @@ const transparencyCards = [
   {
     eyebrow: "Transparent access",
     title: "Every opportunity starts with the facts.",
-    body: "Property details, pricing logic, expected returns, documents, and key risks are organized in one place before anyone invests.",
+    body: "Property details, pricing logic, indicative returns, documents, and key risks are organized in one place before anyone invests.",
     stat: "Deal context",
   },
   {

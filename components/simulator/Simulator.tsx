@@ -100,8 +100,8 @@ export function Simulator() {
           </p>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
             Your money is locked up while the property is held. After the first year, organised exit windows open every{" "}
-            {LIMITS.EXIT_WINDOW_MONTHS} months, where you can offer your share to other associates. A buyer is not
-            guaranteed and a transfer fee applies. This simulation assumes you stay until the sale in year{" "}
+            {LIMITS.EXIT_WINDOW_MONTHS} months, where you can offer your share to other associates.
+            A buyer is not guaranteed and a transfer fee applies. This simulation assumes you stay until the sale in year{" "}
             {LIMITS.HOLD_YEARS}.
           </p>
         </div>

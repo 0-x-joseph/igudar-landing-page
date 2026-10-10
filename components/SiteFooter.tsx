@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { TifinaghMark, ZelligeBand } from '@/components/brand';
+import { INDICATIVE_NOTICE } from '@/lib/finance';
 
 export default function SiteFooter() {
   const columns = [
@@ -8,8 +9,9 @@ export default function SiteFooter() {
       links: [
         { label: 'How it Works', href: '/#how-it-works', isLink: true },
         { label: 'Features', href: '/#ai-powered', isLink: true },
-        { label: 'Sharia Compliance', href: '#sharia-compliant' },
         { label: 'Pricing', href: '/pricing', isLink: true },
+        { label: 'Simulator', href: '/simulator', isLink: true },
+        { label: 'Beta', href: '/beta', isLink: true },
       ],
     },
     {
@@ -46,8 +48,7 @@ export default function SiteFooter() {
               />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Democratizing real estate investment in Morocco through
-              Sharia-compliant fractional ownership.
+              Fractional ownership of rented Moroccan property, with the fees, risks and rules in plain language.
             </p>
           </div>
 
@@ -68,6 +69,10 @@ export default function SiteFooter() {
             </div>
           ))}
         </div>
+
+        <p role="note" className="mb-6 max-w-3xl text-xs leading-relaxed text-muted-foreground">
+          {INDICATIVE_NOTICE}
+        </p>
 
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-4">
