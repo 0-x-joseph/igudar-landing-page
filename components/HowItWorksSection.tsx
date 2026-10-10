@@ -29,15 +29,15 @@ const pillars = [
 
 export default function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="scroll-mt-28 bg-background py-24 lg:py-32">
+    <section id="how-it-works" className="scroll-mt-28 px-0 pb-12 pt-24 lg:pb-16 lg:pt-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
         <AnimatedSection>
           <div className="mx-auto mb-14 max-w-2xl text-center">
             <p className="mb-3 text-sm font-semibold text-primary">How it works</p>
-            <h2 className="font-display text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+            <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               An old idea, built for today
             </h2>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
               IGUDAR is named after the igudar, the collective granaries of the Amazigh. The same four ideas hold up the
               platform.
             </p>
@@ -60,12 +60,12 @@ export default function HowItWorksSection() {
           ))}
         </ul>
 
-        <div className="mt-20 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="mt-24 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <AnimatedSection>
             <h3 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
               Follow every dirham
             </h3>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
               Your wallet shows four things: what you committed, what sits in escrow, what is invested in the property
               company, and the rent you have actually received. Nothing hidden, nothing to guess.
             </p>

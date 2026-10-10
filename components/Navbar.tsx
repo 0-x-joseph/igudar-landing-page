@@ -4,12 +4,11 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import WaitlistModal from './WaitlistModal';
-type SectionId = 'how-it-works' | 'ai-powered' | 'ai-engine';
+type SectionId = 'how-it-works' | 'ai-powered';
 
 const navLinks: { label: string; type: 'section' | 'page'; id: SectionId | string }[] = [
   { label: 'How It Works', type: 'section', id: 'how-it-works' },
   { label: 'Features', type: 'section', id: 'ai-powered' },
-  { label: 'AI Engine', type: 'section', id: 'ai-engine' },
   { label: 'Simulator', type: 'page', id: 'simulator' },
   { label: 'Calculator', type: 'page', id: 'calculator' },
   { label: 'Pricing', type: 'page', id: 'pricing' },
@@ -28,7 +27,7 @@ const Navbar = () => {
       setIsScrolled(window.scrollY > 20);
 
       if (pathname === '/') {
-        const sections: SectionId[] = ['how-it-works', 'ai-powered', 'ai-engine'];
+        const sections: SectionId[] = ['how-it-works', 'ai-powered'];
         const scrollPosition = window.scrollY + 120;
 
         let found = false;
@@ -87,7 +86,7 @@ const Navbar = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="bg-card border-b border-border w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 px-10 relative overflow-hidden shadow-sm"
+            className="bg-card border-b border-border w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 px-10 relative overflow-hidden"
           >
             <p className="text-muted-foreground text-[13px] font-medium text-center">
               Igudar early access is now live!
@@ -100,7 +99,7 @@ const Navbar = () => {
               className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 transition-colors"
               aria-label="Close banner"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -109,9 +108,9 @@ const Navbar = () => {
       </AnimatePresence>
 
       <header
-        className={`w-full transition-all duration-300 ${
+        className={`w-full transition-colors duration-200 ease-out ${
           isScrolled
-            ? 'bg-white/90 backdrop-blur-xl border-b border-border shadow-sm'
+            ? 'bg-background/90 backdrop-blur-xl border-b border-border'
             : 'bg-transparent'
         }`}
       >
@@ -151,7 +150,7 @@ const Navbar = () => {
                     <motion.div
                       layoutId="nav-indicator"
                       className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-primary rounded-full"
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
                     />
                   )}
                 </button>
@@ -168,7 +167,7 @@ const Navbar = () => {
                     <motion.div
                       layoutId="nav-indicator"
                       className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-primary rounded-full"
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
                     />
                   )}
                 </Link>
@@ -180,7 +179,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center">
             <button type="button"
               onClick={() => setIsWaitlistOpen(true)}
-              className="px-5 text-[13px] font-medium text-white bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-primary/15"
+              className="px-5 text-[13px] font-medium text-primary-foreground bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer"
             >
               Join Waitlist
             </button>
@@ -194,17 +193,17 @@ const Navbar = () => {
           >
             <div className="w-5 flex flex-col gap-[5px]">
               <span
-                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-300 origin-center ${
+                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-200 ease-out origin-center ${
                   isMenuOpen ? 'rotate-45 translate-y-[7px]' : ''
                 }`}
               />
               <span
-                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-300 ${
+                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-200 ease-out ${
                   isMenuOpen ? 'opacity-0 scale-0' : ''
                 }`}
               />
               <span
-                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-300 origin-center ${
+                className={`block h-[1.5px] bg-foreground rounded-full transition-all duration-200 ease-out origin-center ${
                   isMenuOpen ? '-rotate-45 -translate-y-[7px]' : ''
                 }`}
               />
@@ -220,7 +219,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:hidden overflow-hidden bg-card rounded-b-xl shadow-lg shadow-foreground/10 absolute left-0 right-0 border-b border-border"
+              className="lg:hidden overflow-hidden bg-card rounded-b-xl shadow-sm absolute left-0 right-0 border-b border-border"
             >
               <div className="py-3 px-4 sm:px-6 space-y-0.5">
                 {navLinks.map((item) =>
