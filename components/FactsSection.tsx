@@ -25,7 +25,7 @@ const facts = [
 
 export default function FactsSection() {
   return (
-    <section aria-labelledby="facts-title" className="section-dark group relative isolate overflow-hidden bg-background text-foreground px-5 py-24 sm:px-6 lg:py-32">
+    <section aria-labelledby="facts-title" className="section-dark group relative isolate overflow-hidden bg-background text-foreground px-5 py-24 sm:px-6 lg:py-32 section-vh">
       <ReactiveGlow className="inset-0" />
       <div className="relative mx-auto max-w-6xl">
         <AnimatedSection>

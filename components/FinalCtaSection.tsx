@@ -6,7 +6,7 @@ import { ReactiveGlow, ReactivePattern, TifinaghMark } from "@/components/brand"
 
 export default function FinalCtaSection() {
   return (
-    <section id="waitlist-cta" className="relative isolate scroll-mt-24 bg-background px-5 py-24 sm:px-6 lg:py-32">
+    <section id="waitlist-cta" className="relative isolate scroll-mt-24 bg-background px-5 py-24 sm:px-6 lg:py-32 section-vh">
       <ReactiveGlow className="inset-0" />
       <ReactivePattern className="mx-auto max-w-5xl rounded-[2.5rem] border border-border bg-card px-6 py-14 sm:px-12 lg:py-20">
       <div className="mx-auto max-w-3xl text-center">

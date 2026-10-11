@@ -22,7 +22,7 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section id="ai-powered" className="section-dark relative isolate scroll-mt-28 bg-background text-foreground px-5 py-24 sm:px-6 lg:py-32">
+    <section id="ai-powered" className="section-dark relative isolate scroll-mt-28 bg-background text-foreground px-5 py-24 sm:px-6 lg:py-32 section-vh">
       <ReactiveGlow className="inset-0" />
       <div className="mx-auto max-w-6xl">
         <AnimatedSection>

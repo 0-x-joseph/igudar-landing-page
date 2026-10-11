@@ -45,6 +45,10 @@ html {
   scroll-behavior: smooth;
 }
 
+.section-vh {
+  min-height: 100vh;
+}
+
 /* Dark bands are opt-in per section. Their descendants share the same palette
    without changing the light page, navigation, partner logos or footer. */
 .section-dark {
