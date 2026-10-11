@@ -10,7 +10,7 @@ import {
   simulateAll,
 } from "@/lib/finance";
 import { DEFAULT_TICKET_MAD, clampTicket } from "@/lib/simulator";
-import { ZelligePattern } from "@/components/brand/ZelligePattern";
+import { ReactiveGlow } from "@/components/brand";
 import { AnimatedNumber } from "./AnimatedNumber";
 import { TicketField } from "./TicketField";
 import { IndicativeNotice } from "./IndicativeNotice";
@@ -30,10 +30,10 @@ export function HeroSimulator() {
   ];
 
   return (
-    <section aria-labelledby="hero-sim-title" className="relative bg-background px-4 pb-16 sm:px-6 lg:pb-24">
+    <section aria-labelledby="hero-sim-title" className="relative bg-surface-sand px-4 pb-16 sm:px-6 lg:pb-24">
       <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-border bg-card">
-        <div className="relative px-6 pb-8 pt-10 text-center sm:px-12">
-          <ZelligePattern className="pointer-events-none absolute inset-0 text-primary opacity-[0.06] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" />
+        <div className="group relative px-6 pb-8 pt-10 text-center sm:px-12">
+          <ReactiveGlow className="inset-0" />
           <p className="relative text-sm font-semibold text-primary">Simulator</p>
           <h2
             id="hero-sim-title"
@@ -60,9 +60,9 @@ export function HeroSimulator() {
 
           <dl className="grid gap-3 sm:grid-cols-3">
             {tiles.map((t) => (
-              <div key={t.label} className="rounded-2xl bg-background p-4">
+              <div key={t.label} className="min-w-0 rounded-2xl bg-surface-sand p-4">
                 <dt className="text-xs font-semibold text-muted-foreground">{t.label}</dt>
-                <dd className="financial-number mt-2 text-2xl font-bold tracking-tight text-foreground">
+                <dd className="financial-number mt-2 min-w-0 text-2xl font-bold tracking-tight text-foreground break-words">
                   <AnimatedNumber value={t.value} format={mad} />
                 </dd>
               </div>

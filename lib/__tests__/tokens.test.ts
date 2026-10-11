@@ -25,6 +25,9 @@ describe("IGUDAR light tokens in globals.css", () => {
     ["highlight", "#ECA72C"],
     ["destructive", "#C1402A"],
     ["ring", "#5D18E9"],
+    ["surface-sand", "#F7F5EF"],
+    ["surface-mist", "#F1EBFD"],
+    ["surface-clay", "#FAF4E4"],
   ])("%s is %s", (name, value) => {
     expect(token(name)?.toUpperCase()).toBe(value);
   });
