@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push * master)",
+      "Bash(git push * master *)",
+      "Bash(git push *:master*)",
+      "Bash(git push *:refs/heads/master*)",
+      "Bash(git push * main)",
+      "Bash(git push * main *)",
+      "Bash(git push *:main*)",
+      "Bash(git push *:refs/heads/main*)",
+      "Bash(git push --force*)",
+      "Bash(git push * --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * -f)",
+      "Bash(git push * -f *)",
+      "Bash(git push *+*)",
+      "Bash(git push --delete*)",
+      "Bash(git push * --delete*)",
+      "Bash(git push -d *)",
+      "Bash(git push * -d *)",
+      "Bash(git push --mirror*)",
+      "Bash(git push --all*)",
+      "Bash(*--no-verify*)",
+      "Bash(*core.hooksPath*)",
+      "Bash(git branch -D *)",
+      "Bash(git branch -d *)",
+      "Bash(git branch --delete *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean *)",
+      "Bash(git checkout -- .*)",
+      "Bash(git restore .*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh repo delete*)",
+      "Bash(gh repo edit*)",
+      "Bash(gh api *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(gh pr create *)",
+      "Bash(git stash *)",
+      "Bash(git rebase *)",
+      "Bash(supabase db push*)",
+      "Bash(supabase db reset*)"
+    ],
+    "disableBypassPermissionsMode": "disable"
+  }
+}

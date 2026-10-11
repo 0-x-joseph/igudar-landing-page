@@ -1,14 +1,17 @@
 import Link from 'next/link';
+import { TifinaghMark, ZelligeBand } from '@/components/brand';
+import { INDICATIVE_NOTICE } from '@/lib/finance';
 
 export default function SiteFooter() {
   const columns = [
     {
       heading: 'Platform',
       links: [
-        { label: 'How it Works', href: '#how-it-works' },
-        { label: 'Features', href: '#ai-powered' },
-        { label: 'Sharia Compliance', href: '#sharia-compliant' },
+        { label: 'How it Works', href: '/#how-it-works', isLink: true },
+        { label: 'Features', href: '/#ai-powered', isLink: true },
         { label: 'Pricing', href: '/pricing', isLink: true },
+        { label: 'Simulator', href: '/simulator', isLink: true },
+        { label: 'Beta', href: '/beta', isLink: true },
       ],
     },
     {
@@ -32,8 +35,9 @@ export default function SiteFooter() {
   ];
 
   return (
-    <footer className="bg-muted text-foreground pt-16 pb-8 border-t border-border">
+    <footer className="relative bg-background text-foreground pt-16 pb-8 border-t border-border">
       <div className="max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8">
+        <ZelligeBand className="mb-12" />
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-5">
@@ -44,14 +48,13 @@ export default function SiteFooter() {
               />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Democratizing real estate investment in Morocco through
-              Sharia-compliant fractional ownership.
+              Fractional ownership of rented Moroccan property, with the fees, risks and rules in plain language.
             </p>
           </div>
 
           {columns.map((col) => (
             <div key={col.heading}>
-              <h4 className="text-sm font-semibold text-foreground mb-4">{col.heading}</h4>
+              <h3 className="text-sm font-semibold text-foreground mb-4">{col.heading}</h3>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
@@ -67,8 +70,15 @@ export default function SiteFooter() {
           ))}
         </div>
 
+        <p role="note" className="mb-6 max-w-3xl text-xs leading-relaxed text-muted-foreground">
+          {INDICATIVE_NOTICE}
+        </p>
+
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-muted-foreground">&copy; 2025 IGUDAR. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <TifinaghMark height={14} className="text-primary" />
+            <p className="text-xs text-muted-foreground">&copy; 2025 IGUDAR. All rights reserved.</p>
+          </div>
           <div className="flex gap-6">
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Terms</a>
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacy</a>

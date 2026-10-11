@@ -1,0 +1,205 @@
+import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { INDICATIVE_NOTICE, LIMITS } from "@/lib/finance";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn() }),
+  usePathname: () => "/",
+}));
+vi.mock("@/components/Navbar", () => ({ default: () => <nav data-testid="navbar" /> }));
+vi.mock("@/components/SiteFooter", () => ({ default: () => <footer data-testid="footer" /> }));
+
+import { HeroSimulator } from "@/components/simulator/HeroSimulator";
+import { Simulator } from "@/components/simulator/Simulator";
+import SimulatorPage from "@/app/simulator/page";
+import CalculatorPage from "@/app/calculator/page";
+import WalletIllustration from "@/components/WalletIllustration";
+import { TRACK_EVENT_NAME, track } from "@/lib/analytics";
+
+// Testing Library collapses NBSP into a plain space, so matchers use plain spaces.
+const nbsp = (s: string) => s;
+
+describe("HeroSimulator", () => {
+  it("shows the Base numbers for 25,000 MAD", () => {
+    render(<HeroSimulator />);
+    expect(screen.getByText(nbsp("1,122.51 MAD"))).toBeInTheDocument();
+    expect(screen.getByText(nbsp("4,246.26 MAD"))).toBeInTheDocument();
+    expect(screen.getByText(nbsp("3,423.45 MAD"))).toBeInTheDocument();
+  });
+
+  it("carries the entry-ticket headline, the full-simulator link and the notice", () => {
+    render(<HeroSimulator />);
+    expect(
+      screen.getByRole("heading", { name: /Own real, rented property alongside professionals, from 25,000/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Open the full simulator/ })).toHaveAttribute("href", "/simulator");
+    expect(screen.getByText(INDICATIVE_NOTICE)).toBeInTheDocument();
+  });
+
+  it("cannot go below 25,000 and steps by 5,000", () => {
+    render(<HeroSimulator />);
+    const input = screen.getByLabelText("If I put in") as HTMLInputElement;
+    expect(input.value).toBe("25000");
+    expect(screen.getByRole("button", { name: /Decrease amount/ })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole("button", { name: /Increase amount/ }));
+    expect(input.value).toBe("30000");
+
+    fireEvent.change(input, { target: { value: "10000" } });
+    fireEvent.blur(input);
+    expect(input.value).toBe("25000");
+  });
+
+  it("updates the figures when the amount changes", async () => {
+    render(<HeroSimulator />);
+    fireEvent.click(screen.getByRole("button", { name: /Increase amount/ }));
+    await waitFor(() => expect(screen.queryByText(nbsp("1,122.51 MAD"))).not.toBeInTheDocument());
+    // 30,000 MAD at Base: 1,122.51 * 1.2
+    await waitFor(() => expect(screen.getByText(nbsp("1,347.01 MAD"))).toBeInTheDocument());
+  });
+});
+
+describe("Simulator", () => {
+  it("shows the big numbers for 25,000 MAD Base, each with an explainer", () => {
+    render(<Simulator />);
+    expect(screen.getAllByText(nbsp("1,122.51 MAD")).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(nbsp("4,246.26 MAD")).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(nbsp("3.47 %")).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("button", { name: /What does .* mean\?/ })).toHaveLength(4);
+  });
+
+  it("exposes a slider and an input limited to 25,000 minimum in 5,000 steps", () => {
+    render(<Simulator />);
+    const slider = screen.getByLabelText(/Amount slider/) as HTMLInputElement;
+    expect(slider).toHaveAttribute("min", String(LIMITS.MIN_TICKET_MAD));
+    expect(slider).toHaveAttribute("max", String(LIMITS.MAX_PER_PROJECT_MAD));
+    expect(slider).toHaveAttribute("step", String(LIMITS.TICKET_STEP_MAD));
+
+    const input = screen.getByLabelText("Amount to simulate") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "5000" } });
+    fireEvent.blur(input);
+    expect(input.value).toBe("25000");
+
+    fireEvent.change(slider, { target: { value: "100000" } });
+    expect(input.value).toBe("100000");
+  });
+
+  it("says a bank deposit would have earned more in the Pessimistic scenario", () => {
+    render(<Simulator />);
+    expect(screen.queryByText(/a bank deposit would have earned more/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("radio", { name: "Pessimistic" }));
+    expect(screen.getByText(/In this scenario a bank deposit would have earned more\./)).toBeInTheDocument();
+  });
+
+  it("always shows the pessimistic result next to the chosen scenario", () => {
+    render(<Simulator />);
+    const compare = screen.getByRole("region", { name: "The same amount in each scenario" });
+    const cards = within(compare).getAllByRole("listitem");
+    expect(cards[0]).toHaveTextContent("Pessimistic");
+    expect(cards[0]).toHaveTextContent(nbsp("2,146.55 MAD"));
+    expect(cards[0]).toHaveTextContent("Loses to a bank deposit");
+    expect(cards[1]).toHaveAttribute("aria-current", "true");
+  });
+
+  it("notes that business angels are not capped above 500,000", () => {
+    render(<Simulator />);
+    const input = screen.getByLabelText("Amount to simulate") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "750000" } });
+    fireEvent.blur(input);
+    expect(input.value).toBe("750000");
+    expect(screen.getByText(/Business angels are not capped\./)).toBeInTheDocument();
+  });
+
+  it("opens an explainer as an accessible disclosure", () => {
+    const events: unknown[] = [];
+    const listener = (e: Event) => events.push((e as CustomEvent).detail);
+    window.addEventListener(TRACK_EVENT_NAME, listener);
+    render(<Simulator />);
+    const button = screen.getAllByRole("button", { name: /What does "Net IRR" mean\?/ })[0];
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(button);
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    expect(events).toContainEqual({ event: "sim_explainer_open", props: { topic: "net_irr" } });
+    window.removeEventListener(TRACK_EVENT_NAME, listener);
+  });
+
+  it("never pre-checks the consent box and blocks submit until it is ticked", () => {
+    render(<Simulator />);
+    const consent = screen.getByRole("checkbox") as HTMLInputElement;
+    expect(consent.checked).toBe(false);
+    expect(screen.getByRole("button", { name: "Note my interest" })).toBeDisabled();
+  });
+
+  it("splits 100 MAD of rent into labelled parts that include 'You'", () => {
+    render(<Simulator />);
+    const section = screen.getByRole("region", { name: "Where your rent goes" });
+    const parts = within(section).getByRole("img");
+    expect(parts.getAttribute("aria-label")).toMatch(/Reserve and vacancy .*IGUDAR platform fee .*Corporate tax .*Withholding tax .*You /);
+  });
+});
+
+describe("pages that show numbers carry the indicative notice", () => {
+  it("/simulator", () => {
+    render(<SimulatorPage />);
+    expect(screen.getByText(INDICATIVE_NOTICE)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
+  });
+
+  it("/calculator", () => {
+    render(<CalculatorPage />);
+    expect(screen.getByText(INDICATIVE_NOTICE)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
+  });
+
+  it("the home hero widget", () => {
+    render(<HeroSimulator />);
+    expect(screen.getByText(INDICATIVE_NOTICE)).toBeInTheDocument();
+  });
+});
+
+describe("/calculator", () => {
+  it("shows 0.5 % ownership and 200 investors for 25,000 MAD of 5,000,000", () => {
+    render(<CalculatorPage />);
+    expect(screen.getByText(nbsp("0.500 %"))).toBeInTheDocument();
+    expect(screen.getByText("200")).toBeInTheDocument();
+  });
+
+  it("charges 375 MAD to sell 25,000 MAD early, with the counsel caveat", () => {
+    render(<CalculatorPage />);
+    expect(screen.getByText(nbsp("375.00 MAD"))).toBeInTheDocument();
+    expect(screen.getByText(/to confirm with counsel/)).toBeInTheDocument();
+  });
+
+  it("flags a ticket above the per-project cap", () => {
+    render(<CalculatorPage />);
+    const amount = screen.getByLabelText("Your amount") as HTMLInputElement;
+    fireEvent.change(amount, { target: { value: "600000" } });
+    fireEvent.blur(amount);
+    expect(screen.getByText(/above the 500,000.*limit per contributor per project/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("checkbox", { name: /business angel/i }));
+    expect(screen.getByText(/Business angels are not capped per project/)).toBeInTheDocument();
+  });
+});
+
+describe("WalletIllustration", () => {
+  it("is labelled as an illustration and shows the 25,000 MAD Base numbers", () => {
+    render(<WalletIllustration />);
+    expect(screen.getByText("Illustration — demo data")).toBeInTheDocument();
+    for (const label of ["Committed", "In escrow", "Invested", "Received"]) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
+    expect(screen.getByText(nbsp("1,122.51 MAD"))).toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+});
+
+describe("track", () => {
+  it("dispatches a window event and carries no extra data", () => {
+    const seen: unknown[] = [];
+    const listener = (e: Event) => seen.push((e as CustomEvent).detail);
+    window.addEventListener(TRACK_EVENT_NAME, listener);
+    track("calc_view");
+    window.removeEventListener(TRACK_EVENT_NAME, listener);
+    expect(seen).toEqual([{ event: "calc_view", props: {} }]);
+  });
+});

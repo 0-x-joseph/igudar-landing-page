@@ -1,234 +1,86 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import WaitlistForm from "@/components/WaitlistForm";
+import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
+import { LIMITS, formatMad, simulate, yieldLabel } from "@/lib/finance";
+import { ArchFrame, TifinaghMark, ZelligePattern } from "@/components/brand";
 
-const wealthTerms = ["estate", "trust", "transparency"];
+// Engine output at the minimum ticket: labelled, never a bare percentage.
+const BASE_YIELD = simulate({ ticketMad: LIMITS.MIN_TICKET_MAD, scenario: "base" }).netCashYieldYear1;
 
-const cards = [
-  {
-    title: "Agdal Residence",
-    city: "Rabat, Morocco",
-    image: "/images/hero-bg.png",
-    return: "+10.4%",
-  },
-  {
-    title: "Marina Apartment",
-    city: "Casablanca, Morocco",
-    image: "/images/hero-bg.png",
-    return: "+8.7%",
-  },
-  {
-    title: "Palm Urban Fund",
-    city: "Marrakech, Morocco",
-    image: "/images/hero-bg.png",
-    return: "+12.1%",
-  },
-];
+const ctaPrimary =
+  "inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors duration-200 ease-out hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+const ctaSecondary =
+  "inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-card px-8 text-base font-semibold text-foreground transition-colors duration-200 ease-out hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 export default function LandingHero() {
-  const [activeTerm, setActiveTerm] = useState(0);
   const reduceMotion = useReducedMotion();
 
-  useEffect(() => {
-    if (reduceMotion) return;
-
-    const interval = window.setInterval(() => {
-      setActiveTerm((current) => (current + 1) % wealthTerms.length);
-    }, 2400);
-
-    return () => window.clearInterval(interval);
-  }, [reduceMotion]);
-
   return (
-    <section className="relative isolate overflow-hidden bg-[#F7F5EF] px-4 pt-28 pb-20 sm:px-6 sm:pt-32 lg:pb-28">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(93,24,233,0.14),transparent_35%),linear-gradient(180deg,#F7F5EF_0%,#FFFFFF_70%)]" />
+    <section className="relative isolate overflow-hidden bg-background px-5 pb-12 pt-32 sm:px-6 sm:pt-40 lg:pb-16">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16">
+        <div>
+          {/* The zellige texture lives behind the headline only, never behind the body text below. */}
+          <div className="relative">
+            <ZelligePattern className="pointer-events-none absolute -inset-x-10 -inset-y-12 -z-10 h-[calc(100%+6rem)] w-[calc(100%+5rem)] text-primary opacity-[0.06] [mask-image:radial-gradient(ellipse_at_30%_40%,black,transparent_70%)]" />
+            <TifinaghMark height={20} className="mb-6 text-primary" />
+            <motion.h1
+              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="font-display text-[clamp(2.75rem,7.2vw,5.5rem)] font-semibold leading-[1.02] tracking-tight text-foreground"
+            >
+              Real property. Real rent.{" "}
+              <span className="mt-1 block italic text-primary">Clear rules.</span>
+            </motion.h1>
+          </div>
 
-      <div className="mx-auto max-w-7xl">
-        <motion.h1
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.08 }}
-          className="mx-auto mt-7 max-w-5xl text-center text-[clamp(3rem,8vw,7rem)] font-black leading-[0.88] tracking-[-0.07em] text-foreground"
-        >
-          Build your wealth through real 
-          <span className="relative mx-auto mt-2 block h-[0.95em] w-full overflow-hidden text-primary">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={wealthTerms[activeTerm]}
-                initial={reduceMotion ? false : { opacity: 0, y: "70%" }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? undefined : { opacity: 0, y: "-70%" }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                {wealthTerms[activeTerm]}
-              </motion.span>
-            </AnimatePresence>
-          </span>
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.16 }}
-          className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-muted-foreground sm:text-xl"
-        >
-          Join future investors building passive income from vetted Moroccan
-          properties, starting from just 1,000 MAD.
-        </motion.p>
-
-        {/* <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.22 }}
-          className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
-        >
-          <Link
-            href="#waitlist"
-            className="rounded-full bg-primary px-7 py-4 text-sm font-bold text-white shadow-xl shadow-primary/25 transition hover:bg-accent-foreground"
+          <motion.p
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
+            className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
           >
-            Join the waitlist
-          </Link>
+            Own real, rented Moroccan property alongside professionals, from{" "}
+            {formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })}.
+          </motion.p>
 
-          <Link
-            href="#how-it-works"
-            className="rounded-full border border-border bg-card px-7 py-4 text-sm font-bold text-foreground shadow-sm transition hover:bg-muted/50"
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.2, ease: "easeOut" }}
           >
-            See how it works
-          </Link>
-        </motion.div> */}
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
+              <a href="https://app.igudar.tech/auth/login" className={ctaPrimary}>
+                Access the demo
+              </a>
+              <a href="#waitlist-cta" className={ctaSecondary}>
+                Join the waitlist
+              </a>
+            </div>
+            <p className="financial-number mt-8 w-fit max-w-full rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground">
+              {yieldLabel(BASE_YIELD, "base")}
+            </p>
+          </motion.div>
+        </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.28 }}
-          className="mx-auto mt-8 max-w-md"
+          initial={reduceMotion ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
+          className="mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-none"
         >
-      <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-  <button
-    className="
-      group relative overflow-hidden
-      rounded-2xl bg-primary
-      px-8 py-4
-      text-base font-semibold text-white
-      shadow-[0_10px_40px_rgba(93,24,233,0.35)]
-      transition-all duration-300
-      hover:-translate-y-1
-      hover:shadow-[0_20px_60px_rgba(93,24,233,0.5)]
-      active:translate-y-0
-    "
-		type="button"
-		onClick={() => {
-		  window.location.href = "https://app.igudar.tech/auth/login";
-		}}
-  >
-    <span className="relative z-10">
-      Access MVP
-    </span>
-
-    <div
-      className="
-        absolute inset-0
-        bg-gradient-to-r
-        from-[#6D28FF]
-        via-[#7C3AED]
-        to-primary
-        opacity-0
-        transition-opacity duration-300
-        group-hover:opacity-100
-      "
-    />
-  </button>
-
-  <button
-    type="button"
-    onClick={() => {
-      document
-        .getElementById("waitlist-cta")
-        ?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
-    }}
-    className="
-      rounded-2xl
-      border border-border
-      bg-white/70
-      backdrop-blur-xl
-      px-8 py-4
-      text-base font-semibold text-foreground
-      transition-all duration-300
-      hover:-translate-y-1
-      hover:border-primary/40
-      hover:bg-card
-      hover:shadow-xl
-    "
-  >
-    Join Waitlist
-  </button>
-</div>
-          {/* <WaitlistForm /> */}
+          <ArchFrame className="aspect-[4/5] w-full bg-accent">
+            <Image
+              src="/images/hero-bg.png"
+              alt="Aerial view of a Moroccan city at dusk"
+              fill
+              priority
+              sizes="(min-width: 1024px) 380px, (min-width: 640px) 384px, 320px"
+              className="object-cover object-[30%_35%]"
+            />
+          </ArchFrame>
         </motion.div>
-
-        {/* <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75, delay: 0.34 }}
-          className="relative mt-16"
-        >
-          <div className="absolute left-1/2 top-10 -z-10 h-72 w-[85%] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
-
-          <div className="grid gap-5 md:grid-cols-3">
-            {cards.map((card, index) => (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 40, rotate: 0 }}
-                animate={{
-                  opacity: 1,
-                  y: index === 1 ? -20 : 0,
-                  rotate: index === 0 ? -3 : index === 2 ? 3 : 0,
-                }}
-                transition={{ duration: 0.7, delay: 0.42 + index * 0.08 }}
-                className="overflow-hidden rounded-[2rem] border border-white bg-card p-3 shadow-[0_30px_80px_rgba(15,23,42,0.12)]"
-              >
-                <div className="relative h-[270px] overflow-hidden rounded-[1.5rem]">
-                  <img
-                    src={card.image}
-                    alt={card.title}
-                    className="h-full w-full object-cover"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-                  <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-foreground backdrop-blur">
-                    {card.return}
-                  </div>
-
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-black text-white">
-                      {card.title}
-                    </h3>
-                    <p className="text-sm text-white/80">{card.city}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 p-3">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Entry</p>
-                    <p className="text-sm font-bold text-foreground">1,000 MAD</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Type</p>
-                    <p className="text-sm font-bold text-foreground">Halal</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Screening</p>
-                    <p className="text-sm font-bold text-foreground">AI</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div> */}
       </div>
     </section>
   );
