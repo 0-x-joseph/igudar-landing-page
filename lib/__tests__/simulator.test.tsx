@@ -101,6 +101,43 @@ describe("Simulator", () => {
     expect(cards[1]).toHaveAttribute("aria-current", "true");
   });
 
+  it("keeps long figures inside their cards at the maximum ticket", () => {
+    render(<Simulator />);
+    const input = screen.getByLabelText("Amount to simulate") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "5000000" } });
+    fireEvent.blur(input);
+    expect(input.value).toBe("5000000");
+
+    // BigNumbers: each card can shrink and its value wraps instead of overflowing.
+    for (const button of screen.getAllByRole("button", { name: /What does .* mean\?/ })) {
+      const card = button.closest("div.rounded-3xl");
+      expect(card?.className).toMatch(/min-w-0/);
+      expect(card?.querySelector("p.financial-number")?.className).toMatch(/break-words/);
+    }
+
+    // ScenarioCompare: each scenario card can shrink and its values wrap.
+    const compare = screen.getByRole("region", { name: "The same amount in each scenario" });
+    for (const card of within(compare).getAllByRole("listitem")) {
+      expect((card as HTMLElement).className).toMatch(/min-w-0/);
+      for (const dd of Array.from(card.querySelectorAll("dd"))) {
+        expect((dd as HTMLElement).className).toMatch(/break-words/);
+      }
+    }
+
+    // BankComparison: labels shrink while figures stay on one line.
+    const bank = screen.getByRole("region", { name: "Versus a bank deposit" });
+    for (const value of Array.from(bank.querySelectorAll("span.financial-number"))) {
+      expect((value as HTMLElement).className).toMatch(/whitespace-nowrap/);
+      expect((value as HTMLElement).className).toMatch(/shrink-0/);
+    }
+
+    // FeesTable: amounts wrap instead of overflowing.
+    const fees = screen.getByRole("region", { name: "What you pay IGUDAR" });
+    for (const amount of Array.from(fees.querySelectorAll("dd.financial-number"))) {
+      expect((amount as HTMLElement).className).toMatch(/break-words/);
+    }
+  });
+
   it("notes that business angels are not capped above 500,000", () => {
     render(<Simulator />);
     const input = screen.getByLabelText("Amount to simulate") as HTMLInputElement;

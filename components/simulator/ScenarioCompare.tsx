@@ -35,12 +35,12 @@ export function ScenarioCompare({
             <li
               key={key}
               aria-current={isSelected ? "true" : undefined}
-              className={`rounded-2xl border bg-card p-4 ${isSelected ? "border-primary ring-2 ring-primary/20" : "border-border"}`}
+              className={`min-w-0 rounded-2xl border bg-card p-4 ${isSelected ? "border-primary ring-2 ring-primary/20" : "border-border"}`}
             >
-              <p className="flex items-center justify-between text-sm font-semibold text-foreground">
-                {scenarioLabel(key)}
+              <p className="flex items-center justify-between gap-2 text-sm font-semibold text-foreground">
+                <span className="min-w-0">{scenarioLabel(key)}</span>
                 {isSelected && (
-                  <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-semibold text-accent-foreground">
+                  <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[11px] font-semibold text-accent-foreground">
                     Chosen
                   </span>
                 )}
@@ -48,15 +48,15 @@ export function ScenarioCompare({
               <dl className="financial-number mt-3 space-y-2 text-sm">
                 <div>
                   <dt className="text-xs text-muted-foreground">Net cash per year</dt>
-                  <dd className="font-semibold text-foreground">{formatMad(r.netCashYear1Mad)}</dd>
+                  <dd className="font-semibold text-foreground break-words">{formatMad(r.netCashYear1Mad)}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground">Net profit over {r.input.holdYears} years</dt>
-                  <dd className="font-semibold text-foreground">{formatMad(r.netProfitMad)}</dd>
+                  <dd className="font-semibold text-foreground break-words">{formatMad(r.netProfitMad)}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground">Net IRR</dt>
-                  <dd className="font-semibold text-foreground">
+                  <dd className="font-semibold text-foreground break-words">
                     {r.netIrr === null ? "n/a" : formatPercent(r.netIrr, 2)}
                   </dd>
                 </div>

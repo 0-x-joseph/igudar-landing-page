@@ -39,9 +39,9 @@ function StatCard({
   };
 
   return (
-    <div className="rounded-3xl border border-border bg-card p-5" onKeyDown={onKeyDown}>
+    <div className="min-w-0 rounded-3xl border border-border bg-card p-5" onKeyDown={onKeyDown}>
       <div className="flex items-start justify-between gap-2">
-        <h3 className="text-sm font-semibold text-muted-foreground">{label}</h3>
+        <h3 className="min-w-0 text-sm font-semibold text-muted-foreground">{label}</h3>
         <button
           type="button"
           aria-expanded={open}
@@ -56,7 +56,7 @@ function StatCard({
           <HelpCircle className="size-5" aria-hidden="true" />
         </button>
       </div>
-      <p className="financial-number mt-1 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{children}</p>
+      <p className="financial-number mt-1 min-w-0 text-3xl font-bold tracking-tight text-foreground break-words sm:text-4xl">{children}</p>
       <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{caption}</p>
       <div
         id={panelId}
