@@ -12,7 +12,7 @@ const token = (name: string) =>
 
 describe("IGUDAR light tokens in globals.css", () => {
   it.each([
-    ["background", "#F7F5EF"],
+    ["background", "#FFFFFF"],
     ["foreground", "#17131F"],
     ["card", "#FFFFFF"],
     ["muted", "#EDE9DF"],
