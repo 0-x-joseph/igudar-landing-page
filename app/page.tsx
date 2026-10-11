@@ -18,7 +18,7 @@ function Divider() {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-background text-foreground">
+    <div className="min-h-screen w-full overflow-x-clip bg-background text-foreground">
       <Navbar />
       <main>
         <LandingHero />
