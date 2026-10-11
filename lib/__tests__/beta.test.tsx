@@ -168,7 +168,7 @@ describe("beta page", () => {
     expect(screen.getByText(/up to a year of activity in about two weeks/)).toBeInTheDocument();
     expect(screen.getByText(/No identity documents are stored/)).toBeInTheDocument();
     expect(screen.getByText(/CNDP/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Access the demo" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Beta access" })).toHaveAttribute(
       "href",
       "https://app.igudar.tech/auth/register",
     );

@@ -11,27 +11,30 @@ const VIEWBOX: Record<BuildingSketchVariant, string> = {
 
 // Hand-authored line drawings of Moroccan architecture. Decoration only: aria-hidden, no text,
 // no raster. The strokes are currentColor, and the "glass" is a soft white-to-violet gradient fill.
-const STROKE = 1.2;
-const DETAIL = 1;
+export const STROKE = 1.2;
+export const DETAIL = 1;
 
 /** Horseshoe-ish chamber door: a rectangle topped by a half circle, bottom at `bottom`. */
-const door = (x: number, bottom: number, w: number, h: number) =>
+export const door = (x: number, bottom: number, w: number, h: number) =>
   `M${x} ${bottom} V${bottom - h + w / 2} A${w / 2} ${w / 2} 0 0 1 ${x + w} ${bottom - h + w / 2} V${bottom}`;
 
 /** Pointed crenellations ("dents") along a parapet at height y. */
-const merlons = (x0: number, x1: number, y: number, step: number) => {
+export const merlons = (x0: number, x1: number, y: number, step: number) => {
   let d = "";
   for (let x = x0; x + step <= x1 + 0.01; x += step) d += `M${x} ${y} l${step / 2} ${-step * 0.8} l${step / 2} ${step * 0.8}`;
   return d;
 };
 
 /** A row of evenly spaced chamber doors. */
-const doorRow = (xs: number[], bottom: number, w: number, h: number) => xs.map((x) => door(x, bottom, w, h)).join("");
+export const doorRow = (xs: number[], bottom: number, w: number, h: number) => xs.map((x) => door(x, bottom, w, h)).join("");
+
+/** Outline of the stepped granary tower, shared with the interactive granary sketch. */
+export const AGADIR_BODY = "M44 244 L52 170 L60 170 L62 118 L74 118 L76 66 L164 66 L166 118 L178 118 L180 170 L188 170 L196 244 Z";
 
 function Agadir({ fill }: { fill: string }) {
   // A stepped, tapering granary tower: stacked tiers of small chambers, protruding beam ends,
   // a crenellated crown and one great gate at the foot.
-  const body = "M44 244 L52 170 L60 170 L62 118 L74 118 L76 66 L164 66 L166 118 L178 118 L180 170 L188 170 L196 244 Z";
+  const body = AGADIR_BODY;
   return (
     <>
       <path d={body} fill={fill} stroke="currentColor" strokeWidth={STROKE} strokeLinejoin="round" />

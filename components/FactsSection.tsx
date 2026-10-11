@@ -1,14 +1,17 @@
 import Link from "next/link";
-import { ArrowRight, CalendarClock, Ticket, BadgePercent } from "lucide-react";
+import { ArrowRight, CalendarClock, Ticket, BadgePercent, type LucideIcon } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
+import { MadCount } from "@/components/MadCount";
+import { Hover } from "@/components/motion";
 import { ReactiveGlow } from "@/components/brand";
 import { FEE_GRID, LIMITS, formatMad, formatPercent } from "@/lib/finance";
 
 // Three facts read straight from the fee grid and the legal constants. No investor counts, no track record.
-const facts = [
+const facts: { icon: LucideIcon; figure: string; count?: number; label: string; note: string }[] = [
   {
     icon: Ticket,
     figure: formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 }),
+    count: LIMITS.MIN_TICKET_MAD,
     label: "Minimum ticket",
     note: `Per project, in steps of ${formatMad(LIMITS.TICKET_STEP_MAD, { decimals: 0 })}.`,
   },
@@ -47,6 +50,7 @@ export default function FactsSection() {
           {facts.map((f, i) => (
             <li key={f.label} className="h-full">
               <AnimatedSection delay={i * 80} className="h-full">
+                <Hover className="h-full">
                 <div
                   data-fact-card=""
                   className="flex h-full flex-col items-center rounded-3xl border border-primary/15 bg-card p-8 text-center shadow-[0_1px_0_rgb(93_24_233/0.06)]"
@@ -61,11 +65,12 @@ export default function FactsSection() {
                     data-fact-figure=""
                     className="financial-number mt-6 text-4xl font-bold tracking-tight text-primary md:text-3xl lg:text-[2.5rem]"
                   >
-                    {f.figure}
+                    {f.count !== undefined ? <MadCount value={f.count} /> : f.figure}
                   </p>
                   <p className="mt-3 text-base font-semibold text-foreground">{f.label}</p>
                   <p className="mt-1 max-w-xs text-sm leading-relaxed text-muted-foreground">{f.note}</p>
                 </div>
+                </Hover>
               </AnimatedSection>
             </li>
           ))}

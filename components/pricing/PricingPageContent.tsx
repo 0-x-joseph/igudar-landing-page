@@ -3,6 +3,8 @@ import { ArrowRight, Check } from "lucide-react";
 import { FEE_GRID, TAX, formatMad, formatPercent } from "@/lib/finance";
 import { ReactiveGlow, ZelligeBand } from "@/components/brand";
 import AnimatedSection from "@/components/AnimatedSection";
+import PlanCards from "@/components/pricing/PlanCards";
+import { Reveal } from "@/components/motion";
 import { IndicativeNotice } from "@/components/simulator/IndicativeNotice";
 import PricingTable, { EXAMPLE_TICKET_MAD } from "@/components/pricing/PricingTable";
 
@@ -28,23 +30,39 @@ const notPaid = [
 export default function PricingPageContent() {
   return (
     <>
-      <section className="group relative isolate overflow-hidden px-5 pb-16 pt-36 sm:px-6 lg:pb-24 lg:pt-44">
+      <section className="group relative isolate overflow-hidden px-5 pb-12 pt-36 sm:px-6 lg:pb-16 lg:pt-44">
         <ReactiveGlow className="inset-x-0 top-0 -z-10 h-full" />
         <div className="mx-auto max-w-4xl text-center">
-          <p className="text-sm font-semibold text-primary">Pricing</p>
-          <h1 className="mt-3 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            Who pays what, when
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            One published fee grid, the same for every investor. No plans, no tiers, nothing to unlock.
-          </p>
+          <Reveal on="mount">
+            <p className="text-sm font-semibold text-primary">Pricing</p>
+            <h1 className="mt-3 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+              One property, three ways to invest
+            </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              One published fee grid, the same for every investor. What changes from one card to the next is the ticket.
+            </p>
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+              Closed beta, approved by hand. A prototype with demo money only: nothing is invested.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      <section aria-labelledby="fee-grid-title" className="px-5 pb-20 sm:px-6 lg:pb-28">
+      <section aria-label="The three plans" className="px-5 pb-20 sm:px-6 lg:pb-28">
         <div className="mx-auto max-w-6xl">
-          <h2 id="fee-grid-title" className="sr-only">
-            The fee grid
+          <PlanCards />
+        </div>
+      </section>
+
+      <ZelligeBand className="mx-auto max-w-4xl" />
+
+      <section aria-labelledby="fee-grid-title" className="px-5 py-20 sm:px-6 lg:py-28">
+        <div className="mx-auto max-w-6xl">
+          <h2
+            id="fee-grid-title"
+            className="mb-10 max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl"
+          >
+            Who pays what, when
           </h2>
           <PricingTable />
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">

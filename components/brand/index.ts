@@ -4,3 +4,4 @@ export { ArchFrame } from "./ArchFrame";
 export { BuildingSketch, type BuildingSketchVariant } from "./BuildingSketch";
 export { TifinaghMark } from "./TifinaghMark";
 export { RosetteProgress } from "./RosetteProgress";
+export { GranarySketch, GRANARY_REGIONS } from "./GranarySketch";

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { LIMITS, formatMad, formatPercent, simulate } from "../../lib/finance";
 
 const pages = [
   { path: "/", slug: "home" },
@@ -80,6 +81,27 @@ for (const { path, slug } of pages) {
 
       // New section flow: the igudar story, the money flow, the three honest facts, the CTA.
       await expect(page.locator("#how-it-works")).toHaveCount(1);
+
+      // How it works: the granary sketch follows the card that is hovered (desktop) or the tab that is tapped (phone).
+      const granary = page.locator("#how-it-works [data-granary]");
+      await granary.scrollIntoViewIfNeeded();
+      const regionOn = (name: string) => page.locator(`#how-it-works [data-region="${name}"]`);
+      await expect(regionOn("building")).toHaveAttribute("data-active", "true");
+      if (width >= 1024) {
+        await page.locator("#how-it-works [data-pillar=\"1\"]").hover();
+        await expect(regionOn("chamber")).toHaveAttribute("data-active", "true");
+        await expect(regionOn("building")).toHaveAttribute("data-active", "false");
+        await expect(regionOn("chamber")).toHaveCSS("opacity", "1");
+      } else {
+        await page.getByRole("tab", { name: /Rules written down/ }).click();
+        await expect(regionOn("rules")).toHaveAttribute("data-active", "true");
+        await expect(page.locator("#how-it-works [data-pillar=\"3\"]")).toBeVisible();
+        await expect(page.locator("#how-it-works [data-pillar=\"0\"]")).toBeHidden();
+      }
+      // #ai-powered: one demo dossier with its three layers.
+      await expect(page.locator("#ai-powered [data-dossier]")).toHaveCount(1);
+      await expect(page.locator("#ai-powered [data-layer]")).toHaveCount(3);
+      await expect(page.locator("#ai-powered").getByText("Example · demo data")).toBeVisible();
       await expect(page.locator("#how-your-money-moves")).toHaveCount(1);
       await expect(page.getByRole("heading", { name: "Three things to know before anything else" })).toHaveCount(1);
       const cta = page.locator("#waitlist-cta");
@@ -96,7 +118,7 @@ for (const { path, slug } of pages) {
       await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "8");
       await expect(page.getByText("up to a year of activity in about two weeks")).toBeVisible();
       expect(await page.locator("[data-zellige-band]").count(), "ZelligeBand dividers").toBeGreaterThanOrEqual(2);
-      await expect(page.getByRole("link", { name: "Access the demo" })).toHaveAttribute(
+      await expect(page.getByRole("main").getByRole("link", { name: "Beta access", exact: true })).toHaveAttribute(
         "href",
         "https://app.igudar.tech/auth/register",
       );
@@ -154,8 +176,45 @@ for (const { path, slug } of pages) {
       await page.getByText("Pessimistic", { exact: true }).first().click();
       await expect(page.getByText("bank deposit would have earned more").first()).toBeVisible();
     }
+    if (path === "/faq") {
+      const items = page.locator("[data-faq-item]");
+      await expect(items).toHaveCount(13);
+      const rail = page.getByRole("navigation", { name: /question categories/i });
+      await expect(rail.getByRole("button")).toHaveCount(5);
+      await page.getByRole("searchbox", { name: /search the questions/i }).fill("escrow");
+      const shown = await items.count();
+      expect(shown).toBeGreaterThan(0);
+      expect(shown).toBeLessThan(13);
+      await expect(page.locator("[data-faq-item] mark").first()).toBeVisible();
+      await page.getByRole("button", { name: "Clear the search" }).click();
+      await expect(items).toHaveCount(13);
+      await rail.getByRole("button").nth(1).click();
+      expect(await items.count()).toBeLessThan(13);
+      await rail.getByRole("button").first().click();
+      const q = page.getByRole("button", { name: "Can I get my money out early?" });
+      await q.click();
+      await expect(q).toHaveAttribute("aria-expanded", "true");
+      await expect(page.getByText(/Not at any time/)).toBeVisible();
+      const card = page.getByRole("heading", { name: "Still have a question?" }).locator("..");
+      await expect(card.getByRole("link", { name: "Apply for beta" })).toHaveAttribute("href", "https://app.igudar.tech/auth/register");
+      await expect(card.getByRole("button", { name: "Join the waitlist" })).toBeVisible();
+      await expect(page.getByText("Access the demo")).toHaveCount(0);
+    }
     if (path === "/pricing") {
-      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Who pays what, when");
+      const plans = page.locator("[data-plan]");
+      await expect(plans).toHaveCount(3);
+      for (const [id, ticket] of [["individual", LIMITS.MIN_TICKET_MAD], ["family", LIMITS.MIN_TICKET_MAD], ["institutional", 250_000]] as const) {
+        const base = simulate({ ticketMad: ticket, scenario: "base" });
+        const pess = simulate({ ticketMad: ticket, scenario: "pessimistic" });
+        const card = page.locator(`[data-plan="${id}"]`);
+        await card.scrollIntoViewIfNeeded();
+        const norm = (t: string) => t.replace(/s/g, " ");
+        await expect.poll(async () => norm((await card.locator("[data-figure=irr]").textContent()) ?? "")).toBe(norm(formatPercent(base.netIrr!)));
+        await expect.poll(async () => norm((await card.locator("[data-figure=gain]").textContent()) ?? "")).toBe(norm(formatMad(base.netProfitMad, { decimals: 0 })));
+        expect(norm((await card.locator("[data-figure=irr-pessimistic]").textContent()) ?? "")).toContain(norm(formatPercent(pess.netIrr!)));
+      }
+      await expect(page.locator("[data-planned]").first()).toContainText("Planned");
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("One property, three ways to invest");
       await expect(page.locator('[data-testid="fee-row"]:visible')).toHaveCount(FEE_ROWS);
       await expect(page.getByText("187.50 MAD").filter({ visible: true }).first()).toBeVisible();
       await expect(

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { INDICATIVE_NOTICE } from "@/lib/finance";
 
 vi.mock("next/navigation", () => ({
@@ -86,8 +86,8 @@ describe("metadata", () => {
 describe("FAQ", () => {
   it("answers the Sharia question honestly and never claims certification", () => {
     render(<FAQ />);
-    const question = screen.getByRole("heading", { name: "Is IGUDAR Sharia-compliant?" });
-    question.closest("button")!.click();
+    const question = screen.getByRole("button", { name: "Is IGUDAR Sharia-compliant?" });
+    fireEvent.click(question);
     const body = document.body.textContent ?? "";
     expect(body).toContain("Sharia board review in progress");
     expect(body).not.toMatch(/certified|halal|100% Sharia/i);

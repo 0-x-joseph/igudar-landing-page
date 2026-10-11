@@ -1,4 +1,7 @@
+"use client";
+
 import { LIMITS, NET_INDICATIVE_SUFFIX, formatMad, simulate } from "@/lib/finance";
+import { CountUp } from "@/components/CountUp";
 
 /**
  * Static illustration of the platform wallet, built from the engine at the 25,000 MAD
@@ -31,7 +34,13 @@ export default function WalletIllustration({ className = "" }: { className?: str
                 t.received ? "text-success" : "text-foreground"
               }`}
             >
-              {formatMad(t.value)}
+              {t.value > 0 ? (
+                <span data-counted="">
+                  <CountUp value={t.value} format={(n) => formatMad(n)} />
+                </span>
+              ) : (
+                formatMad(t.value)
+              )}
             </dd>
             <dd className="mt-1 text-xs leading-snug text-muted-foreground">{t.note}</dd>
           </div>

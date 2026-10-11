@@ -14,7 +14,7 @@ export default function BetaAccess() {
           href="https://app.igudar.tech/auth/register"
           className="mt-10 inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors duration-200 ease-out hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
-          Access the demo
+          Beta access
         </a>
       </div>
     </section>
