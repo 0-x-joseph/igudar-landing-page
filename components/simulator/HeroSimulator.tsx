@@ -60,9 +60,9 @@ export function HeroSimulator() {
 
           <dl className="grid gap-3 sm:grid-cols-3">
             {tiles.map((t) => (
-              <div key={t.label} className="rounded-2xl bg-background p-4">
+              <div key={t.label} className="min-w-0 rounded-2xl bg-background p-4">
                 <dt className="text-xs font-semibold text-muted-foreground">{t.label}</dt>
-                <dd className="financial-number mt-2 text-2xl font-bold tracking-tight text-foreground">
+                <dd className="financial-number mt-2 min-w-0 text-2xl font-bold tracking-tight text-foreground break-words">
                   <AnimatedNumber value={t.value} format={mad} />
                 </dd>
               </div>

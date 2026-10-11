@@ -105,11 +105,11 @@ export function RentBridge({ result }: { result: SimulationResult }) {
 
       <ul className="mt-6 grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-5">
         {SEGMENTS.map((s) => (
-          <li key={s.id} className="flex gap-3">
+          <li key={s.id} className="flex min-w-0 gap-3">
             <span className={`mt-1 size-3.5 shrink-0 rounded-md ${s.fill}`} aria-hidden="true" />
             <div className="min-w-0">
               <p className="text-sm font-semibold text-foreground">{s.name}</p>
-              <p className="financial-number text-base font-bold text-foreground">
+              <p className="financial-number text-base font-bold text-foreground break-words">
                 {formatMad(bridge[s.id], { decimals: 1 })}
               </p>
               <p className="text-xs leading-snug text-muted-foreground">{s.note}</p>

@@ -39,35 +39,44 @@ function StatCard({
   };
 
   return (
-    <div className="rounded-3xl border border-border bg-card p-5" onKeyDown={onKeyDown}>
+    <div className="min-w-0 rounded-3xl border border-border bg-card p-5" onKeyDown={onKeyDown}>
       <div className="flex items-start justify-between gap-2">
-        <h3 className="text-sm font-semibold text-muted-foreground">{label}</h3>
-        <button
-          type="button"
-          aria-expanded={open}
-          aria-controls={panelId}
-          aria-label={`What does "${label}" mean?`}
-          onClick={() => {
-            if (!open) track("sim_explainer_open", { topic });
-            setOpen((o) => !o);
-          }}
-          className="-m-2 flex size-11 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-ring"
-        >
-          <HelpCircle className="size-5" aria-hidden="true" />
-        </button>
+        <h3 className="min-w-0 text-sm font-semibold text-muted-foreground">{label}</h3>
+        <span className="group relative shrink-0">
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls={panelId}
+            aria-label={`What does "${label}" mean?`}
+            onClick={() => {
+              if (!open) track("sim_explainer_open", { topic });
+              setOpen((o) => !o);
+            }}
+            className="-m-2 flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-ring"
+          >
+            <HelpCircle className="size-5" aria-hidden="true" />
+          </button>
+          <span
+            id={panelId}
+            role="tooltip"
+            className={`absolute right-0 top-full z-20 mt-1 w-64 rounded-2xl border border-border bg-popover px-4 py-3 text-sm leading-relaxed text-popover-foreground shadow-lg transition-opacity duration-150 sm:w-72 ${
+              open
+                ? "visible opacity-100"
+                : "invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+            }`}
+          >
+            {explainer}
+            <Link
+              href="/#how-your-money-moves"
+              className="mt-2 block font-semibold text-primary underline underline-offset-2"
+            >
+              How is this calculated?
+            </Link>
+          </span>
+        </span>
       </div>
-      <p className="financial-number mt-1 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{children}</p>
+      <p className="financial-number mt-1 min-w-0 text-3xl font-bold tracking-tight text-foreground break-words sm:text-4xl">{children}</p>
       <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{caption}</p>
-      <div
-        id={panelId}
-        hidden={!open}
-        className="mt-3 rounded-2xl bg-accent px-4 py-3 text-sm leading-relaxed text-accent-foreground"
-      >
-        {explainer}
-        <Link href="/#how-your-money-moves" className="mt-2 block font-semibold underline underline-offset-2">
-          How is this calculated?
-        </Link>
-      </div>
     </div>
   );
 }
