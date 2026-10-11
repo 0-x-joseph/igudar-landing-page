@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { TifinaghMark, ZelligeBand } from '@/components/brand';
+import { ZelligeBand } from '@/components/brand';
 import { INDICATIVE_NOTICE } from '@/lib/finance';
 
 export default function SiteFooter() {
@@ -75,10 +75,7 @@ export default function SiteFooter() {
         </p>
 
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-4">
-            <TifinaghMark height={14} className="text-primary" />
-            <p className="text-xs text-muted-foreground">&copy; 2025 IGUDAR. All rights reserved.</p>
-          </div>
+          <p className="text-xs text-muted-foreground">&copy; 2025 IGUDAR. All rights reserved.</p>
           <div className="flex gap-6">
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Terms</a>
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacy</a>

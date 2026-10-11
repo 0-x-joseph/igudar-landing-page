@@ -1,37 +1,62 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ComponentType } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Coins, Landmark, Percent, Receipt, TrendingUp } from "lucide-react";
 import {
+  FEE_GRID,
   LIMITS,
   NET_INDICATIVE_SUFFIX,
   formatMad,
+  formatPercent,
   simulateAll,
 } from "@/lib/finance";
 import { DEFAULT_TICKET_MAD, clampTicket } from "@/lib/simulator";
 import { ReactiveGlow } from "@/components/brand";
-import { AnimatedNumber } from "./AnimatedNumber";
+import { CountUp } from "@/components/CountUp";
 import { TicketField } from "./TicketField";
 import { IndicativeNotice } from "./IndicativeNotice";
 
-/** Compact simulator for the home page: three Base numbers and a link to the full tool. */
+type Picto = ComponentType<{ className?: string; strokeWidth?: number; "aria-hidden"?: boolean | "true" | "false" }>;
+
+function PictoChip({ icon: Icon }: { icon: Picto }) {
+  return (
+    <span
+      data-picto=""
+      aria-hidden="true"
+      className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground transition-transform duration-200 ease-out group-hover/tile:scale-110"
+    >
+      <Icon className="size-[1.125rem]" strokeWidth={1.7} aria-hidden="true" />
+    </span>
+  );
+}
+
+/** Compact simulator for the home page: four Base results with the Pessimistic case beside them. */
 export function HeroSimulator() {
   const [ticket, setTicket] = useState(DEFAULT_TICKET_MAD);
   const all = useMemo(() => simulateAll(ticket), [ticket]);
   const base = all.base;
   const pessimistic = all.pessimistic;
   const mad = (n: number) => formatMad(n);
+  const irr = (n: number | null) => (n === null ? "n/a" : formatPercent(n, 2));
+  const platformFee = base.feeLines.find((l) => l.code === "D2")?.amountMad ?? 0;
 
-  const tiles = [
-    { label: "Net cash per year", value: base.netCashYear1Mad },
-    { label: `Net profit over ${LIMITS.HOLD_YEARS} years`, value: base.netProfitMad },
-    { label: "Same money in a bank deposit", value: base.bankDepositProfitMad },
+  const tiles: Array<{
+    label: string;
+    icon: Picto;
+    value: number | null;
+    format: (n: number) => string;
+    worse?: string;
+  }> = [
+    { label: "Net cash per year", icon: Coins, value: base.netCashYear1Mad, format: mad, worse: mad(pessimistic.netCashYear1Mad) },
+    { label: `Net profit over ${LIMITS.HOLD_YEARS} years`, icon: TrendingUp, value: base.netProfitMad, format: mad, worse: mad(pessimistic.netProfitMad) },
+    { label: "Net IRR", icon: Percent, value: base.netIrr, format: (n) => formatPercent(n, 2), worse: irr(pessimistic.netIrr) },
+    { label: "Platform fee per year", icon: Receipt, value: platformFee, format: mad },
   ];
 
   return (
     <section aria-labelledby="hero-sim-title" className="relative bg-surface-sand px-4 pb-16 sm:px-6 lg:pb-24">
-      <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-border bg-card">
+      <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-border bg-card lg:max-w-6xl">
         <div className="group relative px-6 pb-8 pt-10 text-center sm:px-12">
           <ReactiveGlow className="inset-0" />
           <p className="relative text-sm font-semibold text-primary">Simulator</p>
@@ -44,7 +69,7 @@ export function HeroSimulator() {
           </h2>
         </div>
 
-        <div className="grid gap-8 px-6 pb-8 sm:px-10 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-10">
+        <div className="grid gap-8 px-6 pb-8 sm:px-10 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-12 lg:px-14">
           <div className="lg:pt-2">
             <TicketField
               id="hero-amount"
@@ -58,19 +83,54 @@ export function HeroSimulator() {
             </p>
           </div>
 
-          <dl className="grid gap-3 sm:grid-cols-3">
-            {tiles.map((t) => (
-              <div key={t.label} className="min-w-0 rounded-2xl bg-surface-sand p-4">
-                <dt className="text-xs font-semibold text-muted-foreground">{t.label}</dt>
-                <dd className="financial-number mt-2 min-w-0 text-2xl font-bold tracking-tight text-foreground break-words">
-                  <AnimatedNumber value={t.value} format={mad} />
+          <dl className="grid gap-4 sm:grid-cols-2">
+            {tiles.map((t, i) => (
+              <div
+                key={t.label}
+                data-result-tile=""
+                style={{ animationDelay: `${i * 80}ms`, animationFillMode: "both" }}
+                className="group/tile min-w-0 animate-fade-in-up rounded-2xl bg-surface-sand p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <PictoChip icon={t.icon} />
+                  <dt className="min-w-0 text-xs font-semibold leading-snug text-muted-foreground">{t.label}</dt>
+                </div>
+                <dd className="mt-4">
+                  <p className="financial-number min-w-0 text-xl font-bold tracking-tight text-foreground sm:text-[1.375rem]">
+                    {t.value === null ? "n/a" : <CountUp value={t.value} format={t.format} />}
+                  </p>
+                  {t.worse !== undefined ? (
+                    <p data-pessimistic="" className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                      Pessimistic{" "}
+                      <span className="financial-number font-semibold text-foreground">{t.worse}</span>
+                    </p>
+                  ) : (
+                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                      Entry fee {formatPercent(FEE_GRID.D1_ENTRY, 0)}. Same in every scenario.
+                    </p>
+                  )}
                 </dd>
               </div>
             ))}
+            <div
+              data-compare-tile=""
+              style={{ animationDelay: "320ms", animationFillMode: "both" }}
+              className="group/tile min-w-0 animate-fade-in-up rounded-2xl border border-dashed border-border p-5 sm:col-span-2"
+            >
+              <div className="flex items-center gap-3">
+                <PictoChip icon={Landmark} />
+                <dt className="min-w-0 text-xs font-semibold leading-snug text-muted-foreground">
+                  Same money in a bank deposit
+                </dt>
+              </div>
+              <dd className="financial-number mt-4 text-xl font-bold tracking-tight text-foreground sm:text-[1.375rem]">
+                <CountUp value={base.bankDepositProfitMad} format={mad} />
+              </dd>
+            </div>
           </dl>
         </div>
 
-        <div className="space-y-5 border-t border-border px-6 py-6 sm:px-10">
+        <div className="space-y-5 border-t border-border px-6 py-6 sm:px-10 lg:px-14">
           <p className="text-sm leading-relaxed text-muted-foreground">
             <span className="font-semibold text-foreground">The bad case, too.</span> In the Pessimistic scenario the
             same amount makes{" "}

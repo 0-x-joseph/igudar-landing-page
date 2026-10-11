@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import SiteFooter from "@/components/SiteFooter";
-import AnimatedSection from "@/components/AnimatedSection";
+import { Reveal } from "@/components/beta/Reveal";
 import BetaHero from "@/components/beta/BetaHero";
 import BetaDetails from "@/components/beta/BetaDetails";
 import BetaAccess from "@/components/beta/BetaAccess";
@@ -27,7 +27,7 @@ export default function BetaPage() {
 
         <section id="apply" className="scroll-mt-28 px-5 py-20 sm:px-6 lg:py-28">
           <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
-            <AnimatedSection>
+            <Reveal>
               <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
                 Apply for the <span className="italic text-primary">beta</span>
               </h2>
@@ -35,10 +35,10 @@ export default function BetaPage() {
                 We ask a few questions so we can choose a mix of people and learn from each of them. It takes about a
                 minute. A founder reads every answer.
               </p>
-            </AnimatedSection>
-            <AnimatedSection delay={100}>
+            </Reveal>
+            <Reveal delay={0.1}>
               <BetaApplicationForm />
-            </AnimatedSection>
+            </Reveal>
           </div>
         </section>
 

@@ -38,28 +38,44 @@ const submit = () => screen.getByRole("button", { name: "Apply for the beta" });
 const consent = () => screen.getByRole("checkbox");
 
 describe("BetaApplicationForm", () => {
-  it("never pre-checks consent and starts disabled", () => {
+  it("never pre-checks consent, and groups the fields", () => {
     render(<BetaApplicationForm />);
     expect(consent()).not.toBeChecked();
-    expect(submit()).toBeDisabled();
+    expect(screen.getByRole("group", { name: "About you" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Your interest" })).toBeInTheDocument();
   });
 
-  it("stays disabled until consent is given, even with every field filled", () => {
+  it("shows an inline error per missing field, sends nothing, and clears an error once the field is fixed", () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
     render(<BetaApplicationForm />);
-    fill();
-    expect(submit()).toBeDisabled();
-    fireEvent.click(consent());
-    expect(submit()).toBeEnabled();
-    fireEvent.click(consent());
-    expect(submit()).toBeDisabled();
+    fireEvent.click(submit());
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(screen.getByText("Please tell us your first name.")).toBeInTheDocument();
+    expect(screen.getByText("Please enter a valid email address.")).toBeInTheDocument();
+    expect(screen.getByText("Please tell us your city and country.")).toBeInTheDocument();
+    expect(screen.getByText("Please choose an amount range.")).toBeInTheDocument();
+    expect(screen.getByText("Please choose your experience level.")).toBeInTheDocument();
+    expect(screen.getByText("Please tick the box to agree before applying.")).toBeInTheDocument();
+    expect(screen.getByLabelText("First name")).toHaveAttribute("aria-invalid", "true");
+    fireEvent.change(screen.getByLabelText("First name"), { target: { value: "Salma" } });
+    expect(screen.queryByText("Please tell us your first name.")).toBeNull();
+    expect(screen.getByLabelText("First name")).not.toHaveAttribute("aria-invalid", "true");
   });
 
-  it("stays disabled while a required field is missing", () => {
+  it("rejects a malformed email and a blank city inline", () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
     render(<BetaApplicationForm />);
     fill();
     fireEvent.click(consent());
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "salma@" } });
     fireEvent.change(screen.getByLabelText("City and country"), { target: { value: "   " } });
-    expect(submit()).toBeDisabled();
+    fireEvent.click(submit());
+    expect(screen.getByText("Please enter a valid email address.")).toBeInTheDocument();
+    expect(screen.getByText("Please tell us your city and country.")).toBeInTheDocument();
+    expect(screen.queryByText(/tick the box/)).toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("offers the amount buckets starting at the 25,000 MAD minimum", () => {
@@ -83,6 +99,11 @@ describe("BetaApplicationForm", () => {
     fireEvent.click(submit());
 
     await waitFor(() => expect(screen.getByText(BETA_SUCCESS_MESSAGE)).toBeInTheDocument());
+    expect(screen.getByText(/once approved, create your account here/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Create your account" })).toHaveAttribute(
+      "href",
+      "https://app.igudar.tech/auth/register",
+    );
     expect(BETA_SUCCESS_MESSAGE).toBe("Thanks — a founder reviews every application by hand. You'll hear from us by email.");
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, init] = fetchMock.mock.calls[0];
@@ -117,6 +138,19 @@ describe("BetaApplicationForm", () => {
     expect(submit()).toBeEnabled();
   });
 
+  it("shows the not-configured sentence on a 503", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: false, status: 503, json: async () => ({ error: "Sign-up is not configured yet." }) }),
+    );
+    render(<BetaApplicationForm />);
+    fill();
+    fireEvent.click(consent());
+    fireEvent.click(submit());
+    expect(await screen.findByRole("alert")).toHaveTextContent("Sign-up is not configured yet.");
+    expect(submit()).toBeEnabled();
+  });
+
   it("explains a network failure", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
     render(<BetaApplicationForm />);
@@ -138,6 +172,11 @@ describe("beta page", () => {
       "href",
       "https://app.igudar.tech/auth/register",
     );
+    const steps = screen.getByRole("list", { name: "How it works" });
+    expect(steps).toHaveTextContent("Apply");
+    expect(steps).toHaveTextContent("A founder approves by hand");
+    expect(steps).toHaveTextContent("You get the email with your access");
+    expect(document.querySelectorAll("[data-zellige-band]").length).toBeGreaterThanOrEqual(2);
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "8");
     expect(screen.getByRole("note", { name: "Important notice" })).toBeInTheDocument();
   });

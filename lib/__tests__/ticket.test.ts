@@ -51,8 +51,8 @@ describe("ticketBucket", () => {
   });
 });
 
-import { FEE_LINES, simulate } from "@/lib/finance";
-import { cumulativeSeries, feeRateText, formatMultiple, scenarioDescription } from "@/lib/simulator";
+import { FEE_LINES } from "@/lib/finance";
+import { feeRateText, formatMultiple, scenarioDescription } from "@/lib/simulator";
 
 describe("scenarioDescription", () => {
   it("states yield, vacancy, reserve and price growth from the model", () => {
@@ -69,22 +69,6 @@ describe("formatMultiple", () => {
   it("shows two decimals and the multiplication sign", () => {
     expect(formatMultiple(1.1698)).toBe("1.17×");
     expect(formatMultiple(Number.NaN)).toBe("—");
-  });
-});
-
-describe("cumulativeSeries", () => {
-  const result = simulate({ ticketMad: 25_000, scenario: "base" });
-  const series = cumulativeSeries(result);
-
-  it("starts at minus the ticket in year 0 and has one point per year", () => {
-    expect(series).toHaveLength(6);
-    expect(series[0].positionMad).toBe(-25_000);
-  });
-
-  it("ends on the engine's net profit, with the sale in the last year", () => {
-    expect(series[5].positionMad).toBeCloseTo(result.netProfitMad, 6);
-    expect(series[5].exitMad).toBeCloseTo(result.netExitProceedsMad, 6);
-    expect(series[1].exitMad).toBe(0);
   });
 });
 

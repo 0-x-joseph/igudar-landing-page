@@ -1,5 +1,16 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment
+
+Copy `.env.local.example` to `.env.local`. Sign-ups (waitlist and closed beta) are stored in a Resend Audience, never on disk.
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `RESEND_API_KEY` | yes | Resend key. Unset: `/api/waitlist` answers 503 "Sign-up is not configured yet." |
+| `MAIL_FROM` | no | Sender, default `IGUDAR <noreply@igudar.tech>` (the domain must be verified in Resend) |
+| `RESEND_AUDIENCE_ID` | no | Audience that receives the contacts. Unset: the route finds or creates "IGUDAR waitlist" once per instance |
+| `BETA_NOTIFY_EMAIL` | no | Where beta applications (and simulator interest) are emailed, default `hello@igudar.tech` |
+
 ## Getting Started
 
 First, run the development server:

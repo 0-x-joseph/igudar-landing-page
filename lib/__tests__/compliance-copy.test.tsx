@@ -50,7 +50,7 @@ describe("hero", () => {
   it("promises no return and uses the allowed CTAs", () => {
     render(<LandingHero />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Real property. Real rent. Clear rules.");
-    expect(screen.getByRole("link", { name: "Access the demo" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Beta access" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Join the waitlist" })).toBeInTheDocument();
     expect(screen.queryByText(/wealth/i)).toBeNull();
     expect(screen.queryByText(/MVP/)).toBeNull();
@@ -58,10 +58,14 @@ describe("hero", () => {
 });
 
 describe("final CTA and navbar", () => {
-  it("offers 'Apply for the beta' and 'Simulate'", () => {
+  it("offers only 'Apply for beta' and 'Join the waitlist'", () => {
     render(<FinalCtaSection />);
-    expect(screen.getByRole("link", { name: "Apply for the beta" })).toHaveAttribute("href", "/beta");
-    expect(screen.getByRole("link", { name: "Simulate" })).toHaveAttribute("href", "/simulator");
+    expect(screen.getByRole("link", { name: "Apply for beta" })).toHaveAttribute(
+      "href",
+      "https://app.igudar.tech/auth/register",
+    );
+    expect(screen.getByRole("button", { name: "Join the waitlist" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Simulate" })).toBeNull();
   });
 
   it("has a Beta link", () => {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import SiteFooter from "@/components/SiteFooter";
 import { Calculator } from "@/components/calculator/Calculator";
@@ -7,7 +8,7 @@ import { IndicativeNotice } from "@/components/simulator/IndicativeNotice";
 export const metadata: Metadata = {
   title: "Fees and ownership calculator | IGUDAR",
   description:
-    "Work out your ownership of a property company, who pays which fee, what an early exit costs and whether you are within the investment caps. Indicative, not an offer.",
+    "Work out your ownership of a property company from the amount you choose and the size of the project. Indicative, not an offer.",
 };
 
 export default function CalculatorPage() {
@@ -21,11 +22,15 @@ export default function CalculatorPage() {
             The mechanics: ownership, fees and exits
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            For people who want to see exactly how a share is built, who pays each fee, and what selling early would
-            cost.
+            For people who want to see exactly how a share is built: your amount, the size of the project, and the part of
+            the company you would own.
           </p>
         </header>
         <Calculator />
+        <p className="mt-8 text-sm leading-relaxed text-muted-foreground">
+          Looking for the fees? <Link href="/pricing" className="font-semibold text-primary underline underline-offset-2">See who pays what, when</Link>,
+          or <Link href="/simulator" className="font-semibold text-primary underline underline-offset-2">simulate a return</Link> after fees and taxes.
+        </p>
         <IndicativeNotice className="mt-10" />
       </main>
       <SiteFooter />

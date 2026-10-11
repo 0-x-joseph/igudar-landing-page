@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { FEE_GRID, TAX, formatMad, formatPercent } from "@/lib/finance";
-import { ReactiveGlow, TifinaghMark, ZelligeBand } from "@/components/brand";
+import { ReactiveGlow, ZelligeBand } from "@/components/brand";
 import AnimatedSection from "@/components/AnimatedSection";
 import { IndicativeNotice } from "@/components/simulator/IndicativeNotice";
 import PricingTable, { EXAMPLE_TICKET_MAD } from "@/components/pricing/PricingTable";
@@ -31,8 +31,7 @@ export default function PricingPageContent() {
       <section className="group relative isolate overflow-hidden px-5 pb-16 pt-36 sm:px-6 lg:pb-24 lg:pt-44">
         <ReactiveGlow className="inset-x-0 top-0 -z-10 h-full" />
         <div className="mx-auto max-w-4xl text-center">
-          <TifinaghMark height={22} className="mx-auto text-primary" />
-          <p className="mt-6 text-sm font-semibold text-primary">Pricing</p>
+          <p className="text-sm font-semibold text-primary">Pricing</p>
           <h1 className="mt-3 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
             Who pays what, when
           </h1>

@@ -3,6 +3,7 @@ import { Building2, DoorClosed, ScrollText, ShieldCheck } from "lucide-react";
 
 import AnimatedSection from "@/components/AnimatedSection";
 import WalletIllustration from "@/components/WalletIllustration";
+import { BuildingSketch } from "@/components/brand";
 
 const pillars = [
   {
@@ -29,7 +30,10 @@ const pillars = [
 
 export default function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="scroll-mt-28 bg-surface-mist px-0 pb-12 pt-24 lg:pb-16 lg:pt-32">
+    <section id="how-it-works" className="relative isolate overflow-hidden scroll-mt-28 bg-surface-mist px-0 pb-12 pt-24 lg:pb-16 lg:pt-32">
+      {/* Decoration only: placed in the free margins either side of the centred heading. */}
+      <BuildingSketch variant="arch" className="absolute left-4 top-10 -z-10 hidden h-64 w-48 xl:block 2xl:left-16" />
+      <BuildingSketch variant="agadir" className="absolute right-4 top-8 -z-10 hidden h-72 w-60 -scale-x-100 xl:block 2xl:right-16" />
       <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
         <AnimatedSection>
           <div className="mx-auto mb-14 max-w-2xl text-center">
