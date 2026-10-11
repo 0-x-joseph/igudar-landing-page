@@ -30,9 +30,10 @@ export function HeroSimulator() {
   ];
 
   return (
-    <section aria-labelledby="hero-sim-title" className="relative bg-surface-sand px-4 pb-16 sm:px-6 lg:pb-24">
+    <section aria-labelledby="hero-sim-title" className="section-dark relative isolate bg-background text-foreground px-4 pb-16 sm:px-6 lg:pb-24">
+      <ReactiveGlow className="inset-0" />
       <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-border bg-card">
-        <div className="group relative px-6 pb-8 pt-10 text-center sm:px-12">
+        <div className="group relative isolate px-6 pb-8 pt-10 text-center sm:px-12">
           <ReactiveGlow className="inset-0" />
           <p className="relative text-sm font-semibold text-primary">Simulator</p>
           <h2
@@ -60,7 +61,7 @@ export function HeroSimulator() {
 
           <dl className="grid gap-3 sm:grid-cols-3">
             {tiles.map((t) => (
-              <div key={t.label} className="min-w-0 rounded-2xl bg-surface-sand p-4">
+              <div key={t.label} className="min-w-0 rounded-2xl bg-background p-4">
                 <dt className="text-xs font-semibold text-muted-foreground">{t.label}</dt>
                 <dd className="financial-number mt-2 min-w-0 text-2xl font-bold tracking-tight text-foreground break-words">
                   <AnimatedNumber value={t.value} format={mad} />

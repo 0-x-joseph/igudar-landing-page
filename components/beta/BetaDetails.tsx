@@ -1,6 +1,7 @@
 import { Clock, Database, FlaskConical, Wallet } from "lucide-react";
 import { LIMITS, formatMad } from "@/lib/finance";
 import AnimatedSection from "@/components/AnimatedSection";
+import { ReactiveGlow } from "@/components/brand";
 
 const facts = [
   {
@@ -33,7 +34,8 @@ const steps = [
 export default function BetaDetails() {
   return (
     <>
-      <section id="what" className="scroll-mt-28 px-5 py-20 sm:px-6 lg:py-28">
+      <section id="what" className="relative isolate scroll-mt-28 px-5 py-20 sm:px-6 lg:py-28">
+        <ReactiveGlow className="inset-0" />
         <div className="mx-auto max-w-6xl">
           <AnimatedSection>
             <h2 className="max-w-3xl font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
@@ -62,7 +64,8 @@ export default function BetaDetails() {
         </div>
       </section>
 
-      <section id="who" className="scroll-mt-28 px-5 pb-20 sm:px-6 lg:pb-28">
+      <section id="who" className="relative isolate scroll-mt-28 px-5 pb-20 sm:px-6 lg:pb-28">
+        <ReactiveGlow className="inset-0" />
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:gap-16">
           <AnimatedSection>
             <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">

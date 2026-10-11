@@ -18,11 +18,15 @@ async function offscreenOffenders(page: Page) {
     const out: string[] = [];
     for (const el of Array.from(document.body.querySelectorAll<HTMLElement>("*"))) {
       if (el.closest('[aria-hidden="true"], .sr-only, [data-nextjs-toast], nextjs-portal')) continue;
-      // A table that scrolls inside its own card does not scroll the page.
+      // Scrollable tables and the deliberately clipped logo loop are contained
+      // surfaces, not content escaping the page viewport.
       let clipped = false;
       for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
         const ox = getComputedStyle(a).overflowX;
-        if (ox === "auto" || ox === "scroll") { clipped = true; break; }
+        if (ox === "auto" || ox === "scroll" || (ox === "hidden" && a.classList.contains("partner-marquee-window"))) {
+          clipped = true;
+          break;
+        }
       }
       if (clipped) continue;
       const style = getComputedStyle(el);

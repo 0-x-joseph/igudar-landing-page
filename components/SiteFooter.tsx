@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { TifinaghMark, ZelligeBand } from '@/components/brand';
+import { ReactiveGlow, TifinaghMark, ZelligeBand } from '@/components/brand';
 import { INDICATIVE_NOTICE } from '@/lib/finance';
 
 export default function SiteFooter() {
@@ -35,7 +35,8 @@ export default function SiteFooter() {
   ];
 
   return (
-    <footer className="relative bg-background text-foreground pt-16 pb-8 border-t border-border">
+    <footer className="relative isolate bg-background text-foreground pt-16 pb-8 border-t border-border">
+      <ReactiveGlow className="inset-0" />
       <div className="max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8">
         <ZelligeBand className="mb-12" />
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">

@@ -9,6 +9,7 @@ import AnimatedSection from '@/components/AnimatedSection';
 import GradientText from '@/components/GradientText';
 import { IndicativeNotice } from '@/components/simulator/IndicativeNotice';
 import { FEE_GRID, LIMITS, formatMad, formatPercent, simulateAll } from '@/lib/finance';
+import { ReactiveGlow } from '@/components/brand';
 
 const MODEL = simulateAll(LIMITS.MIN_TICKET_MAD);
 const MIN_TICKET = formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 });
@@ -88,7 +89,8 @@ export default function FAQ() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-28 pb-16 lg:pt-36 lg:pb-20">
+      <section className="relative isolate pt-28 pb-16 lg:pt-36 lg:pb-20">
+        <ReactiveGlow className="inset-0" />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="text-center">
@@ -117,7 +119,8 @@ export default function FAQ() {
       </section>
 
       {/* Key Features */}
-      <section className="py-16 bg-muted/50">
+      <section className="relative isolate py-16 bg-muted/50">
+        <ReactiveGlow className="inset-0" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             {[
@@ -152,7 +155,8 @@ export default function FAQ() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20">
+      <section className="relative isolate py-20">
+        <ReactiveGlow className="inset-0" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="text-center mb-14">
@@ -215,15 +219,16 @@ export default function FAQ() {
         </div>
       </section>
 
-      <section className="pb-12">
+      <section className="relative isolate pb-12">
+        <ReactiveGlow className="inset-0" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <IndicativeNotice />
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 relative overflow-hidden bg-muted/50 border-y border-border">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(93,24,233,0.08),transparent_55%)]" />
+      <section className="py-20 relative isolate overflow-hidden bg-muted/50 border-y border-border">
+        <ReactiveGlow className="inset-0" />
         <div className="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <h2 className="text-3xl lg:text-[2.75rem] font-extrabold text-foreground mb-6">
@@ -254,5 +259,4 @@ export default function FAQ() {
     </div>
   );
 };
-
 
