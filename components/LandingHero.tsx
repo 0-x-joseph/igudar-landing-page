@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { LIMITS, formatMad, simulate, yieldLabel } from "@/lib/finance";
-import { ArchFrame, TifinaghMark, ZelligePattern } from "@/components/brand";
+import { ArchFrame, ReactiveGlow, TifinaghMark } from "@/components/brand";
 
 // Engine output at the minimum ticket: labelled, never a bare percentage.
 const BASE_YIELD = simulate({ ticketMad: LIMITS.MIN_TICKET_MAD, scenario: "base" }).netCashYieldYear1;
@@ -20,9 +20,9 @@ export default function LandingHero() {
     <section className="relative isolate overflow-hidden bg-background px-5 pb-12 pt-32 sm:px-6 sm:pt-40 lg:pb-16">
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16">
         <div>
-          {/* The zellige texture lives behind the headline only, never behind the body text below. */}
-          <div className="relative">
-            <ZelligePattern className="pointer-events-none absolute -inset-x-10 -inset-y-12 -z-10 h-[calc(100%+6rem)] w-[calc(100%+5rem)] text-primary opacity-[0.06] [mask-image:radial-gradient(ellipse_at_30%_40%,black,transparent_70%)]" />
+          {/* The zellige texture lives behind the headline only, never behind the body text below. Its glow follows the pointer. */}
+          <div className="group relative">
+            <ReactiveGlow className="absolute -inset-x-10 -inset-y-12 -z-10 h-[calc(100%+6rem)] w-[calc(100%+5rem)]" />
             <TifinaghMark height={20} className="mb-6 text-primary" />
             <motion.h1
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}

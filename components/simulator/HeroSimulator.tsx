@@ -10,7 +10,7 @@ import {
   simulateAll,
 } from "@/lib/finance";
 import { DEFAULT_TICKET_MAD, clampTicket } from "@/lib/simulator";
-import { ZelligePattern } from "@/components/brand/ZelligePattern";
+import { ReactiveGlow } from "@/components/brand";
 import { AnimatedNumber } from "./AnimatedNumber";
 import { TicketField } from "./TicketField";
 import { IndicativeNotice } from "./IndicativeNotice";
@@ -32,8 +32,8 @@ export function HeroSimulator() {
   return (
     <section aria-labelledby="hero-sim-title" className="relative bg-background px-4 pb-16 sm:px-6 lg:pb-24">
       <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-border bg-card">
-        <div className="relative px-6 pb-8 pt-10 text-center sm:px-12">
-          <ZelligePattern className="pointer-events-none absolute inset-0 text-primary opacity-[0.06] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" />
+        <div className="group relative px-6 pb-8 pt-10 text-center sm:px-12">
+          <ReactiveGlow className="inset-0" />
           <p className="relative text-sm font-semibold text-primary">Simulator</p>
           <h2
             id="hero-sim-title"

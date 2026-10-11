@@ -57,7 +57,7 @@ export function BankComparison({ result }: { result: SimulationResult }) {
       ) : (
         <p
           role="status"
-          className="mt-5 flex items-start gap-2 rounded-2xl bg-muted px-4 py-3 text-sm font-semibold text-foreground"
+          className="mt-5 flex items-start gap-2 rounded-2xl bg-destructive-soft px-4 py-3 text-sm font-semibold text-foreground"
         >
           <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden="true" />
           In this scenario a bank deposit would have earned more.
