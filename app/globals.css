@@ -69,6 +69,27 @@ body {
   font-weight: 400;
 }
 
+/* ── Arabic (right-to-left) ──────────────────── */
+
+/* Arabic has no serif/sans split and no italic: one face for body and display, upright everywhere.
+   Latin brand names and numbers inside Arabic text fall back to the Latin faces listed after it. */
+html[dir="rtl"] {
+  --font-sans: var(--font-arabic), var(--font-public-sans), "system-ui", "sans-serif";
+  --font-display: var(--font-arabic), var(--font-fraunces), "Georgia", "serif";
+  --font-serif: var(--font-arabic), var(--font-fraunces), "Georgia", "serif";
+  letter-spacing: 0;
+}
+
+html[dir="rtl"] .font-serif-italic {
+  font-style: normal;
+}
+
+/* Tracking tightened for Latin display type crowds Arabic glyphs. */
+html[dir="rtl"] .tracking-tight,
+html[dir="rtl"] .tracking-tighter {
+  letter-spacing: 0;
+}
+
 /* ── Numbers ─────────────────────────────────── */
 
 .financial-number {

@@ -1,0 +1,14 @@
+{
+  "language": {
+    "label": "Langue"
+  },
+  "scenarios": {
+    "pessimistic": "Pessimiste",
+    "base": "Base",
+    "optimistic": "Optimiste"
+  },
+  "notice": {
+    "indicative": "Simulation indicative fondée sur le modèle financier IGUDAR. Les rendements ne sont pas garantis. Ceci n'est ni une offre ni une sollicitation ; aucun investissement n'est collecté avant l'agrément de l'AMMC (loi 15-18).",
+    "netIndicative": "net · indicatif · non garanti"
+  }
+}

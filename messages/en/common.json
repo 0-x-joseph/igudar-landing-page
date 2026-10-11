@@ -1,0 +1,14 @@
+{
+  "language": {
+    "label": "Language"
+  },
+  "scenarios": {
+    "pessimistic": "Pessimistic",
+    "base": "Base",
+    "optimistic": "Optimistic"
+  },
+  "notice": {
+    "indicative": "Indicative simulation based on the IGUDAR financial model. Returns are not guaranteed. Not an offer or solicitation; no investment is collected before the AMMC licence (Loi 15-18).",
+    "netIndicative": "net · indicative · not guaranteed"
+  }
+}
