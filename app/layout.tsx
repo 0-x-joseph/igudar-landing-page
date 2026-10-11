@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     apple: "/images/Logo-IGUDAR-2-Photoroom.svg",
   },
   other: {
-    "theme-color": "#F7F5EF",
+    "theme-color": "#FFFFFF",
   },
 };
 
