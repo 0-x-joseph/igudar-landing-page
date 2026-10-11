@@ -101,6 +101,62 @@ describe("Simulator", () => {
     expect(cards[1]).toHaveAttribute("aria-current", "true");
   });
 
+  it("keeps long figures inside their cards at the maximum ticket", () => {
+    render(<Simulator />);
+    const input = screen.getByLabelText("Amount to simulate") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "5000000" } });
+    fireEvent.blur(input);
+    expect(input.value).toBe("5000000");
+
+    // BigNumbers: each card can shrink and its value wraps instead of overflowing.
+    for (const button of screen.getAllByRole("button", { name: /What does .* mean\?/ })) {
+      const card = button.closest("div.rounded-3xl");
+      expect(card?.className).toMatch(/min-w-0/);
+      expect(card?.querySelector("p.financial-number")?.className).toMatch(/break-words/);
+    }
+
+    // ScenarioCompare: each scenario card can shrink and its values wrap.
+    const compare = screen.getByRole("region", { name: "The same amount in each scenario" });
+    for (const card of within(compare).getAllByRole("listitem")) {
+      expect((card as HTMLElement).className).toMatch(/min-w-0/);
+      for (const dd of Array.from(card.querySelectorAll("dd"))) {
+        expect((dd as HTMLElement).className).toMatch(/break-words/);
+      }
+    }
+
+    // BankComparison: labels shrink while figures stay on one line.
+    const bank = screen.getByRole("region", { name: "Versus a bank deposit" });
+    for (const value of Array.from(bank.querySelectorAll("span.financial-number"))) {
+      expect((value as HTMLElement).className).toMatch(/whitespace-nowrap/);
+      expect((value as HTMLElement).className).toMatch(/shrink-0/);
+    }
+
+    // FeesTable: amounts wrap instead of overflowing.
+    const fees = screen.getByRole("region", { name: "What you pay IGUDAR" });
+    for (const amount of Array.from(fees.querySelectorAll("dd.financial-number"))) {
+      expect((amount as HTMLElement).className).toMatch(/break-words/);
+    }
+  });
+
+  it("hides each explainer in a hover tooltip that also opens on click", () => {
+    render(<Simulator />);
+    // Four (?) buttons, one per headline figure.
+    const buttons = screen.getAllByRole("button", { name: /What does .* mean\?/ });
+    expect(buttons).toHaveLength(4);
+    for (const button of buttons) {
+      const tooltip = button.parentElement?.querySelector('[role="tooltip"]') as HTMLElement;
+      expect(tooltip).toBeInTheDocument();
+      // Hidden until hovered, focused or tapped.
+      expect(tooltip.className).toMatch(/invisible/);
+      expect(tooltip.className).toMatch(/group-hover:visible/);
+      expect(tooltip.className).toMatch(/group-focus-within:visible/);
+      // Tapping pins it open (touch devices).
+      fireEvent.click(button);
+      expect(button).toHaveAttribute("aria-expanded", "true");
+      expect(tooltip.className).toMatch(/visible opacity-100/);
+    }
+  });
+
   it("notes that business angels are not capped above 500,000", () => {
     render(<Simulator />);
     const input = screen.getByLabelText("Amount to simulate") as HTMLInputElement;

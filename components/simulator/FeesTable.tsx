@@ -39,9 +39,9 @@ export function FeesTable({ result }: { result: SimulationResult }) {
       </p>
       <dl className="divide-y divide-border">
         {rows.map((row) => (
-          <div key={row.name} className="grid gap-1 py-3 sm:grid-cols-[1fr_auto] sm:gap-x-6">
-            <dt className="text-sm font-semibold text-foreground">{row.name}</dt>
-            <dd className="financial-number text-sm font-semibold text-foreground sm:text-right">{row.amount}</dd>
+          <div key={row.name} className="grid min-w-0 gap-1 py-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-6">
+            <dt className="min-w-0 text-sm font-semibold text-foreground">{row.name}</dt>
+            <dd className="financial-number min-w-0 text-sm font-semibold text-foreground break-words sm:text-right">{row.amount}</dd>
             <dd className="text-xs leading-relaxed text-muted-foreground sm:col-span-2">{row.detail}</dd>
           </div>
         ))}
