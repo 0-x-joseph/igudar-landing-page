@@ -6,6 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import WaitlistModal from './WaitlistModal';
 type SectionId = 'how-it-works' | 'ai-powered';
 
+// The closed-beta sign-up (approval is manual).
+const BETA_URL = 'https://app.igudar.tech/auth/register';
+
 const navLinks: { label: string; type: 'section' | 'page'; id: SectionId | string }[] = [
   { label: 'How It Works', type: 'section', id: 'how-it-works' },
   { label: 'Features', type: 'section', id: 'ai-powered' },
@@ -136,7 +139,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-5 xl:gap-7">
             {navLinks.map((item) =>
               item.type === 'section' ? (
                 <button
@@ -177,13 +180,19 @@ const Navbar = () => {
           </nav>
 
           {/* Right Actions */}
-          <div className="hidden lg:flex items-center">
+          <div className="hidden lg:flex items-center gap-2">
             <button type="button"
               onClick={() => setIsWaitlistOpen(true)}
-              className="px-5 text-[13px] font-medium text-primary-foreground bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer"
+              className="px-4 text-[13px] font-medium text-foreground border border-border bg-card hover:bg-muted transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer"
             >
               Join the waitlist
             </button>
+            <a
+              href={BETA_URL}
+              className="px-5 text-[13px] font-medium text-primary-foreground bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center"
+            >
+              Beta access
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -248,13 +257,20 @@ const Navbar = () => {
                   )
                 )}
                 
-                <div className="pt-3 mt-2 border-t border-border">
+                <div className="pt-3 mt-2 border-t border-border space-y-2">
+                  <a
+                    href={BETA_URL}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full px-4 py-2.5 text-[14px] font-medium text-primary-foreground bg-primary rounded-lg hover:bg-accent-foreground transition-colors flex items-center justify-center"
+                  >
+                    Beta access
+                  </a>
                   <button 
                     onClick={() => {
                       setIsWaitlistOpen(true);
                       setIsMenuOpen(false);
                     }}
-                    className="w-full px-4 py-2.5 text-[14px] font-medium text-white bg-primary rounded-lg hover:bg-accent-foreground transition-colors flex items-center justify-center"
+                    className="w-full px-4 py-2.5 text-[14px] font-medium text-foreground border border-border bg-card rounded-lg hover:bg-muted transition-colors flex items-center justify-center"
                   >
                     Join the waitlist
                   </button>

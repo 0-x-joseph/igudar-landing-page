@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { LIMITS, formatMad, formatPercent, simulate } from "../../lib/finance";
 
 const pages = [
   { path: "/", slug: "home" },
@@ -17,7 +18,8 @@ async function offscreenOffenders(page: Page) {
     const iw = window.innerWidth;
     const out: string[] = [];
     for (const el of Array.from(document.body.querySelectorAll<HTMLElement>("*"))) {
-      if (el.closest('[aria-hidden="true"], .sr-only, [data-nextjs-toast], nextjs-portal')) continue;
+      // The partner marquee scrolls inside its own overflow-hidden region.
+      if (el.closest('[aria-hidden="true"], .sr-only, [data-nextjs-toast], nextjs-portal, [role="region"][aria-label="Partner logos"]')) continue;
       // A table that scrolls inside its own card does not scroll the page.
       let clipped = false;
       for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
@@ -36,6 +38,20 @@ async function offscreenOffenders(page: Page) {
     return out.slice(0, 10);
   });
 }
+
+test("a page change lands at the top, not where the footer link was", async ({ page }) => {
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(1000);
+  await page.locator("footer").getByRole("link", { name: "FAQ" }).click();
+  await page.waitForURL("**/faq");
+  await page.waitForLoadState("networkidle");
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  // still at the top once any smooth scrolling would have finished
+  await page.waitForTimeout(800);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+});
 
 for (const { path, slug } of pages) {
   test(`page ${path}`, async ({ page }, info) => {
@@ -57,7 +73,7 @@ for (const { path, slug } of pages) {
       const h1 = page.getByRole("heading", { level: 1 });
       await expect(h1).toContainText("Real property. Real rent.");
       await expect(h1).not.toContainText("wealth");
-      await expect(page.getByRole("link", { name: "Access the demo" }).first()).toBeVisible();
+      await expect(page.getByRole("link", { name: "Beta access" }).first()).toHaveAttribute("href", "https://app.igudar.tech/auth/register");
       await expect(page.getByRole("link", { name: "Apply for the beta" }).first()).toHaveAttribute("href", "/beta");
       await expect(page.getByRole("heading", { name: "Programmes & partners" })).toBeVisible();
       await expect(page.getByRole("heading", { name: /Own real, rented property alongside professionals/ })).toBeVisible();
@@ -65,9 +81,35 @@ for (const { path, slug } of pages) {
 
       // New section flow: the igudar story, the money flow, the three honest facts, the CTA.
       await expect(page.locator("#how-it-works")).toHaveCount(1);
+
+      // How it works: the granary sketch follows the card that is hovered (desktop) or the tab that is tapped (phone).
+      const granary = page.locator("#how-it-works [data-granary]");
+      await granary.scrollIntoViewIfNeeded();
+      const regionOn = (name: string) => page.locator(`#how-it-works [data-region="${name}"]`);
+      await expect(regionOn("building")).toHaveAttribute("data-active", "true");
+      if (width >= 1024) {
+        await page.locator("#how-it-works [data-pillar=\"1\"]").hover();
+        await expect(regionOn("chamber")).toHaveAttribute("data-active", "true");
+        await expect(regionOn("building")).toHaveAttribute("data-active", "false");
+        await expect(regionOn("chamber")).toHaveCSS("opacity", "1");
+      } else {
+        await page.getByRole("tab", { name: /Rules written down/ }).click();
+        await expect(regionOn("rules")).toHaveAttribute("data-active", "true");
+        await expect(page.locator("#how-it-works [data-pillar=\"3\"]")).toBeVisible();
+        await expect(page.locator("#how-it-works [data-pillar=\"0\"]")).toBeHidden();
+      }
+      // #ai-powered: one demo dossier with its three layers.
+      await expect(page.locator("#ai-powered [data-dossier]")).toHaveCount(1);
+      await expect(page.locator("#ai-powered [data-layer]")).toHaveCount(3);
+      await expect(page.locator("#ai-powered").getByText("Example · demo data")).toBeVisible();
       await expect(page.locator("#how-your-money-moves")).toHaveCount(1);
       await expect(page.getByRole("heading", { name: "Three things to know before anything else" })).toHaveCount(1);
-      await expect(page.getByRole("link", { name: "Simulate", exact: true })).toBeVisible();
+      const cta = page.locator("#waitlist-cta");
+      await expect(cta.getByRole("link", { name: "Apply for beta" })).toBeVisible();
+      await expect(cta.getByRole("button", { name: "Join the waitlist" })).toBeVisible();
+      await expect(cta.getByRole("link")).toHaveCount(1);
+      await expect(cta.getByRole("button")).toHaveCount(1);
+      await expect(page.getByText(/indicative net cash yield/)).toHaveCount(0);
       await expect(page.getByText("Invest now", { exact: false })).toHaveCount(0);
       expect(await page.locator("[data-zellige-band]").count(), "ZelligeBand dividers").toBeGreaterThanOrEqual(2);
     }
@@ -76,45 +118,103 @@ for (const { path, slug } of pages) {
       await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "8");
       await expect(page.getByText("up to a year of activity in about two weeks")).toBeVisible();
       expect(await page.locator("[data-zellige-band]").count(), "ZelligeBand dividers").toBeGreaterThanOrEqual(2);
-      await expect(page.getByRole("link", { name: "Access the demo" })).toHaveAttribute(
+      await expect(page.getByRole("main").getByRole("link", { name: "Beta access", exact: true })).toHaveAttribute(
         "href",
         "https://app.igudar.tech/auth/register",
       );
 
-      // Form: consent is never pre-checked and the submit stays disabled until it is ticked.
+      // Form: consent is never pre-checked, and an empty submit shows inline errors without calling the API.
+      await expect(page.getByRole("list", { name: "How it works" }).getByRole("listitem")).toHaveCount(3);
       const form = page.getByRole("form", { name: "Apply for the beta" });
       const submit = form.getByRole("button", { name: "Apply for the beta" });
       const consent = form.getByRole("checkbox");
       await expect(consent).not.toBeChecked();
-      await expect(submit).toBeDisabled();
+      let posts = 0;
+      let mode: "ok" | "unconfigured" = "unconfigured";
+      let posted: Record<string, unknown> | null = null;
+      await page.route("**/api/waitlist", async (route) => {
+        posts += 1;
+        posted = route.request().postDataJSON();
+        if (mode === "unconfigured") await route.fulfill({ status: 503, json: { error: "Sign-up is not configured yet." } });
+        else await route.fulfill({ json: { success: true } });
+      });
+      await submit.click();
+      await expect(form.getByText("Please tell us your first name.")).toBeVisible();
+      await expect(form.getByText("Please tick the box to agree before applying.")).toBeVisible();
+      expect(posts).toBe(0);
+      expect((await submit.boundingBox())!.height).toBeGreaterThanOrEqual(44);
       await form.getByLabel("First name", { exact: true }).fill("Salma");
       await form.getByLabel("Email", { exact: true }).fill("salma@example.com");
       await form.getByLabel("City and country").fill("Paris, France");
       await form.getByLabel(/realistically consider/).selectOption("25-50k");
       await form.getByLabel(/experience with property/).selectOption("some");
-      await expect(submit).toBeDisabled();
       await consent.check();
-      await expect(submit).toBeEnabled();
-      await consent.uncheck();
-      await expect(submit).toBeDisabled();
 
-      // Submit against a stubbed endpoint: the real one sends email.
-      let posted: Record<string, unknown> | null = null;
-      await page.route("**/api/waitlist", async (route) => {
-        posted = route.request().postDataJSON();
-        await route.fulfill({ json: { success: true } });
-      });
-      await consent.check();
+      // Not configured: the form shows the server sentence and stays usable.
+      await submit.click();
+      await expect(form.getByRole("alert")).toHaveText("Sign-up is not configured yet.");
+      expect(posts).toBe(1);
+
+      // Configured: success state with the next step.
+      mode = "ok";
       await submit.click();
       await expect(page.getByText("Thanks — a founder reviews every application by hand.")).toBeVisible();
+      await expect(page.getByRole("link", { name: "Create your account" })).toHaveAttribute(
+        "href",
+        "https://app.igudar.tech/auth/register",
+      );
       expect(posted).toMatchObject({ source: "beta", firstName: "Salma", ticketBucket: "25-50k", experience: "some" });
     }
+    if (path === "/calculator") {
+      for (const gone of ["Who pays what", "Early exit calculator", "Caps checker"]) {
+        await expect(page.getByRole("heading", { name: gone })).toHaveCount(0);
+      }
+      await expect(page.getByRole("spinbutton", { name: "Your amount" })).toBeVisible();
+    }
     if (path === "/simulator") {
+      await expect(page.getByText("Your cash, year by year")).toHaveCount(0);
       await page.getByText("Pessimistic", { exact: true }).first().click();
       await expect(page.getByText("bank deposit would have earned more").first()).toBeVisible();
     }
+    if (path === "/faq") {
+      const items = page.locator("[data-faq-item]");
+      await expect(items).toHaveCount(13);
+      const rail = page.getByRole("navigation", { name: /question categories/i });
+      await expect(rail.getByRole("button")).toHaveCount(5);
+      await page.getByRole("searchbox", { name: /search the questions/i }).fill("escrow");
+      const shown = await items.count();
+      expect(shown).toBeGreaterThan(0);
+      expect(shown).toBeLessThan(13);
+      await expect(page.locator("[data-faq-item] mark").first()).toBeVisible();
+      await page.getByRole("button", { name: "Clear the search" }).click();
+      await expect(items).toHaveCount(13);
+      await rail.getByRole("button").nth(1).click();
+      expect(await items.count()).toBeLessThan(13);
+      await rail.getByRole("button").first().click();
+      const q = page.getByRole("button", { name: "Can I get my money out early?" });
+      await q.click();
+      await expect(q).toHaveAttribute("aria-expanded", "true");
+      await expect(page.getByText(/Not at any time/)).toBeVisible();
+      const card = page.getByRole("heading", { name: "Still have a question?" }).locator("..");
+      await expect(card.getByRole("link", { name: "Apply for beta" })).toHaveAttribute("href", "https://app.igudar.tech/auth/register");
+      await expect(card.getByRole("button", { name: "Join the waitlist" })).toBeVisible();
+      await expect(page.getByText("Access the demo")).toHaveCount(0);
+    }
     if (path === "/pricing") {
-      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Who pays what, when");
+      const plans = page.locator("[data-plan]");
+      await expect(plans).toHaveCount(3);
+      for (const [id, ticket] of [["individual", LIMITS.MIN_TICKET_MAD], ["family", LIMITS.MIN_TICKET_MAD], ["institutional", 250_000]] as const) {
+        const base = simulate({ ticketMad: ticket, scenario: "base" });
+        const pess = simulate({ ticketMad: ticket, scenario: "pessimistic" });
+        const card = page.locator(`[data-plan="${id}"]`);
+        await card.scrollIntoViewIfNeeded();
+        const norm = (t: string) => t.replace(/s/g, " ");
+        await expect.poll(async () => norm((await card.locator("[data-figure=irr]").textContent()) ?? "")).toBe(norm(formatPercent(base.netIrr!)));
+        await expect.poll(async () => norm((await card.locator("[data-figure=gain]").textContent()) ?? "")).toBe(norm(formatMad(base.netProfitMad, { decimals: 0 })));
+        expect(norm((await card.locator("[data-figure=irr-pessimistic]").textContent()) ?? "")).toContain(norm(formatPercent(pess.netIrr!)));
+      }
+      await expect(page.locator("[data-planned]").first()).toContainText("Planned");
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("One property, three ways to invest");
       await expect(page.locator('[data-testid="fee-row"]:visible')).toHaveCount(FEE_ROWS);
       await expect(page.getByText("187.50 MAD").filter({ visible: true }).first()).toBeVisible();
       await expect(

@@ -1,18 +1,62 @@
+"use client";
+
+import { useState } from "react";
+import { Pause, Play } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 
 // Only programmes and partners that are real. Do not add a logo here without written permission to use it.
+// Every logo sits on a white plate. Per file (checked on the pixels):
+// - um6p.png, explorer.png: opaque white background, so mix-blend-multiply makes the white vanish on the plate.
+// - mit-sandbox.png: transparent and coloured, shown as is.
+// - um6p-launchpad.png, coe-white.png: white on transparent (invisible on white), flattened to ink with brightness-0.
+// - fondation-ocp.svg: coloured vector, shown as is.
+// zoom: the square PNGs carry a lot of empty canvas, so each is scaled up (from its measured content box) to read at a
+// similar size inside the plate; the plate clips the empty margin.
 const partners = [
-  { src: "/images/um6p.png", alt: "UM6P" },
-  { src: "/images/mit-sandbox.png", alt: "MIT Sandbox" },
-  { src: "/images/explorer.png", alt: "Explorer" },
-  { src: "/images/fondation-ocp.svg", alt: "Fondation OCP" },
-  { src: "/images/um6p-launchpad.png", alt: "UM6P Launchpad" },
-  // The source file is white on transparent: flattened to ink so it shows on sand.
-  { src: "/images/coe-white.png", alt: "Programme partner logo", flatten: true },
-];
+  { src: "/images/um6p.png", alt: "UM6P", tone: "multiply", zoom: 1.7 },
+  { src: "/images/mit-sandbox.png", alt: "MIT Sandbox", tone: "plain", zoom: 1.3 },
+  { src: "/images/explorer.png", alt: "Explorer", tone: "multiply", zoom: 1 },
+  { src: "/images/fondation-ocp.svg", alt: "Fondation OCP", tone: "plain", zoom: 1 },
+  { src: "/images/um6p-launchpad.png", alt: "UM6P Launchpad", tone: "ink", zoom: 1.6 },
+  { src: "/images/coe-white.png", alt: "Programme partner logo", tone: "ink", zoom: 2 },
+] as const;
 
-/** A quiet, static strip of the programmes IGUDAR is part of. No marquee, no invented logos. */
+const TONE = {
+  multiply: "mix-blend-multiply",
+  plain: "",
+  ink: "brightness-0",
+} as const;
+
+function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
+  return (
+    <ul
+      data-marquee-set={id}
+      aria-hidden={hidden ? true : undefined}
+      className="flex shrink-0 items-center gap-4 pr-4"
+    >
+      {partners.map((p) => (
+        <li
+          key={p.src}
+          className="flex h-24 w-48 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-border bg-white p-2"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={p.src}
+            alt={hidden ? "" : p.alt}
+            loading="lazy"
+            style={p.zoom === 1 ? undefined : { transform: `scale(${p.zoom})` }}
+            className={`h-full w-full object-contain ${TONE[p.tone]}`.trim()}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A continuous, pausable strip of the programmes IGUDAR is part of. No invented logos. */
 export default function BackedBySection() {
+  const [paused, setPaused] = useState(false);
+
   return (
     <section aria-labelledby="partners-title" className="px-5 py-20 sm:px-6 lg:py-24">
       <div className="mx-auto max-w-6xl">
@@ -21,19 +65,30 @@ export default function BackedBySection() {
             Programmes &amp; partners
           </h2>
         </AnimatedSection>
-        <ul className="mt-10 grid grid-cols-2 items-center gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-6">
-          {partners.map((p) => (
-            <li key={p.src} className="flex h-14 items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={p.src}
-                alt={p.alt}
-                loading="lazy"
-                className={`max-h-full w-auto max-w-full object-contain opacity-80 ${p.flatten ? "brightness-0" : ""}`}
-              />
-            </li>
-          ))}
-        </ul>
+        <div
+          role="region"
+          aria-label="Partner logos"
+          className="relative mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+        >
+          <div
+            data-marquee-track=""
+            data-paused={paused ? "true" : undefined}
+            className="marquee-track flex w-max"
+          >
+            <LogoSet id="a" />
+            <LogoSet id="b" hidden />
+          </div>
+        </div>
+        <div className="mt-6 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setPaused((p) => !p)}
+            className="marquee-toggle inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            {paused ? <Play className="size-4" aria-hidden="true" /> : <Pause className="size-4" aria-hidden="true" />}
+            {paused ? "Play logos" : "Pause logos"}
+          </button>
+        </div>
       </div>
     </section>
   );

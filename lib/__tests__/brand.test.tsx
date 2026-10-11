@@ -43,7 +43,7 @@ describe("brand primitives", () => {
     expect((container.firstElementChild as HTMLElement).style.clipPath).toContain(clip.id);
   });
 
-  it("TifinaghMark is aria-hidden and has the six glyphs", () => {
+  it("TifinaghMark primitive stays available (unused on pages), aria-hidden, six glyphs", () => {
     const { container } = render(<TifinaghMark />);
     expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
     expect(container.querySelectorAll("g[data-letter]")).toHaveLength(6);

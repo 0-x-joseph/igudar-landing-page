@@ -6,12 +6,12 @@ import { ZelligePattern } from "./ZelligePattern";
 import { cn } from "@/lib/utils";
 
 function dynamicMask(): CSSProperties {
-  const mask = "radial-gradient(circle 22rem at var(--mx, 50%) var(--my, 0%), black, transparent 72%)";
+  const mask = "radial-gradient(circle 32rem at var(--mx, 50%) var(--my, 0%), black, transparent 80%)";
   return { maskImage: mask, WebkitMaskImage: mask };
 }
 
 function staticMask(): CSSProperties {
-  const mask = "radial-gradient(circle 22rem at 50% 0%, black, transparent 72%)";
+  const mask = "radial-gradient(circle 32rem at 50% 0%, black, transparent 80%)";
   return { maskImage: mask, WebkitMaskImage: mask };
 }
 
@@ -59,11 +59,11 @@ export function ReactiveGlow({ className, size = 48 }: { className?: string; siz
       style={reduce ? staticMask() : dynamicMask()}
       className={cn(
         "pointer-events-none absolute text-primary transition-opacity duration-300",
-        "opacity-[0.07] group-hover:opacity-[0.14] group-focus-within:opacity-[0.14]",
+        "opacity-[0.07] group-hover:opacity-[0.16] group-focus-within:opacity-[0.16]",
         className,
       )}
     >
-      <ZelligePattern size={size} className="h-full w-full" />
+      <ZelligePattern size={size} strokeWidth={1.25} className="h-full w-full" />
     </div>
   );
 }

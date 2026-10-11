@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { LIMITS, formatMad, simulate, yieldLabel } from "@/lib/finance";
-import { ArchFrame, ReactiveGlow, TifinaghMark } from "@/components/brand";
+import { LIMITS, formatMad } from "@/lib/finance";
+import { ArchFrame, BuildingSketch, ReactiveGlow } from "@/components/brand";
 
-// Engine output at the minimum ticket: labelled, never a bare percentage.
-const BASE_YIELD = simulate({ ticketMad: LIMITS.MIN_TICKET_MAD, scenario: "base" }).netCashYieldYear1;
+// The closed-beta sign-up. Approval is manual and the money is demo money.
+const BETA_URL = "https://app.igudar.tech/auth/register";
 
 const ctaPrimary =
   "inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors duration-200 ease-out hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
@@ -18,12 +18,16 @@ export default function LandingHero() {
 
   return (
     <section className="relative isolate overflow-hidden bg-background px-5 pb-12 pt-32 sm:px-6 sm:pt-40 lg:pb-16">
+      {/* Decoration only: light line drawings behind the visual and along the foot, never behind text. */}
+      <BuildingSketch
+        variant="riad"
+        className="absolute inset-x-0 bottom-0 -z-10 mx-auto hidden h-10 w-[28rem] max-w-full min-[420px]:block"
+      />
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16">
         <div>
           {/* The zellige texture lives behind the headline only, never behind the body text below. Its glow follows the pointer. */}
           <div className="group relative">
             <ReactiveGlow className="absolute -inset-x-10 -inset-y-12 -z-10 h-[calc(100%+6rem)] w-[calc(100%+5rem)]" />
-            <TifinaghMark height={20} className="mb-6 text-primary" />
             <motion.h1
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -51,15 +55,15 @@ export default function LandingHero() {
             transition={{ duration: 0.3, delay: 0.2, ease: "easeOut" }}
           >
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
-              <a href="https://app.igudar.tech/auth/login" className={ctaPrimary}>
-                Access the demo
+              <a href={BETA_URL} className={ctaPrimary}>
+                Beta access
               </a>
               <a href="#waitlist-cta" className={ctaSecondary}>
                 Join the waitlist
               </a>
             </div>
-            <p className="financial-number mt-8 w-fit max-w-full rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground">
-              {yieldLabel(BASE_YIELD, "base")}
+            <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
+              Closed beta, approved by hand. A prototype with demo money only: nothing is invested.
             </p>
           </motion.div>
         </div>
@@ -68,8 +72,13 @@ export default function LandingHero() {
           initial={reduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
-          className="mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-none"
+          className="relative mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-none"
         >
+          {/* A granary tower standing beside the arch frame, in the empty space under the body copy. */}
+          <BuildingSketch
+            variant="agadir"
+            className="absolute -left-44 bottom-0 -z-10 hidden h-52 w-48 min-[420px]:block lg:-left-52 lg:h-64 lg:w-56"
+          />
           <ArchFrame className="aspect-[4/5] w-full bg-accent">
             <Image
               src="/images/hero-bg.png"

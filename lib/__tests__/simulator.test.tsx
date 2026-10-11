@@ -220,20 +220,23 @@ describe("/calculator", () => {
     expect(screen.getByText("200")).toBeInTheDocument();
   });
 
-  it("charges 375 MAD to sell 25,000 MAD early, with the counsel caveat", () => {
+  it("is only the ownership calculator: no fee grid, early-exit or caps sections", () => {
     render(<CalculatorPage />);
-    expect(screen.getByText(nbsp("375.00 MAD"))).toBeInTheDocument();
-    expect(screen.getByText(/to confirm with counsel/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(screen.getByLabelText("Your amount")).toBeInTheDocument();
+    for (const gone of [/who pays what/i, /early exit calculator/i, /caps checker/i]) {
+      expect(screen.queryByRole("heading", { name: gone })).toBeNull();
+    }
+    expect(screen.queryByRole("checkbox")).toBeNull();
+    expect(screen.queryByText(/to confirm with counsel/)).toBeNull();
   });
+});
 
-  it("flags a ticket above the per-project cap", () => {
-    render(<CalculatorPage />);
-    const amount = screen.getByLabelText("Your amount") as HTMLInputElement;
-    fireEvent.change(amount, { target: { value: "600000" } });
-    fireEvent.blur(amount);
-    expect(screen.getByText(/above the 500,000.*limit per contributor per project/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("checkbox", { name: /business angel/i }));
-    expect(screen.getByText(/Business angels are not capped per project/)).toBeInTheDocument();
+describe("/simulator", () => {
+  it("no longer shows the cumulative cash chart card", () => {
+    render(<SimulatorPage />);
+    expect(screen.queryByText(/your cash, year by year/i)).toBeNull();
+    expect(screen.getAllByText("Net cash per year").length).toBeGreaterThan(0);
   });
 });
 

@@ -1,4 +1,5 @@
 import AnimatedSection from "@/components/AnimatedSection";
+import { Hover } from "@/components/motion";
 import { ReactiveGlow } from "@/components/brand";
 
 const transparencyCards = [
@@ -37,6 +38,7 @@ export default function PainPointsSection() {
           {transparencyCards.map((card, index) => (
             <li key={card.title}>
               <AnimatedSection delay={index * 80} className="h-full">
+                <Hover className="h-full">
                 <article className="flex h-full flex-col rounded-3xl border border-border bg-card p-6 sm:p-8">
                   <p className="text-sm font-semibold text-primary">{card.eyebrow}</p>
                   <h3 className="mt-4 font-display text-2xl font-semibold leading-snug tracking-tight text-foreground">
@@ -47,6 +49,7 @@ export default function PainPointsSection() {
                     {card.stat}
                   </p>
                 </article>
+                </Hover>
               </AnimatedSection>
             </li>
           ))}

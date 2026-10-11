@@ -11,7 +11,6 @@ import { ScenarioControl } from "./ScenarioControl";
 import { BigNumbers } from "./BigNumbers";
 import { ScenarioCompare } from "./ScenarioCompare";
 import { BankComparison } from "./BankComparison";
-import { CumulativeCashChart } from "./CumulativeCashChart";
 import { RentBridge } from "./RentBridge";
 import { FeesTable } from "./FeesTable";
 import { InterestCapture } from "./InterestCapture";
@@ -111,7 +110,6 @@ export function Simulator() {
         <BigNumbers result={result} />
         <ScenarioCompare all={all} selected={scenario} />
         <BankComparison result={result} />
-        <CumulativeCashChart result={result} />
         <RentBridge result={result} />
         <FeesTable result={result} />
         <InterestCapture amountMad={ticket} scenario={scenario} />

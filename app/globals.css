@@ -41,7 +41,8 @@
   --radius-4xl: 2rem;
 }
 
-html {
+/* Smooth only through the attribute set on <html> in layout.tsx, so Next can override it during navigation. */
+html[data-scroll-behavior="smooth"] {
   scroll-behavior: smooth;
 }
 
@@ -89,6 +90,23 @@ body {
 @keyframes pulseSoft {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
+}
+
+/* ── Partner logo marquee ────────────────────── */
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 42s linear infinite;
+}
+
+.marquee-track:hover,
+.marquee-track:focus-within,
+.marquee-track[data-paused="true"] {
+  animation-play-state: paused;
 }
 
 /* ── Scroll-triggered reveal ─────────────────── */
@@ -155,8 +173,27 @@ body {
 /* ── Reduced motion ───────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html,
+  html[data-scroll-behavior="smooth"] {
     scroll-behavior: auto;
+  }
+
+  /* The logo strip stands still: one set, wrapped and centred. */
+  .marquee-track {
+    animation: none !important;
+    width: 100%;
+  }
+
+  .marquee-track [data-marquee-set='a'] {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 1rem;
+    padding-right: 0;
+  }
+
+  .marquee-track [data-marquee-set='b'],
+  .marquee-toggle {
+    display: none;
   }
 
   *,

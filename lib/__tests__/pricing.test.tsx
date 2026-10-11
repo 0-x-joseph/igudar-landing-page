@@ -52,7 +52,7 @@ describe("PricingTable", () => {
 describe("pricing page content", () => {
   it("has the 'what you don't pay' block, the notice and the calculator link", () => {
     render(<PricingPageContent />);
-    expect(screen.getByRole("heading", { level: 1, name: "Who pays what, when" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "One property, three ways to invest" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /What you don.t pay/ })).toBeInTheDocument();
     expect(screen.getByText(INDICATIVE_NOTICE)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /calculator/i })).toHaveAttribute("href", "/calculator");

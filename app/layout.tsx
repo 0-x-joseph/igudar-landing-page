@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Public_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import {Providers} from "./providers";
+import ScrollToTop from "@/components/ScrollToTop";
 import { LIMITS, formatMad } from "@/lib/finance";
 
 const publicSans = Public_Sans({
@@ -46,10 +47,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      // Smooth scrolling is declared in globals.css; this lets Next switch it off while it scrolls to the top of a new page.
+      data-scroll-behavior="smooth"
       className={`${publicSans.variable} ${fraunces.variable} h-full`}
     >
       <body className="min-h-full flex flex-col antialiased font-sans bg-card text-foreground">
         <Providers>
+          <ScrollToTop />
           {children}
         </Providers>
       </body>

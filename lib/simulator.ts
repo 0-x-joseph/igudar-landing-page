@@ -11,7 +11,6 @@ import {
   formatPercent,
   type FeeLine,
   type ScenarioKey,
-  type SimulationResult,
 } from "@/lib/finance";
 
 /** Ticket the slider and input start on. */
@@ -61,40 +60,6 @@ export function scenarioDescription(key: ScenarioKey): string {
 export function formatMultiple(multiple: number): string {
   if (!Number.isFinite(multiple)) return "—";
   return `${multiple.toFixed(2)}×`;
-}
-
-export interface CashPoint {
-  year: number;
-  /** Cash received in this year (yearly distribution plus, in the last year, the sale). */
-  receivedMad: number;
-  /** Of which sale proceeds (last year only). */
-  exitMad: number;
-  /** Total received so far. */
-  receivedToDateMad: number;
-  /** Position after this year: received so far minus the ticket (year 0 = minus the ticket). */
-  positionMad: number;
-}
-
-/** Year-by-year cumulative cash for the chart, from the engine's cash flows. */
-export function cumulativeSeries(result: SimulationResult): CashPoint[] {
-  const ticket = result.input.ticketMad;
-  const hold = result.input.holdYears;
-  const points: CashPoint[] = [
-    { year: 0, receivedMad: 0, exitMad: 0, receivedToDateMad: 0, positionMad: result.cashFlows[0] },
-  ];
-  let toDate = 0;
-  for (let t = 1; t <= hold; t++) {
-    const received = result.cashFlows[t];
-    toDate += received;
-    points.push({
-      year: t,
-      receivedMad: received,
-      exitMad: t === hold ? result.netExitProceedsMad : 0,
-      receivedToDateMad: toDate,
-      positionMad: toDate - ticket,
-    });
-  }
-  return points;
 }
 
 /** Rate column of the public fee grid, in plain words. */

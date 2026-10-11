@@ -35,7 +35,7 @@ const safeId = (raw: string) => `zellige-${raw.replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
 /** Default treatment: faint violet, masked so it dissolves away from the top-right corner. */
 export const ZELLIGE_CORNER_CLASS =
-  "pointer-events-none absolute inset-0 text-primary opacity-[0.05] [mask-image:radial-gradient(circle_at_top_right,black,transparent_70%)] rtl:[mask-image:radial-gradient(circle_at_top_left,black,transparent_70%)]";
+  "pointer-events-none absolute inset-0 text-primary opacity-[0.07] [mask-image:radial-gradient(circle_at_top_right,black,transparent_78%)] rtl:[mask-image:radial-gradient(circle_at_top_left,black,transparent_70%)]";
 
 export interface ZelligePatternProps {
   size?: number;
