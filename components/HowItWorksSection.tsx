@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Building2, DoorClosed, ScrollText, ShieldCheck } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 
 import AnimatedSection from "@/components/AnimatedSection";
 import DirhamPath from "@/components/DirhamPath";
@@ -44,12 +44,36 @@ const pillars = [
   },
 ];
 
+/** How far (px) the sticky drawing drifts down while the four cards scroll past it on desktop. */
+const DRIFT_PX = 72;
+
 export default function HowItWorksSection() {
   const [active, setActive] = useState(0);
   const reduce = useReducedMotion();
 
+  // The drawing is sticky on desktop. Rather than freezing in place, it eases a little further down the
+  // longer the reader scrolls through the ideas, spring-smoothed so it feels like the rest of the section.
+  const gridRef = useRef<HTMLDivElement>(null);
+  // Progress runs over the pinned phase only: from the grid's top reaching the sticky offset (7rem, `lg:top-28`)
+  // to its bottom reaching the viewport bottom, so the slide is visible while the ideas scroll past.
+  const { scrollYProgress } = useScroll({ target: gridRef, offset: ["start 112px", "end end"] });
+  const drift = useSpring(useTransform(scrollYProgress, [0, 1], [0, DRIFT_PX]), {
+    stiffness: 80,
+    damping: 22,
+    mass: 0.7,
+  });
+  const [desktop, setDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setDesktop(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  const driftY = desktop && !reduce ? drift : 0;
+
   return (
-    <section id="how-it-works" className="relative isolate overflow-hidden scroll-mt-28 bg-surface-mist px-0 pb-12 pt-24 lg:pb-16 lg:pt-32">
+    <section id="how-it-works" className="relative isolate overflow-clip scroll-mt-28 bg-surface-mist px-0 pb-12 pt-24 lg:pb-16 lg:pt-32">
       {/* Decoration only: placed in the free margins either side of the centred heading. */}
       <BuildingSketch variant="arch" className="absolute left-4 top-10 -z-10 hidden h-64 w-48 xl:block 2xl:left-16" />
       <BuildingSketch variant="agadir" className="absolute right-4 top-8 -z-10 hidden h-72 w-60 -scale-x-100 xl:block 2xl:right-16" />
@@ -67,16 +91,19 @@ export default function HowItWorksSection() {
           </div>
         </AnimatedSection>
 
-        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
+        <div
+          ref={gridRef}
+          className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12"
+        >
           <Reveal className="lg:sticky lg:top-28 lg:self-start">
             {/* Portrait drawing: tall enough to stand beside the four ideas, capped so it stays inside the viewport while sticky. */}
-            <div className="rounded-3xl border border-border bg-card p-4 sm:p-6">
+            <motion.div data-granary-card="" style={{ y: driftY }} className="rounded-3xl border border-border bg-card p-4 sm:p-6">
               <GranarySketch
                 active={active}
                 onSelect={setActive}
-                className="mx-auto max-w-md lg:max-w-none [&>svg]:lg:max-h-[calc(100vh-11rem)]"
+                className="mx-auto max-w-md lg:max-w-none [&>svg]:lg:max-h-[calc(100vh-16rem)]"
               />
-            </div>
+            </motion.div>
           </Reveal>
 
           <div>
