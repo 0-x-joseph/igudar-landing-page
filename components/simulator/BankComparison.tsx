@@ -35,8 +35,8 @@ export function BankComparison({ result }: { result: SimulationResult }) {
         {rows.map((row) => (
           <div key={row.label}>
             <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
-              <span className="font-medium text-foreground">{row.label}</span>
-              <span className="financial-number font-semibold text-foreground">{formatMad(row.value)}</span>
+              <span className="min-w-0 font-medium text-foreground">{row.label}</span>
+              <span className="financial-number shrink-0 whitespace-nowrap text-right font-semibold text-foreground">{formatMad(row.value)}</span>
             </div>
             <div className="h-3 overflow-hidden rounded-full bg-muted" aria-hidden="true">
               <motion.div
