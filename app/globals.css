@@ -45,6 +45,43 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Dark bands are opt-in per section. Their descendants share the same palette
+   without changing the light page, navigation, partner logos or footer. */
+.section-dark {
+  color-scheme: dark;
+  --color-background: #0F0C17;
+  --color-foreground: #F6F4EE;
+  --color-card: #191523;
+  --color-card-foreground: #F6F4EE;
+  --color-popover: #191523;
+  --color-popover-foreground: #F6F4EE;
+  --color-primary: #A06EF7;
+  --color-primary-foreground: #171320;
+  --color-secondary: #252130;
+  --color-secondary-foreground: #A9A5B6;
+  --color-muted: #252130;
+  --color-muted-foreground: #A9A5B6;
+  --color-accent: #261943;
+  --color-accent-foreground: #DBCCFF;
+  --color-success: #40BFAA;
+  --color-success-foreground: #171320;
+  --color-success-soft: #19342F;
+  --color-highlight: #F5C147;
+  --color-highlight-foreground: #171320;
+  --color-highlight-soft: #392E18;
+  --color-destructive: #E3705F;
+  --color-destructive-foreground: #171320;
+  --color-destructive-soft: #3D1F1A;
+  --color-border: #312D3E;
+  --color-input: #6C6388;
+  --color-ring: #A06EF7;
+  --color-chart-1: #A06EF7;
+  --color-chart-2: #40BFAA;
+  --color-chart-3: #6BADC7;
+  --color-chart-4: #F5C147;
+  --color-chart-5: #F4A462;
+}
+
 body {
   background: var(--color-background);
   color: var(--color-foreground);
@@ -72,6 +109,72 @@ body {
 
 .financial-number {
   font-variant-numeric: tabular-nums;
+}
+
+/* Faint at rest; slightly more visible around the pointer. Content stays above
+   the decorative layer, and opaque cards shield forms, figures and charts. */
+.reactive-glow {
+  opacity: 0.09;
+  transition: opacity 200ms ease-out;
+}
+
+.reactive-glow[data-active] {
+  opacity: 0.16;
+}
+
+.partner-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: partnerMarquee 36s linear infinite;
+}
+
+.partner-marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2rem;
+  padding-inline-end: 2rem;
+}
+
+.partner-marquee-logo {
+  flex: 0 0 clamp(9rem, 15vw, 12rem);
+}
+
+.partner-marquee:is(:hover, :focus-within, [data-paused="true"]) .partner-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes partnerMarquee {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reactive-glow {
+    opacity: 0.09;
+    transition: none;
+  }
+
+  .partner-marquee-track {
+    width: auto;
+    animation: none;
+    transform: none;
+  }
+
+  .partner-marquee-group {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr));
+    gap: 2rem;
+    padding: 0;
+  }
+
+  .partner-marquee-group[aria-hidden="true"] {
+    display: none;
+  }
+
+  .partner-marquee-window {
+    mask-image: none;
+  }
 }
 
 /* ── Keyframes ───────────────────────────────── */

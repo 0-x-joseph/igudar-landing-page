@@ -4,6 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import { Simulator } from "@/components/simulator/Simulator";
 import { IndicativeNotice } from "@/components/simulator/IndicativeNotice";
 import { LIMITS, formatMad } from "@/lib/finance";
+import { ReactiveGlow } from "@/components/brand";
 
 export const metadata: Metadata = {
   title: "Investment simulator | IGUDAR",
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
 
 export default function SimulatorPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="relative isolate min-h-screen bg-background text-foreground">
+      <ReactiveGlow className="inset-0" />
       <Navbar />
       <main className="mx-auto max-w-7xl px-4 pb-28 pt-36 sm:px-6 lg:px-8 lg:pb-20 lg:pt-40">
         <header className="mb-10 max-w-3xl">

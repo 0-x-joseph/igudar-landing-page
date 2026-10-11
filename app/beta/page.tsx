@@ -7,7 +7,7 @@ import BetaDetails from "@/components/beta/BetaDetails";
 import BetaAccess from "@/components/beta/BetaAccess";
 import { BetaApplicationForm } from "@/components/beta/BetaApplicationForm";
 import { IndicativeNotice } from "@/components/simulator/IndicativeNotice";
-import { ZelligeBand } from "@/components/brand";
+import { ReactiveGlow, ZelligeBand } from "@/components/brand";
 
 export const metadata: Metadata = {
   title: "Closed beta | IGUDAR",
@@ -25,7 +25,8 @@ export default function BetaPage() {
         <BetaDetails />
         <ZelligeBand className="mx-auto max-w-4xl" />
 
-        <section id="apply" className="scroll-mt-28 px-5 py-20 sm:px-6 lg:py-28">
+        <section id="apply" className="relative isolate scroll-mt-28 px-5 py-20 sm:px-6 lg:py-28">
+          <ReactiveGlow className="inset-0" />
           <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
             <AnimatedSection>
               <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
@@ -45,7 +46,8 @@ export default function BetaPage() {
         <ZelligeBand className="mx-auto max-w-4xl" />
         <BetaAccess />
 
-        <section className="px-5 pb-16 sm:px-6">
+        <section className="relative isolate px-5 pb-16 sm:px-6">
+          <ReactiveGlow className="inset-0" />
           <div className="mx-auto max-w-3xl">
             <IndicativeNotice />
           </div>

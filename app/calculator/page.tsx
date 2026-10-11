@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import SiteFooter from "@/components/SiteFooter";
 import { Calculator } from "@/components/calculator/Calculator";
 import { IndicativeNotice } from "@/components/simulator/IndicativeNotice";
+import { ReactiveGlow } from "@/components/brand";
 
 export const metadata: Metadata = {
   title: "Fees and ownership calculator | IGUDAR",
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
 
 export default function CalculatorPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="relative isolate min-h-screen bg-background text-foreground">
+      <ReactiveGlow className="inset-0" />
       <Navbar />
       <main className="mx-auto max-w-4xl px-4 pb-20 pt-36 sm:px-6 lg:px-8 lg:pt-40">
         <header className="mb-10 max-w-3xl">

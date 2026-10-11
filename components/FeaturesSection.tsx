@@ -1,5 +1,6 @@
 import { ChartNoAxesColumn, ShieldCheck, Sparkles } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
+import { ReactiveGlow } from "@/components/brand";
 
 const features = [
   {
@@ -21,7 +22,8 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section id="ai-powered" className="scroll-mt-28 bg-surface-sand px-5 py-24 sm:px-6 lg:py-32">
+    <section id="ai-powered" className="section-dark relative isolate scroll-mt-28 bg-background text-foreground px-5 py-24 sm:px-6 lg:py-32">
+      <ReactiveGlow className="inset-0" />
       <div className="mx-auto max-w-6xl">
         <AnimatedSection>
           <div className="mx-auto max-w-2xl text-center">

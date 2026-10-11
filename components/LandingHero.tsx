@@ -18,11 +18,10 @@ export default function LandingHero() {
 
   return (
     <section className="relative isolate overflow-hidden bg-background px-5 pb-12 pt-32 sm:px-6 sm:pt-40 lg:pb-16">
+      <ReactiveGlow className="inset-0" />
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16">
         <div>
-          {/* The zellige texture lives behind the headline only, never behind the body text below. Its glow follows the pointer. */}
           <div className="group relative">
-            <ReactiveGlow className="absolute -inset-x-10 -inset-y-12 -z-10 h-[calc(100%+6rem)] w-[calc(100%+5rem)]" />
             <TifinaghMark height={20} className="mb-6 text-primary" />
             <motion.h1
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}

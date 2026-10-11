@@ -1,9 +1,10 @@
-import { TifinaghMark } from "@/components/brand";
+import { ReactiveGlow, TifinaghMark } from "@/components/brand";
 
 /** Direct entry for people who already want to create an account. Approval is still by hand. */
 export default function BetaAccess() {
   return (
-    <section className="px-5 py-20 sm:px-6 lg:py-28">
+    <section className="relative isolate px-5 py-20 sm:px-6 lg:py-28">
+      <ReactiveGlow className="inset-0" />
       <div className="mx-auto max-w-3xl text-center">
         <TifinaghMark height={20} className="mx-auto mb-8 text-primary" />
         <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">

@@ -42,7 +42,8 @@ export default function PricingPageContent() {
         </div>
       </section>
 
-      <section aria-labelledby="fee-grid-title" className="px-5 pb-20 sm:px-6 lg:pb-28">
+      <section aria-labelledby="fee-grid-title" className="relative isolate px-5 pb-20 sm:px-6 lg:pb-28">
+        <ReactiveGlow className="inset-0" />
         <div className="mx-auto max-w-6xl">
           <h2 id="fee-grid-title" className="sr-only">
             The fee grid
@@ -57,7 +58,8 @@ export default function PricingPageContent() {
 
       <ZelligeBand className="mx-auto max-w-4xl" />
 
-      <section aria-labelledby="not-paid-title" className="px-5 py-20 sm:px-6 lg:py-28">
+      <section aria-labelledby="not-paid-title" className="relative isolate px-5 py-20 sm:px-6 lg:py-28">
+        <ReactiveGlow className="inset-0" />
         <div className="mx-auto max-w-6xl">
           <AnimatedSection>
             <h2
@@ -85,7 +87,8 @@ export default function PricingPageContent() {
         </div>
       </section>
 
-      <section className="px-5 pb-24 sm:px-6 lg:pb-32">
+      <section className="relative isolate px-5 pb-24 sm:px-6 lg:pb-32">
+        <ReactiveGlow className="inset-0" />
         <div className="mx-auto max-w-4xl space-y-8 text-center">
           <h2 className="font-display text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
             See it on your own amount
