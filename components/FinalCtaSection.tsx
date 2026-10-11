@@ -1,31 +1,41 @@
-import AnimatedSection from '@/components/AnimatedSection';
-import WaitlistForm from '@/components/WaitlistForm';
+import Link from "next/link";
+import { LIMITS, formatMad } from "@/lib/finance";
+import AnimatedSection from "@/components/AnimatedSection";
+import WaitlistForm from "@/components/WaitlistForm";
+import { TifinaghMark } from "@/components/brand";
 
 export default function FinalCtaSection() {
   return (
-    <section id="waitlist-cta" className="py-24 lg:py-32 bg-card">
-      <div className="max-w-2xl mx-auto text-center px-5 sm:px-6 lg:px-8 scroll-mt-24">
+    <section id="waitlist-cta" className="scroll-mt-24 px-5 py-24 sm:px-6 lg:py-32">
+      <div className="mx-auto max-w-3xl text-center">
         <AnimatedSection>
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight mb-5">
-            Stop watching from the sidelines.{' '}
-            <br className="hidden sm:block" />
-            Start building <span className="font-serif-italic text-primary">wealth.</span>
+          <TifinaghMark height={20} className="mx-auto mb-8 text-primary" />
+          <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Stop watching from the sidelines.{" "}
+            <span className="italic text-primary">Start with a simulation.</span>
           </h2>
-          <p className="text-muted-foreground mb-10 max-w-md mx-auto leading-relaxed">
-            Join thousands of Moroccans building wealth through
-            Sharia-compliant fractional real estate.
+          <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+            See what {formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })} could look like, try the closed beta with
+            demo money, or join the waitlist to hear when IGUDAR opens.
           </p>
 
-          <WaitlistForm className="w-full max-w-md mx-auto mb-8" />
-
-          <div className="flex items-center justify-center gap-6 text-[13px] text-muted-foreground">
-            {['Sharia Compliant', 'AI Verified', 'From 1,000 MAD'].map((t) => (
-              <span key={t} className="flex items-center gap-1.5">
-                <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                {t}
-              </span>
-            ))}
+          <div className="mt-10 flex flex-col items-center gap-4">
+            <Link
+              href="/simulator"
+              className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors duration-200 ease-out hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              Simulate
+            </Link>
+            <Link
+              href="/beta"
+              className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-card px-8 text-base font-semibold text-foreground transition-colors duration-200 ease-out hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              Apply for the beta
+            </Link>
+            <p className="text-sm text-muted-foreground">or join the waitlist</p>
           </div>
+
+          <WaitlistForm className="mx-auto mt-4 w-full max-w-md" />
         </AnimatedSection>
       </div>
     </section>

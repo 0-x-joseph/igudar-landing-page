@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Public_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import {Providers} from "./providers";
+import { LIMITS, formatMad } from "@/lib/finance";
 
 const publicSans = Public_Sans({
   variable: "--font-public-sans",
@@ -18,9 +19,15 @@ const fraunces = Fraunces({
   axes: ["opsz"],
 });
 
+const TITLE = "IGUDAR — fractional property, simulated honestly";
+const DESCRIPTION = `Own a share of a rented Moroccan building, from ${formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })}. See every fee, simulate net returns, and join the closed beta. Returns are not guaranteed; not an offer.`;
+
+// Indexing is left at the Next.js default (indexed). Founders: add `robots: { index: false }` if the site should stay hidden until launch.
 export const metadata: Metadata = {
-  title: "IGUDAR — Invest in Moroccan Real Estate, Share by Share",
-  description: "Start with 1,000 MAD. Access vetted, Sharia-compliant properties with full transparency. The smartest way to invest in real estate.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: { title: TITLE, description: DESCRIPTION, type: "website", siteName: "IGUDAR" },
+  twitter: { card: "summary", title: TITLE, description: DESCRIPTION },
   icons: {
     icon: "/images/Logo-IGUDAR-2-Photoroom.svg",
     shortcut: "/images/Logo-IGUDAR-2-Photoroom.svg",

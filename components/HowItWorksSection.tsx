@@ -1,136 +1,86 @@
-import Image from "next/image";
-import {
-  CircleDollarSign,
-  Search,
-  TrendingUp,
-  UserPlus,
-} from "lucide-react";
+import Link from "next/link";
+import { Building2, DoorClosed, ScrollText, ShieldCheck } from "lucide-react";
 
 import AnimatedSection from "@/components/AnimatedSection";
-import { WobbleCard } from "@/components/ui/wobble-card";
+import WalletIllustration from "@/components/WalletIllustration";
+
+const pillars = [
+  {
+    icon: Building2,
+    title: "One shared building",
+    text: "The igudar were the Amazigh collective granaries: one strong building that many families raised and guarded together. A property bought through IGUDAR works the same way. One building, many owners.",
+  },
+  {
+    icon: DoorClosed,
+    title: "Your own chamber",
+    text: "Each family kept its own chamber, marked and remembered. You hold shares of the company that owns the property, a defined and recorded part, never an unwritten promise.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "A trusted keeper",
+    text: "A granary needed a keeper everyone trusted. Here, a regulated bank holds your money in escrow, and a professional operator rents and looks after the property.",
+  },
+  {
+    icon: ScrollText,
+    title: "Rules written down",
+    text: "Everyone agreed the rules before the first harvest. Ours are written in the shareholders' agreement, and the fee grid is published in full, the same for everyone.",
+  },
+];
 
 export default function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="scroll-mt-28 bg-[#F8F7FC] py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+    <section id="how-it-works" className="scroll-mt-28 px-0 pb-12 pt-24 lg:pb-16 lg:pt-32">
+      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
         <AnimatedSection>
           <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="mb-3 text-sm font-semibold text-primary">
-              Your investment journey
-            </p>
-            <h2 className="mb-4 text-3xl font-bold tracking-normal text-foreground lg:text-4xl">
-              How It Works
+            <p className="mb-3 text-sm font-semibold text-primary">How it works</p>
+            <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              An old idea, built for today
             </h2>
-            <p className="leading-relaxed text-muted-foreground">
-              Four simple steps to start building your real estate portfolio.
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+              IGUDAR is named after the igudar, the collective granaries of the Amazigh. The same four ideas hold up the
+              platform.
             </p>
           </div>
         </AnimatedSection>
 
-        <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-3">
-          <WobbleCard
-            containerClassName="min-h-[520px] bg-primary lg:col-span-2 lg:min-h-[460px]"
-            className="flex h-full flex-col justify-between"
-          >
-            <div className="relative z-20 max-w-sm">
-              <StepLabel icon={UserPlus} step="01" />
-              <h3 className="text-3xl font-semibold leading-tight tracking-normal text-white sm:text-5xl">
-                Create Account
-              </h3>
-              <p className="mt-5 text-base leading-7 text-white/75">
-                Sign up in under 3 minutes with your investment goals.
-              </p>
-            </div>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {pillars.map(({ icon: Icon, title, text }, i) => (
+            <li key={title}>
+              <AnimatedSection delay={i * 90} className="h-full">
+                <div className="h-full rounded-3xl border border-border bg-card p-6">
+                  <span className="mb-5 flex size-11 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
+                    <Icon className="size-5" strokeWidth={1.7} aria-hidden="true" />
+                  </span>
+                  <h3 className="text-lg font-bold text-foreground">{title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+                </div>
+              </AnimatedSection>
+            </li>
+          ))}
+        </ul>
 
-            <p className="relative z-20 mt-10 text-sm font-semibold text-white">
-              Under 3 minutes
+        <div className="mt-24 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <AnimatedSection>
+            <h3 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              Follow every dirham
+            </h3>
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+              Your wallet shows four things: what you committed, what sits in escrow, what is invested in the property
+              company, and the rent you have actually received. Nothing hidden, nothing to guess.
             </p>
-
-            <Image
-              src="/images/igudar-investor-dashboard.png"
-              alt="IGUDAR investor dashboard showing portfolio performance"
-              width={1536}
-              height={1024}
-              className="absolute -bottom-10 -right-[48%] z-10 w-[118%] max-w-none rounded-xl border border-white/15 shadow-2xl sm:-right-[28%] sm:w-[92%] lg:-right-[36%] lg:w-[85%]"
-            />
-          </WobbleCard>
-
-          <WobbleCard
-            containerClassName="min-h-[520px] bg-[#2D256B] lg:col-span-1 lg:min-h-[460px]"
-            className="flex h-full flex-col justify-between"
-          >
-            <div>
-              <div className="border-b border-white/15 pb-8">
-                <StepLabel icon={Search} step="02" />
-                <h3 className="text-3xl font-semibold leading-tight tracking-normal text-white">
-                  Browse Properties
-                </h3>
-                <p className="mt-4 text-base leading-7 text-white/70">
-                  AI analyzes market data to find the best opportunities.
-                </p>
-              </div>
-
-              <div className="pt-8">
-                <StepLabel icon={CircleDollarSign} step="03" />
-                <h3 className="text-3xl font-semibold leading-tight tracking-normal text-white">
-                  Invest
-                </h3>
-                <p className="mt-4 text-base leading-7 text-white/70">
-                  Choose a property, invest from 1,000 MAD. All
-                  Sharia-compliant.
-                </p>
-              </div>
-            </div>
-
-            <p className="mt-10 text-sm font-semibold text-[#C8BFFF]">
-              AI-powered. From 1,000 MAD.
-            </p>
-          </WobbleCard>
-
-          <WobbleCard
-            containerClassName="min-h-[560px] bg-[#4A3AB5] lg:col-span-3 lg:min-h-[470px]"
-            className="flex h-full flex-col justify-between"
-          >
-            <div className="relative z-20 max-w-md">
-              <StepLabel icon={TrendingUp} step="04" />
-              <h3 className="text-3xl font-semibold leading-tight tracking-normal text-white sm:text-5xl">
-                Earn Returns
-              </h3>
-              <p className="mt-5 max-w-sm text-base leading-7 text-white/75">
-                Track real-time performance. Collect rental income.
-              </p>
-            </div>
-
-            <p className="relative z-20 mt-10 text-sm font-semibold text-white">
-              Real-time performance and rental income
-            </p>
-
-            <Image
-              src="/images/igudar-investor-dashboard.png"
-              alt="IGUDAR dashboard with returns and rental income reporting"
-              width={1536}
-              height={1024}
-              className="absolute -bottom-20 -right-[60%] z-10 w-[138%] max-w-none rounded-xl border border-white/15 shadow-2xl sm:-right-[35%] sm:w-[105%] lg:-bottom-24 lg:-right-[12%] lg:w-[62%]"
-            />
-          </WobbleCard>
+            <Link
+              href="/simulator"
+              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-card px-6 text-base font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              Simulate your own amount
+            </Link>
+          </AnimatedSection>
+          <AnimatedSection delay={120}>
+            <WalletIllustration />
+          </AnimatedSection>
         </div>
       </div>
     </section>
-  );
-}
-
-type StepLabelProps = {
-  icon: typeof UserPlus;
-  step: string;
-};
-
-function StepLabel({ icon: Icon, step }: StepLabelProps) {
-  return (
-    <div className="mb-7 flex items-center gap-3">
-      <span className="flex size-10 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
-        <Icon className="size-5" strokeWidth={1.7} />
-      </span>
-      <span className="text-sm font-semibold text-white/65">Step {step}</span>
-    </div>
   );
 }
