@@ -1,4 +1,5 @@
 import AnimatedSection from "@/components/AnimatedSection";
+import { ReactiveGlow } from "@/components/brand";
 
 const transparencyCards = [
   {
@@ -23,8 +24,9 @@ const transparencyCards = [
 
 export default function PainPointsSection() {
   return (
-    <section className="px-5 py-24 sm:px-6 lg:py-32">
-      <div className="mx-auto max-w-6xl">
+    <section className="group relative isolate overflow-hidden bg-background px-5 py-24 sm:px-6 lg:py-32">
+      <ReactiveGlow className="inset-0" />
+      <div className="relative mx-auto max-w-6xl">
         <AnimatedSection>
           <h2 className="mx-auto max-w-3xl text-center font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             We built something <span className="italic text-primary">different.</span>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
+import { ReactiveGlow } from "@/components/brand";
 import { FEE_GRID, LIMITS, formatMad, formatPercent } from "@/lib/finance";
 
 // Three facts read straight from the fee grid and the legal constants. No investor counts, no track record.
@@ -24,8 +25,9 @@ const facts = [
 
 export default function FactsSection() {
   return (
-    <section aria-labelledby="facts-title" className="px-5 py-24 sm:px-6 lg:py-32">
-      <div className="mx-auto max-w-6xl">
+    <section aria-labelledby="facts-title" className="group relative isolate overflow-hidden bg-surface-clay px-5 py-24 sm:px-6 lg:py-32">
+      <ReactiveGlow className="inset-0" />
+      <div className="relative mx-auto max-w-6xl">
         <AnimatedSection>
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold text-primary">The facts</p>

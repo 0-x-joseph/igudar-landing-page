@@ -24,6 +24,11 @@
   --color-destructive-foreground: #FFFFFF;
   --color-ring: #5D18E9;
 
+  /* Synchronized section surfaces (light): warm sand, violet mist, golden clay. */
+  --color-surface-sand: #F7F5EF;
+  --color-surface-mist: #F1EBFD;
+  --color-surface-clay: #FAF4E4;
+
   --font-sans: var(--font-public-sans), "system-ui", "sans-serif";
   --font-display: var(--font-fraunces), "Georgia", "serif";
   --font-serif: var(--font-fraunces), "Georgia", "serif";

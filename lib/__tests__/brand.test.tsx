@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
-import { ArchFrame, RosetteProgress, TifinaghMark, ZelligeBand, ZelligePattern } from "@/components/brand";
+import { ArchFrame, ReactiveGlow, ReactivePattern, RosetteProgress, TifinaghMark, ZelligeBand, ZelligePattern } from "@/components/brand";
 
 describe("brand primitives", () => {
   it("ZelligeBand is decorative: aria-hidden, one 24px row of tiles in currentColor", () => {
@@ -47,6 +47,31 @@ describe("brand primitives", () => {
     const { container } = render(<TifinaghMark />);
     expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
     expect(container.querySelectorAll("g[data-letter]")).toHaveLength(6);
+  });
+
+  it("ReactivePattern renders children behind a decorative pointer glow", () => {
+    const { container, getByText } = render(
+      <ReactivePattern>
+        <span>panel body</span>
+      </ReactivePattern>,
+    );
+    expect(getByText("panel body")).toBeInTheDocument();
+    expect(container.querySelector("[data-reactive-pattern]")).toBeInTheDocument();
+    const glow = container.querySelector("[data-reactive-glow]")!;
+    expect(glow).toHaveAttribute("aria-hidden", "true");
+    expect(glow.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("ReactiveGlow is a masked, non-interactive layer", () => {
+    const { container } = render(
+      <div className="group relative">
+        <ReactiveGlow className="inset-0" />
+      </div>,
+    );
+    const glow = container.querySelector("[data-reactive-glow]") as HTMLElement;
+    expect(glow.className).toContain("pointer-events-none");
+    expect(glow.className).toContain("absolute");
+    expect(glow.style.maskImage).toContain("radial-gradient");
   });
 
   it("RosetteProgress exposes progress and clamps out-of-range input", () => {

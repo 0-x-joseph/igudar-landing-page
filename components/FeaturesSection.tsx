@@ -21,7 +21,7 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section id="ai-powered" className="scroll-mt-28 px-5 py-24 sm:px-6 lg:py-32">
+    <section id="ai-powered" className="scroll-mt-28 bg-surface-sand px-5 py-24 sm:px-6 lg:py-32">
       <div className="mx-auto max-w-6xl">
         <AnimatedSection>
           <div className="mx-auto max-w-2xl text-center">
