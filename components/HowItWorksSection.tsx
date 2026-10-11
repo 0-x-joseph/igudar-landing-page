@@ -68,9 +68,14 @@ export default function HowItWorksSection() {
         </AnimatedSection>
 
         <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
-          <Reveal className="lg:sticky lg:top-28">
+          <Reveal className="lg:sticky lg:top-28 lg:self-start">
+            {/* Portrait drawing: tall enough to stand beside the four ideas, capped so it stays inside the viewport while sticky. */}
             <div className="rounded-3xl border border-border bg-card p-4 sm:p-6">
-              <GranarySketch active={active} onSelect={setActive} className="mx-auto max-w-lg" />
+              <GranarySketch
+                active={active}
+                onSelect={setActive}
+                className="mx-auto max-w-md lg:max-w-none [&>svg]:lg:max-h-[calc(100vh-11rem)]"
+              />
             </div>
           </Reveal>
 
