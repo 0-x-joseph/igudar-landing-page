@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { LIMITS } from "@/lib/finance";
 import MoneyFlowDiagram from "@/components/MoneyFlowDiagram";
+import { ReactiveGlow } from "@/components/brand";
 
 const linkClass =
   "inline-flex min-h-12 items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
@@ -16,8 +17,9 @@ const timeline = [
 /** "How your money moves": escrow diagram, timeline and the public fee grid. */
 export default function HowYourMoneyMoves() {
   return (
-    <section id="how-your-money-moves" className="scroll-mt-28 pb-24 pt-12 lg:pb-32 lg:pt-16">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+    <section id="how-your-money-moves" className="group relative isolate scroll-mt-28 overflow-hidden pb-24 pt-12 lg:pb-32 lg:pt-16">
+      <ReactiveGlow className="inset-0" />
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <p className="mb-3 text-sm font-semibold text-primary">How your money moves</p>
           <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">

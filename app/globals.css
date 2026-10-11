@@ -2,27 +2,37 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #FFFFFF;
-  --color-foreground: #17131F;
-  --color-card: #FFFFFF;
-  --color-card-foreground: #17131F;
-  --color-popover: #FFFFFF;
-  --color-popover-foreground: #17131F;
-  --color-muted: #EDE9DF;
-  --color-muted-foreground: #615D6E;
-  --color-border: #E2DDD2;
-  --color-input: #E2DDD2;
-  --color-primary: #5D18E9;
-  --color-primary-foreground: #FFFFFF;
-  --color-accent: #F3EEFF;
-  --color-accent-foreground: #4A13BA;
-  --color-success: #207F72;
-  --color-success-foreground: #FFFFFF;
-  --color-highlight: #ECA72C;
-  --color-highlight-foreground: #17131F;
-  --color-destructive: #C1402A;
-  --color-destructive-foreground: #FFFFFF;
-  --color-ring: #5D18E9;
+  --color-background: #0F0C17;
+  --color-foreground: #F6F4EE;
+  --color-card: #191523;
+  --color-card-foreground: #F6F4EE;
+  --color-popover: #191523;
+  --color-popover-foreground: #F6F4EE;
+  --color-primary: #A06EF7;
+  --color-primary-foreground: #171320;
+  --color-secondary: #252130;
+  --color-secondary-foreground: #A9A5B6;
+  --color-muted: #252130;
+  --color-muted-foreground: #A9A5B6;
+  --color-accent: #261943;
+  --color-accent-foreground: #DBCCFF;
+  --color-success: #40BFAA;
+  --color-success-foreground: #171320;
+  --color-success-soft: #19342F;
+  --color-highlight: #F5C147;
+  --color-highlight-foreground: #171320;
+  --color-highlight-soft: #392E18;
+  --color-destructive: #E3705F;
+  --color-destructive-foreground: #171320;
+  --color-destructive-soft: #3D1F1A;
+  --color-border: #312D3E;
+  --color-input: #6C6388;
+  --color-ring: #A06EF7;
+  --color-chart-1: #A06EF7;
+  --color-chart-2: #40BFAA;
+  --color-chart-3: #6BADC7;
+  --color-chart-4: #F5C147;
+  --color-chart-5: #F4A462;
 
   --font-sans: var(--font-public-sans), "system-ui", "sans-serif";
   --font-display: var(--font-fraunces), "Georgia", "serif";
@@ -38,6 +48,7 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
@@ -51,7 +62,7 @@ body {
 }
 
 ::selection {
-  background: rgb(93 24 233 / 0.25);
+  background: rgb(160 110 247 / 0.35);
   color: var(--color-foreground);
 }
 
@@ -124,8 +135,8 @@ body {
 /* ── Glow effect for accents ─────────────────── */
 
 .glow-accent {
-  box-shadow: 0 0 60px rgba(93, 24, 233, 0.15),
-              0 0 120px rgba(93, 24, 233, 0.05);
+  box-shadow: 0 0 60px rgba(160, 110, 247, 0.22),
+              0 0 120px rgba(160, 110, 247, 0.08);
 }
 
 /* ── Custom scrollbar (light) ─────────────────── */

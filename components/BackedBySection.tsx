@@ -7,8 +7,8 @@ const partners = [
   { src: "/images/explorer.png", alt: "Explorer" },
   { src: "/images/fondation-ocp.svg", alt: "Fondation OCP" },
   { src: "/images/um6p-launchpad.png", alt: "UM6P Launchpad" },
-  // The source file is white on transparent: flattened to ink so it shows on sand.
-  { src: "/images/coe-white.png", alt: "Programme partner logo", flatten: true },
+  // The source file is white on transparent: it shows as-is on the dark background.
+  { src: "/images/coe-white.png", alt: "Programme partner logo" },
 ];
 
 /** A quiet, static strip of the programmes IGUDAR is part of. No marquee, no invented logos. */
@@ -29,7 +29,7 @@ export default function BackedBySection() {
                 src={p.src}
                 alt={p.alt}
                 loading="lazy"
-                className={`max-h-full w-auto max-w-full object-contain opacity-80 ${p.flatten ? "brightness-0" : ""}`}
+                className="max-h-full w-auto max-w-full object-contain opacity-80"
               />
             </li>
           ))}

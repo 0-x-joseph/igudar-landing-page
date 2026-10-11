@@ -2,11 +2,12 @@ import Link from "next/link";
 import { LIMITS, formatMad } from "@/lib/finance";
 import AnimatedSection from "@/components/AnimatedSection";
 import WaitlistForm from "@/components/WaitlistForm";
-import { TifinaghMark } from "@/components/brand";
+import { ReactivePattern, TifinaghMark } from "@/components/brand";
 
 export default function FinalCtaSection() {
   return (
     <section id="waitlist-cta" className="scroll-mt-24 px-5 py-24 sm:px-6 lg:py-32">
+      <ReactivePattern className="mx-auto max-w-5xl rounded-[2.5rem] border border-border bg-card px-6 py-14 sm:px-12 lg:py-20">
       <div className="mx-auto max-w-3xl text-center">
         <AnimatedSection>
           <TifinaghMark height={20} className="mx-auto mb-8 text-primary" />
@@ -28,7 +29,7 @@ export default function FinalCtaSection() {
             </Link>
             <Link
               href="/beta"
-              className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-card px-8 text-base font-semibold text-foreground transition-colors duration-200 ease-out hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-border bg-background px-8 text-base font-semibold text-foreground transition-colors duration-200 ease-out hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               Apply for the beta
             </Link>
@@ -38,6 +39,7 @@ export default function FinalCtaSection() {
           <WaitlistForm className="mx-auto mt-4 w-full max-w-md" />
         </AnimatedSection>
       </div>
+      </ReactivePattern>
     </section>
   );
 }

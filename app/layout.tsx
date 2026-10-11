@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     apple: "/images/Logo-IGUDAR-2-Photoroom.svg",
   },
   other: {
-    "theme-color": "#FFFFFF",
+    "theme-color": "#0F0C17",
   },
 };
 
@@ -48,7 +48,7 @@ export default function RootLayout({
       lang="en"
       className={`${publicSans.variable} ${fraunces.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col antialiased font-sans bg-card text-foreground">
+      <body className="min-h-full flex flex-col antialiased font-sans bg-background text-foreground">
         <Providers>
           {children}
         </Providers>

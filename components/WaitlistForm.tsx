@@ -97,12 +97,12 @@ export default function WaitlistForm({ className = "", onSuccess }: WaitlistForm
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status === "loading"}
-                className="flex-1 bg-card border border-border rounded-full px-6 py-4 text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors disabled:opacity-50 shadow-sm"
+                className="flex-1 bg-background border border-border rounded-full px-6 py-4 text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/50 transition-colors disabled:opacity-50 shadow-sm"
               />
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="bg-primary text-white rounded-full px-8 py-4 text-sm font-medium tracking-wide uppercase hover:bg-accent-foreground transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                className="bg-primary text-primary-foreground rounded-full px-8 py-4 text-sm font-medium tracking-wide uppercase hover:bg-accent-foreground transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
               >
                 {status === "loading" ? (
                   <>

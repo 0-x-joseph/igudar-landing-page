@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { FEE_GRID, TAX, formatMad, formatPercent } from "@/lib/finance";
-import { ZelligeBand, ZelligePattern, TifinaghMark } from "@/components/brand";
+import { ReactiveGlow, TifinaghMark, ZelligeBand } from "@/components/brand";
 import AnimatedSection from "@/components/AnimatedSection";
 import { IndicativeNotice } from "@/components/simulator/IndicativeNotice";
 import PricingTable, { EXAMPLE_TICKET_MAD } from "@/components/pricing/PricingTable";
@@ -28,8 +28,8 @@ const notPaid = [
 export default function PricingPageContent() {
   return (
     <>
-      <section className="relative isolate overflow-hidden px-5 pb-16 pt-36 sm:px-6 lg:pb-24 lg:pt-44">
-        <ZelligePattern className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-full text-primary opacity-[0.06] [mask-image:radial-gradient(ellipse_at_top,black,transparent_65%)]" />
+      <section className="group relative isolate overflow-hidden px-5 pb-16 pt-36 sm:px-6 lg:pb-24 lg:pt-44">
+        <ReactiveGlow className="inset-x-0 top-0 -z-10 h-full" />
         <div className="mx-auto max-w-4xl text-center">
           <TifinaghMark height={22} className="mx-auto text-primary" />
           <p className="mt-6 text-sm font-semibold text-primary">Pricing</p>

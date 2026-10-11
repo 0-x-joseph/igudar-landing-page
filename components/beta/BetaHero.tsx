@@ -1,5 +1,5 @@
 import { LIMITS, formatMad } from "@/lib/finance";
-import { RosetteProgress, TifinaghMark, ZelligePattern } from "@/components/brand";
+import { ReactiveGlow, RosetteProgress, TifinaghMark } from "@/components/brand";
 
 const ctaPrimary =
   "inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors duration-200 ease-out hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
@@ -8,8 +8,8 @@ const ctaTertiary =
 
 export default function BetaHero() {
   return (
-    <section className="relative isolate overflow-hidden px-5 pb-16 pt-36 sm:px-6 sm:pt-44 lg:pb-24">
-      <ZelligePattern className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-full text-primary opacity-[0.06] [mask-image:radial-gradient(ellipse_at_top_left,black,transparent_65%)]" />
+    <section className="group relative isolate overflow-hidden px-5 pb-16 pt-36 sm:px-6 sm:pt-44 lg:pb-24">
+      <ReactiveGlow className="inset-x-0 top-0 -z-10 h-full" />
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-16">
         <div>
           <TifinaghMark height={20} className="text-primary" />
