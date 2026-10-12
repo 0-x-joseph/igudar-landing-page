@@ -1,0 +1,211 @@
+{
+  "howItWorks": {
+    "eyebrow": "Comment ça marche",
+    "title": "Une idée ancienne, construite pour aujourd'hui",
+    "intro": "IGUDAR tient son nom des igudar, les greniers collectifs des Amazighs. Les mêmes quatre idées soutiennent la plateforme.",
+    "tablist": "Les quatre idées",
+    "inIgudar": "Chez IGUDAR",
+    "pillars": {
+      "building": {
+        "title": "Un bâtiment partagé",
+        "story": "Les igudar étaient les greniers collectifs amazighs : un bâtiment solide que de nombreuses familles élevaient et gardaient ensemble.",
+        "inIgudar": "Un bien acheté via IGUDAR fonctionne de la même façon. Un bâtiment, plusieurs propriétaires."
+      },
+      "chamber": {
+        "title": "Votre propre chambre",
+        "story": "Chaque famille gardait sa propre chambre, marquée et connue de tous.",
+        "inIgudar": "Vous détenez des parts de la société propriétaire du bien : une part définie et enregistrée, jamais une promesse non écrite."
+      },
+      "keeper": {
+        "title": "Un gardien de confiance",
+        "story": "Un grenier avait besoin d'un gardien en qui tout le monde avait confiance.",
+        "inIgudar": "Ici, une banque régulée conserve votre argent sous séquestre, et un gestionnaire professionnel loue et entretient le bien."
+      },
+      "rules": {
+        "title": "Des règles écrites",
+        "story": "Tout le monde s'accordait sur les règles avant la première récolte.",
+        "inIgudar": "Les nôtres sont écrites dans le pacte d'associés, et la grille tarifaire est publiée dans son intégralité, la même pour tous."
+      }
+    },
+    "follow": {
+      "title": "Suivez chaque dirham",
+      "body": "Votre portefeuille affiche quatre choses : ce que vous avez engagé, ce qui est sous séquestre, ce qui est investi dans la société propriétaire du bien, et le loyer que vous avez réellement reçu. Rien de caché, rien à deviner.",
+      "cta": "Simulez votre propre montant"
+    }
+  },
+  "dirhamPath": {
+    "stops": {
+      "bank": "Votre banque",
+      "escrow": "Séquestre",
+      "building": "Le bâtiment"
+    }
+  },
+  "wallet": {
+    "heading": "Portefeuille",
+    "badge": "Illustration — données de démonstration",
+    "tiles": {
+      "committed": {
+        "label": "Engagé",
+        "note": "Votre montant, engagé sur un seul projet"
+      },
+      "escrow": {
+        "label": "Sous séquestre",
+        "note": "Conservé à la banque jusqu'à la clôture de la levée"
+      },
+      "invested": {
+        "label": "Investi",
+        "note": "Parts de la société propriétaire du bien"
+      },
+      "received": {
+        "label": "Reçu",
+        "note": "Loyer net après l'année 1 ({scenario})"
+      }
+    },
+    "footnote": "Exemple à {amount}, scénario {scenario}, un an après la clôture de la levée. Les chiffres sont {notice}."
+  },
+  "moneyMoves": {
+    "eyebrow": "Comment circule votre argent",
+    "title": "De votre compte bancaire au bâtiment, et retour",
+    "intro": "Votre argent n'est jamais mélangé au nôtre. Il attend sur un compte séquestre jusqu'à ce que la levée aboutisse, et vous revient intégralement si ce n'est pas le cas.",
+    "timeline": {
+      "commit": {
+        "when": "Jour 0",
+        "what": "Vous vous engagez. Un délai de rétractation de {days} jours s'applique."
+      },
+      "close": {
+        "when": "Clôture de la levée",
+        "what": "Si l'objectif est atteint, le séquestre libère les fonds vers la société propriétaire du bien."
+      },
+      "windows": {
+        "when": "À partir de l'année {years}",
+        "what": "Des fenêtres de sortie s'ouvrent tous les {months} mois."
+      },
+      "sale": {
+        "when": "Vers l'année {years}",
+        "what": "Le bien est vendu, ou vendu en bloc."
+      }
+    },
+    "fees": {
+      "title": "La grille tarifaire : qui paie quoi, et quand",
+      "body": "La même pour chaque investisseur, publiée dans son intégralité. Les vendeurs et les gestionnaires paient leurs propres frais ; ils ne réduisent jamais votre rendement.",
+      "grid": "Voir la grille tarifaire complète",
+      "calculator": "Calculez votre propre part dans le calculateur",
+      "simulator": "Ouvrir le simulateur"
+    }
+  },
+  "flow": {
+    "label": "Comment circule votre argent, de votre compte bancaire au compte séquestre, à la société propriétaire du bien, au loyer et retour vers vous.",
+    "or": "ou",
+    "nodes": {
+      "you": {
+        "title": "Vous",
+        "wide": "Vous engagez un montant et\nle virez depuis votre\npropre compte bancaire",
+        "tall": "Vous engagez un montant et le virez depuis\nvotre propre compte bancaire"
+      },
+      "escrow": {
+        "title": "Compte séquestre",
+        "wide": "Dans une banque régulée,\nun compte par projet.\nIntact jusqu'à la clôture",
+        "tall": "Dans une banque régulée, un compte par projet.\nIntact jusqu'à la clôture de la levée"
+      },
+      "sas": {
+        "title": "Société propriétaire",
+        "wide": "Achète le bien quand la\nlevée atteint son objectif.\nVous en détenez des parts",
+        "tall": "Achète le bien quand\nla levée atteint son\nobjectif. Vous détenez\ndes parts de la SAS"
+      },
+      "property": {
+        "title": "Le bien",
+        "wide": "Loué à un gestionnaire\nprofessionnel sous\nbail principal",
+        "tall": "Loué à un gestionnaire professionnel sous\nbail principal"
+      },
+      "refund": {
+        "title": "Remboursement intégral",
+        "wide": "Si la levée échoue ou si le\ndélai expire, la banque\nvous rend tout votre argent",
+        "tall": "Si la levée échoue ou\nsi le délai expire, la\nbanque vous rend tout\nvotre argent"
+      },
+      "rent": {
+        "title": "Loyer",
+        "wide": "Réserve, impôts et frais\nde plateforme sont prélevés\nsur le loyer en premier",
+        "tall": "Réserve, impôts et frais de plateforme sont\nprélevés sur le loyer en premier"
+      },
+      "net": {
+        "title": "Distribution nette",
+        "wide": "Le reste est versé sur\nvotre compte bancaire,\naprès frais et impôts",
+        "tall": "Le reste est versé sur votre compte bancaire,\naprès frais et impôts"
+      },
+      "exit": {
+        "title": "Votre capital de retour",
+        "wide": "Fenêtres tous les {months} mois\naprès l'année {lockYears} ; vente ou\nvente en bloc vers l'an {holdYears}.\nPrix en hausse ou en baisse",
+        "tall": "Fenêtres de sortie tous les {months} mois dès l'année {lockYears} ;\nvente ou vente en bloc vers l'année {holdYears}.\nLe prix du bien peut monter ou baisser."
+      }
+    },
+    "edges": {
+      "transfer": "virement",
+      "target": "objectif",
+      "reached": "atteint",
+      "targetReached": "objectif atteint",
+      "buys": "achète",
+      "raiseFails": "levée échouée",
+      "raiseFailsOrDeadline": "levée échouée ou délai expiré",
+      "operatorPaysRent": "le gestionnaire paie le loyer",
+      "exitWindows": "fenêtres de sortie"
+    },
+    "steps": {
+      "transfer": "Vous virez votre montant depuis votre propre compte bancaire vers un compte séquestre dans une banque régulée, un compte par projet.",
+      "close": "Si la levée atteint son objectif, la société propriétaire du bien (SAS) achète le bien. Si elle échoue ou si le délai expire, la banque vous rembourse intégralement.",
+      "lease": "Le bien est loué à un gestionnaire professionnel sous bail principal.",
+      "rent": "Le loyer paie d'abord la réserve, les impôts et les frais de plateforme. Le reste est versé sur votre compte bancaire sous forme de distribution nette.",
+      "exit": "Des fenêtres de sortie s'ouvrent tous les {months} mois après la première année. Le bien est vendu, ou vendu en bloc, vers l'année {holdYears}, et vous récupérez votre capital, augmenté ou diminué de la variation de la valeur du bien."
+    }
+  },
+  "features": {
+    "eyebrow": "Fonctionnalités de la plateforme",
+    "title": "Des données claires sur chaque bien",
+    "intro": "Le contexte du marché, une vue simple des risques et des frais, le tout au même endroit."
+  },
+  "dossier": {
+    "badge": "Exemple · données de démonstration",
+    "demo": {
+      "name": "Immeuble d'appartements loué",
+      "where": "Ville exemple · quartier exemple",
+      "profile": "Profil exemple : équilibré, horizon de cinq ans"
+    },
+    "stats": {
+      "minTicket": "Ticket minimum",
+      "cashYield": "Rendement net en cash",
+      "irr": "TRI net",
+      "scenario": "Scénario {scenario}, {notice}"
+    },
+    "layers": {
+      "market": {
+        "title": "Analyse de marché",
+        "desc": "Analyse en temps réel des tendances du marché immobilier marocain et des opportunités émergentes."
+      },
+      "risk": {
+        "title": "Évaluation des risques",
+        "desc": "Une vue en langage clair des principaux risques de chaque bien, à côté des chiffres."
+      },
+      "match": {
+        "title": "Sélection personnalisée",
+        "desc": "Des recommandations adaptées à votre profil, vos objectifs et votre tolérance au risque."
+      }
+    },
+    "chart": {
+      "label": "Rendement locatif brut, données d'exemple : {bars}",
+      "bars": {
+        "property": "Ce bien",
+        "district": "Quartier",
+        "deposit": "Dépôt bancaire"
+      },
+      "note": "Rendement locatif brut, données d'exemple. Le chiffre du quartier est une valeur de démonstration. Indicatif."
+    },
+    "risks": {
+      "lateRent": "Loyer en retard",
+      "vacancy": "Vacance",
+      "price": "Prix"
+    },
+    "meter": {
+      "label": "Adéquation au profil exemple, données de démonstration",
+      "valueText": "{filled} segments sur {of}"
+    }
+  }
+}

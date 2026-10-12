@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "title": "Fees and ownership calculator | IGUDAR",
+    "description": "Work out your ownership of a property company from the amount you choose and the size of the project. Indicative, not an offer."
+  },
+  "page": {
+    "eyebrow": "Calculator",
+    "title": "The mechanics: ownership, fees and exits",
+    "intro": "For people who want to see exactly how a share is built: your amount, the size of the project, and the part of the company you would own.",
+    "links": "Looking for the fees? <pricing>See who pays what, when</pricing>, or <simulator>simulate a return</simulator> after fees and taxes."
+  },
+  "inputs": {
+    "title": "Your amount and the project",
+    "intro": "Ownership is your amount divided by what the project raises.",
+    "amountLabel": "Your amount",
+    "projectLabel": "Project size (capital raised, MAD)",
+    "projectNote": "Up to {max} per project over 12 months."
+  },
+  "ownership": {
+    "title": "Ownership",
+    "shareLabel": "Your ownership of the property company (SAS)",
+    "shareNote": "You become a shareholder of the company that owns the property, in proportion to your amount.",
+    "investorsLabel": "Investors needed to fill the project",
+    "investorsNote": "At the {min} minimum ticket."
+  },
+  "feeNotes": {
+    "perYearHt": "per year, HT",
+    "baseSaleTtc": "Base scenario sale, incl. TVA, borne by the SAS",
+    "earlyExitOnly": "only if you sell early",
+    "aboveHurdle": "Base scenario, only above the hurdle",
+    "optional": "optional"
+  }
+}

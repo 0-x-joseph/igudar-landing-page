@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { LIMITS } from "@/lib/finance";
-import { clampTicket, stepTicket, ticketBucket } from "@/lib/simulator";
+import { FEE_LINES, LIMITS } from "@/lib/finance";
+import { clampTicket, feeRateText, parseAmount, stepTicket, ticketBucket } from "@/lib/simulator";
 
 describe("clampTicket", () => {
   it("never goes below the 25,000 MAD minimum", () => {
@@ -41,6 +41,46 @@ describe("stepTicket", () => {
   });
 });
 
+describe("parseAmount", () => {
+  it("reads plain digits", () => {
+    expect(parseAmount("25000")).toBe(25_000);
+    expect(parseAmount(" 25000 ")).toBe(25_000);
+  });
+
+  it("accepts the English, French and Arabic groupings", () => {
+    expect(parseAmount("25,000")).toBe(25_000);
+    expect(parseAmount("25 000")).toBe(25_000);
+    expect(parseAmount("25 000")).toBe(25_000);
+    expect(parseAmount("25 000")).toBe(25_000);
+    expect(parseAmount("25.000")).toBe(25_000);
+    expect(parseAmount("1.250.000")).toBe(1_250_000);
+    expect(parseAmount("1,250,000")).toBe(1_250_000);
+    expect(parseAmount("5.000.000")).toBe(5_000_000);
+  });
+
+  it("maps Arabic-Indic and extended Arabic-Indic digits to 0-9", () => {
+    expect(parseAmount("٢٥٠٠٠")).toBe(25_000);
+    expect(parseAmount("٢٥٬٠٠٠")).toBe(25_000);
+    expect(parseAmount("۳۰۰۰۰")).toBe(30_000);
+  });
+
+  it("keeps a decimal mark that is not a thousands separator", () => {
+    expect(parseAmount("25000,50")).toBe(25_000.5);
+    expect(parseAmount("25000.50")).toBe(25_000.5);
+    expect(parseAmount("25.000,50")).toBe(25_000.5);
+    expect(parseAmount("25,000.50")).toBe(25_000.5);
+    expect(parseAmount("٢٥٠٠٠٫٥")).toBe(25_000.5);
+  });
+
+  it("ignores a currency word and returns NaN for nothing numeric", () => {
+    expect(parseAmount("25 000 MAD")).toBe(25_000);
+    expect(parseAmount("25 000 درهم")).toBe(25_000);
+    expect(Number.isNaN(parseAmount(""))).toBe(true);
+    expect(Number.isNaN(parseAmount("abc"))).toBe(true);
+    expect(Number.isNaN(parseAmount("-"))).toBe(true);
+  });
+});
+
 describe("ticketBucket", () => {
   it("returns coarse buckets for analytics, never the exact amount", () => {
     expect(ticketBucket(25_000)).toBe("25-45k");
@@ -48,27 +88,6 @@ describe("ticketBucket", () => {
     expect(ticketBucket(100_000)).toBe("100-245k");
     expect(ticketBucket(250_000)).toBe("250-500k");
     expect(ticketBucket(600_000)).toBe("500k+");
-  });
-});
-
-import { FEE_LINES } from "@/lib/finance";
-import { feeRateText, formatMultiple, scenarioDescription } from "@/lib/simulator";
-
-describe("scenarioDescription", () => {
-  it("states yield, vacancy, reserve and price growth from the model", () => {
-    const base = scenarioDescription("base");
-    expect(base).toContain("8.00");
-    expect(base).toContain("no vacancy");
-    expect(scenarioDescription("pessimistic")).toContain("5");
-    expect(scenarioDescription("pessimistic")).toContain("vacancy or operator default");
-    expect(scenarioDescription("optimistic")).toContain("rent indexed");
-  });
-});
-
-describe("formatMultiple", () => {
-  it("shows two decimals and the multiplication sign", () => {
-    expect(formatMultiple(1.1698)).toBe("1.17×");
-    expect(formatMultiple(Number.NaN)).toBe("—");
   });
 });
 

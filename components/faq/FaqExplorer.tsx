@@ -3,16 +3,25 @@
 import { Fragment, useId, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronDown, Search, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { MOTION, Reveal } from "@/components/motion";
 
 export interface FaqEntry {
+  /** Stable id (`faq.items.<id>`), used for keys; the text is already in the visitor's language. */
+  id: string;
   question: string;
   answer: string;
+  /** A category id from `categories`. */
   category: string;
 }
 
-const ALL = "All";
+export interface FaqCategory {
+  id: string;
+  label: string;
+}
+
+const ALL = "all";
 
 function escapeRegExp(s: string) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -35,9 +44,19 @@ function highlight(text: string, query: string): ReactNode {
 
 /**
  * Category rail (sticky on desktop, chip row on phones), live search with highlighted matches and an
- * accordion whose height eases open. Filtering is client-side over the questions and their answers.
+ * accordion whose height eases open. Filtering is client-side over the questions and their answers,
+ * in whatever language they were given.
  */
-export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqEntry[]; categories: string[]; children?: ReactNode }) {
+export default function FaqExplorer({
+  faqs,
+  categories,
+  children,
+}: {
+  faqs: FaqEntry[];
+  categories: FaqCategory[];
+  children?: ReactNode;
+}) {
+  const t = useTranslations("faq.explorer");
   const reduce = useReducedMotion();
   const uid = useId();
   const [category, setCategory] = useState(ALL);
@@ -56,7 +75,7 @@ export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqE
 
   // Counts in the rail follow the search, so a category never promises more than it will show.
   const counts = new Map<string, number>([[ALL, 0]]);
-  for (const c of categories) counts.set(c, 0);
+  for (const c of categories) counts.set(c.id, 0);
   faqs.forEach((f, i) => {
     if (!matchesQuery(i)) return;
     counts.set(ALL, (counts.get(ALL) ?? 0) + 1);
@@ -70,35 +89,36 @@ export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqE
   const isExpanded = (i: number) => open.get(i) ?? matches[i].inAnswer;
   const toggle = (i: number) => setOpen((prev) => new Map(prev).set(i, !isExpanded(i)));
 
-  const tabs = [ALL, ...categories];
+  const tabs: FaqCategory[] = [{ id: ALL, label: t("all") }, ...categories];
+  const categoryLabel = (id: string) => categories.find((c) => c.id === id)?.label ?? id;
   const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
-      <nav aria-label="Question categories" className="lg:sticky lg:top-28 lg:self-start">
+      <nav aria-label={t("railLabel")} className="lg:sticky lg:top-28 lg:self-start">
         <ul className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0 lg:pb-0">
           {tabs.map((c) => {
-            const on = category === c;
+            const on = category === c.id;
             return (
-              <li key={c} className="shrink-0">
+              <li key={c.id} className="shrink-0">
                 <button
                   type="button"
                   aria-pressed={on}
-                  onClick={() => setCategory(c)}
+                  onClick={() => setCategory(c.id)}
                   className={`relative flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold transition-colors duration-200 lg:rounded-2xl lg:border-transparent ${focusRing} ${
                     on
                       ? "border-primary bg-primary text-primary-foreground lg:bg-accent lg:text-accent-foreground"
                       : "border-border bg-card text-foreground hover:bg-muted lg:bg-transparent"
                   }`}
                 >
-                  <span className="whitespace-nowrap">{c}</span>
+                  <span className="whitespace-nowrap">{c.label}</span>
                   <span
                     data-count=""
                     className={`financial-number rounded-full px-2 py-0.5 text-xs ${
                       on ? "bg-white/20 lg:bg-primary lg:text-primary-foreground" : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    {counts.get(c) ?? 0}
+                    {counts.get(c.id) ?? 0}
                   </span>
                 </button>
               </li>
@@ -109,28 +129,28 @@ export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqE
 
       <div>
         <div className="relative">
-          <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+          <Search className="pointer-events-none absolute start-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <input
             type="search"
             role="searchbox"
-            aria-label="Search the questions"
-            placeholder="Search the questions"
+            aria-label={t("searchLabel")}
+            placeholder={t("searchPlaceholder")}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
               setOpen(new Map());
             }}
-            className={`min-h-12 w-full rounded-2xl border border-border bg-card pl-12 pr-12 text-base text-foreground placeholder:text-muted-foreground ${focusRing}`}
+            className={`min-h-12 w-full rounded-2xl border border-border bg-card pe-12 ps-12 text-base text-foreground placeholder:text-muted-foreground ${focusRing}`}
           />
           {query && (
             <button
               type="button"
-              aria-label="Clear the search"
+              aria-label={t("clear")}
               onClick={() => {
                 setQuery("");
                 setOpen(new Map());
               }}
-              className={`absolute right-2 top-1/2 flex size-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-xl text-muted-foreground hover:bg-muted ${focusRing}`}
+              className={`absolute end-2 top-1/2 flex size-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-xl text-muted-foreground hover:bg-muted ${focusRing}`}
             >
               <X className="size-4" aria-hidden="true" />
             </button>
@@ -138,8 +158,8 @@ export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqE
         </div>
         <p role="status" aria-live="polite" className="mt-3 text-sm text-muted-foreground">
           {visible.length === 0
-            ? `No question matches “${q}”. Try another word, or clear the search.`
-            : `${visible.length} of ${faqs.length} questions`}
+            ? t("noMatch", { query: q })
+            : t("count", { shown: String(visible.length), total: String(faqs.length) })}
         </p>
 
         <ul className="mt-4 space-y-3">
@@ -147,7 +167,7 @@ export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqE
             const expanded = isExpanded(i);
             const panelId = `${uid}-panel-${i}`;
             return (
-              <Reveal as="li" key={f.question} index={Math.min(n, 5)}>
+              <Reveal as="li" key={f.id} index={Math.min(n, 5)}>
                 <div
                   data-faq-item=""
                   className={`overflow-hidden rounded-2xl border bg-card transition-colors duration-200 ${
@@ -160,7 +180,7 @@ export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqE
                       aria-expanded={expanded}
                       aria-controls={panelId}
                       onClick={() => toggle(i)}
-                      className={`flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-5 text-left transition-colors duration-200 hover:bg-muted/50 sm:px-6 ${focusRing} focus-visible:-outline-offset-2`}
+                      className={`flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-5 text-start transition-colors duration-200 hover:bg-muted/50 sm:px-6 ${focusRing} focus-visible:-outline-offset-2`}
                     >
                       <span className="text-[15px] font-semibold text-foreground">{highlight(f.question, q)}</span>
                       <span
@@ -173,7 +193,8 @@ export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqE
                           transition={reduce ? { duration: 0 } : { duration: MOTION.durationS, ease: MOTION.ease }}
                           className="flex"
                         >
-                          <ChevronDown className="size-4" aria-hidden="true" />
+                          {/* A down chevron is symmetric, so it reads the same in RTL; the mirror keeps the rule explicit. */}
+                          <ChevronDown className="size-4 rtl:-scale-x-100" aria-hidden="true" />
                         </motion.span>
                       </span>
                     </button>
@@ -192,7 +213,7 @@ export default function FaqExplorer({ faqs, categories, children }: { faqs: FaqE
                         <div className="px-5 pb-5 sm:px-6">
                           <div className="border-t border-border pt-4">
                             <p className="text-[15px] leading-relaxed text-muted-foreground">{highlight(f.answer, q)}</p>
-                            <p className="mt-3 text-xs font-semibold text-primary">{f.category}</p>
+                            <p className="mt-3 text-xs font-semibold text-primary">{categoryLabel(f.category)}</p>
                           </div>
                         </div>
                       </motion.div>

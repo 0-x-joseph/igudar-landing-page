@@ -1,0 +1,36 @@
+{
+  "notice": "Indicative simulation based on the IGUDAR financial model. Returns are not guaranteed. Not an offer or solicitation; no investment is collected before the AMMC licence (Loi 15-18).",
+  "scenarios": {
+    "pessimistic": "Pessimistic",
+    "base": "Base",
+    "optimistic": "Optimistic"
+  },
+  "confirmation": {
+    "subject": "Welcome to the IGUDAR waitlist",
+    "title": "You're on the waitlist",
+    "intro": "Thank you for joining the IGUDAR waitlist. We're building a clearer way to own a share of rented Moroccan property, and we'll write to you as it takes shape.",
+    "emailLabel": "YOUR EMAIL",
+    "interest": {
+      "label": "YOUR NON-BINDING INTEREST",
+      "value": "{amount}, {scenario} scenario",
+      "note": "Indicative only. No money is collected and nothing is committed before the AMMC licence."
+    },
+    "nextTitle": "What happens next?",
+    "next": {
+      "news": "We'll write to you when there is news about the platform",
+      "noCommitment": "Joining the waitlist is not a commitment, and no money is collected",
+      "remove": "You can ask us to remove your email at any time"
+    }
+  },
+  "beta": {
+    "subject": "We received your IGUDAR beta application",
+    "title": "Thanks, {name}. We received your application.",
+    "intro": "A founder reviews every application by hand. When you are approved, you'll get an email with your access. Once approved, create your account here:",
+    "whatTitle": "What the beta is",
+    "facts": {
+      "closed": "A closed test with about 50 people, using demo money only",
+      "demo": "No real money is collected, and nothing is committed",
+      "clock": "The simulation can run faster than real time, and you'll always see which mode is on"
+    }
+  }
+}

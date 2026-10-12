@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "FAQ: fees, risks and rules | IGUDAR",
+    "description": "Everything you need to know about IGUDAR: what you own, what you pay, how exits work and where the AMMC licence stands. Returns are not guaranteed; not an offer."
+  },
+  "hero": {
+    "back": "Back to home",
+    "title": "Everything you need to know about <brand>IGUDAR</brand>",
+    "lead": "IGUDAR lets you own a share of a rented Moroccan building, with the fees, the risks and the rules written down in plain language."
+  },
+  "pillars": {
+    "participatory": {
+      "title": "Participatory finance",
+      "desc": "Built on participatory-finance principles: you own shares, you share the rent, and there is no interest. Sharia board review in progress."
+    },
+    "minimum": {
+      "title": "A clear minimum",
+      "desc": "Shares start from {min} per project, and every fee is published in full."
+    },
+    "licence": {
+      "title": "Licence in preparation",
+      "desc": "Built for Moroccan Law 15-18. IGUDAR is preparing its AMMC licence and collects no money before it is granted."
+    }
+  },
+  "section": {
+    "title": "Frequently Asked <accent>Questions</accent>",
+    "lead": "Get answers to common questions about IGUDAR"
+  },
+  "categories": {
+    "returns": "Returns & risk",
+    "money": "Money & exit",
+    "platform": "The platform",
+    "rules": "Rules & licence"
+  },
+  "explorer": {
+    "all": "All",
+    "railLabel": "Question categories",
+    "searchLabel": "Search the questions",
+    "searchPlaceholder": "Search the questions",
+    "clear": "Clear the search",
+    "noMatch": "No question matches “{query}”. Try another word, or clear the search.",
+    "count": "{shown} of {total} questions"
+  },
+  "items": {
+    "promise": {
+      "q": "Can IGUDAR promise me a return?",
+      "a": "No. Rent can arrive late, a property can stay empty and its price can fall. That is why every figure on this site is labelled net, indicative and not guaranteed, and why we always show the Pessimistic case next to the Base case. At {min}, the Pessimistic scenario makes {pessimisticProfit} over {years} years, {comparison} than the {bankProfit} a bank deposit would earn. A return nobody can guarantee should not be promised, and not promising it protects you from a number that could be broken.",
+      "more": "more",
+      "less": "less"
+    },
+    "earlyExit": {
+      "q": "Can I get my money out early?",
+      "a": "Not at any time. Your money is locked up while the property is held, for {years} years. After the first year, exit windows open every {months} months, where you can offer your share to other associates. A buyer is not guaranteed, and selling early costs a transfer fee of {transferFee} of the amount traded, plus registration duty and tax on any gain (to confirm with counsel)."
+    },
+    "raiseFails": {
+      "q": "What happens if the raise fails?",
+      "a": "Your money waits in an escrow account at a regulated bank, one account per project, and is only released to the property company if the raise reaches its target. If it fails, or the deadline passes, the bank refunds you in full and IGUDAR keeps no fee from you."
+    },
+    "irrVsYield": {
+      "q": "Why is the IRR lower than the cash yield?",
+      "a": "The cash yield is the rent you receive in a year divided by what you invested ({cashYield} in the Base scenario). The IRR also counts the {acquisition} purchase costs (registration, land registry and notary) that are paid from the capital, and what you get back when the property is sold, so it is lower ({irr} in the Base scenario). Both are net of fees and taxes, and neither is a promise.",
+      "notAvailable": "n/a"
+    },
+    "howItWorks": {
+      "q": "How does the IGUDAR platform work?",
+      "a": "Several people each buy a share of one property company, which owns one rented building. The company rents the building to a professional operator, and the rent left after costs, fees and taxes is shared between the shareholders. The minimum is {min} per project. You pay no entry fee and a platform fee of {platformFee} a year, taken through the property company. Sellers and operators pay their own fees."
+    },
+    "ownership": {
+      "q": "What do I actually own?",
+      "a": "Shares in a property company (a SAS) created for one building. The company rents the building to a professional operator, and the rent, after costs, fees and taxes, is shared between the shareholders. There is no loan to you and no interest in either direction. Rent comes from the operator under the lease, not from IGUDAR."
+    },
+    "participatory": {
+      "q": "Is IGUDAR Sharia-compliant?",
+      "a": "We do not claim it yet. IGUDAR is built on participatory-finance principles: you own shares, the rent and the risk are shared, and there is no interest. Sharia board review in progress. Until the board gives its opinion, we will not describe IGUDAR with any religious label."
+    },
+    "sellers": {
+      "q": "How do sellers and developers benefit?",
+      "a": "A seller can raise part of the funding from a group of shareholders instead of relying only on a bank loan. The seller pays a syndication fee of {syndication} of the amount raised, only if the raise closes, and the operator pays {structuring} to structure the lease. Neither is charged to you."
+    },
+    "audience": {
+      "q": "Who is IGUDAR for?",
+      "a": "Urban professionals and Moroccans abroad who want to own a share of rented property without buying a whole building. The minimum is {min} per project. What you receive depends on how the property performs, is shown net of fees and taxes, and is never promised."
+    },
+    "licence": {
+      "q": "Is IGUDAR licensed?",
+      "a": "Not yet. IGUDAR is built to follow Moroccan crowdfunding law (Loi 15-18) and is preparing its licence application with the AMMC. Until a licence is granted, nothing on this site is an offer or a solicitation."
+    },
+    "realMoney": {
+      "q": "Can I put in real money today?",
+      "a": "No. The platform at app.igudar.tech is a closed beta of about 50 people, using demo money. No real money is collected anywhere, and no investment is accepted before the AMMC licence. You can apply for the beta on the Beta page."
+    },
+    "risks": {
+      "q": "How are risks managed?",
+      "a": "Each property is reviewed before it is listed, and its documents, fees and risks are published on its page. Money waits in a dedicated escrow account per project, and every figure is shown with a Pessimistic case next to the Base case. None of this removes the risk: you can lose part or all of what you put in."
+    },
+    "payment": {
+      "q": "How does payment work?",
+      "a": "In the beta, with demo money only. Once IGUDAR is licensed, your money would go to an escrow account at a regulated bank, one per project, and never to IGUDAR itself. We will confirm the payment methods before any launch."
+    }
+  },
+  "still": {
+    "title": "Still have a question?",
+    "lead": "Our team is here to help you understand how IGUDAR can work for you.",
+    "applyBeta": "Apply for beta",
+    "joinWaitlist": "Join the waitlist"
+  }
+}

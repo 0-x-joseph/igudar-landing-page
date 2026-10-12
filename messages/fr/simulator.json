@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "title": "Simulateur d'investissement | IGUDAR",
+    "description": "Découvrez ce qu'une part de bien locatif au Maroc pourrait rapporter après frais et impôts, dès {min}. Scénarios Pessimiste, Base et Optimiste, présentés sans détour. Indicatif, non garanti."
+  },
+  "page": {
+    "eyebrow": "Simulateur",
+    "title": "Que pourrait rapporter une part de bien locatif ?",
+    "intro": "Choisissez un montant et un scénario. Chaque chiffre est net de frais et d'impôts, et le cas défavorable est toujours affiché à côté du cas favorable."
+  },
+  "na": "n/d",
+  "notice": {
+    "label": "Avis important"
+  },
+  "ticket": {
+    "currency": "MAD",
+    "decrease": "Diminuer le montant de {step}",
+    "increase": "Augmenter le montant de {step}"
+  },
+  "hero": {
+    "eyebrow": "Simulateur",
+    "title": "Possédez un bien réel, déjà loué, aux côtés de professionnels, dès {min}.",
+    "amountLabel": "Si je place",
+    "assumptions": "Scénario Base, conservé {years} ans. {suffix}.",
+    "tiles": {
+      "netCash": "Cash net par an",
+      "netProfit": "Bénéfice net sur {years} ans",
+      "netIrr": "TRI net",
+      "platformFee": "Frais de plateforme par an"
+    },
+    "pessimistic": "Pessimiste",
+    "entryFee": "Frais d'entrée : {rate}. Identiques dans chaque scénario.",
+    "bankDeposit": "La même somme en dépôt bancaire",
+    "badCaseLead": "Le cas défavorable aussi.",
+    "badCaseBeats": "Dans le scénario Pessimiste, la même somme rapporte <strong>{profit}</strong> sur {years} ans.",
+    "badCaseLoses": "Dans le scénario Pessimiste, la même somme rapporte <strong>{profit}</strong> sur {years} ans, et un dépôt bancaire aurait rapporté davantage.",
+    "openFull": "Ouvrir le simulateur complet",
+    "howCalculated": "Comment est-ce calculé ?"
+  },
+  "controls": {
+    "amountLabel": "Montant à simuler",
+    "sliderLabel": "Curseur du montant, de {min} à {max}",
+    "angelsUncapped": "Les business angels ne sont pas plafonnés. <link>Parlez-nous</link>.",
+    "stepsNote": "Par paliers de {step}. La limite est de {max} par projet. Au-delà, les business angels ne sont pas plafonnés : parlez-nous.",
+    "holding": "Durée de détention : {years} ans, fixe",
+    "holdingNote": "Votre argent est immobilisé tant que le bien est détenu. Après la première année, des fenêtres de sortie organisées s'ouvrent tous les {months} mois ; vous pouvez y proposer votre part aux autres associés. Un acheteur n'est pas garanti et des frais de cession s'appliquent. Cette simulation suppose que vous restez jusqu'à la vente en année {years}."
+  },
+  "scenario": {
+    "legend": "Scénario",
+    "current": "{label} :",
+    "grossYield": "{rate} de rendement locatif brut",
+    "vacancy": "{rate} de vacance ou de défaut du gestionnaire",
+    "noVacancy": "aucune vacance",
+    "rentReserve": "{rate} de réserve sur les loyers",
+    "priceGrowth": "prix du bien +{rate}/an",
+    "priceFlat": "prix du bien stable",
+    "rentIndexed": "loyers indexés de {rate}/an",
+    "sellerCosts": "{rate} de frais côté vendeur à la sortie"
+  },
+  "results": {
+    "title": "Votre résultat, scénario {scenario}",
+    "intro": "Tous les chiffres sont {suffix}, après frais et impôts.",
+    "explainerLabel": "Que signifie « {label} » ?",
+    "howCalculated": "Comment est-ce calculé ?",
+    "netCash": {
+      "label": "Cash net par an",
+      "caption": "{rate} de rendement net en cash indicatif ({scenario}) · non garanti",
+      "explainer": "Le loyer que votre part génère en année 1, après la réserve du bien, les frais de plateforme IGUDAR (TVA incluse), l'impôt sur les sociétés et la retenue à la source de {withholding} sur les dividendes. C'est une projection, pas une promesse."
+    },
+    "netProfit": {
+      "label": "Bénéfice net sur {years} ans",
+      "caption": "Cash perçu plus votre part de la vente, moins votre mise ({suffix}).",
+      "explainer": "Tout ce que vous recevez sur {years} ans (cash annuel plus votre part de la vente à la fin) moins le montant investi, après tous frais et impôts. Le bien peut se vendre plus ou moins cher que prévu."
+    },
+    "netIrr": {
+      "label": "TRI net",
+      "caption": "{rate} de TRI net ({scenario}) · indicatif · non garanti",
+      "captionUnavailable": "TRI net non disponible ({scenario}) · indicatif · non garanti",
+      "explainer": "Le TRI est votre taux de rendement annuel, qui tient compte de la date de chaque versement. Il inclut les {acquisition} de frais d'acquisition (enregistrement, conservation foncière, notaire) payés sur le capital ; il est donc inférieur au rendement en cash."
+    },
+    "moneyMultiple": {
+      "label": "Multiple du capital",
+      "caption": "Total récupéré divisé par le montant investi, sur {years} ans ({suffix}).",
+      "explainer": "Combien de dirhams reviennent pour chaque dirham investi, après frais et impôts. 1,00× signifie que vous récupérez seulement votre mise ; en dessous de 1,00×, ce serait une perte."
+    }
+  },
+  "compare": {
+    "title": "La même somme dans chaque scénario",
+    "intro": "Nous montrons toujours le cas pessimiste en premier. La réalité peut se situer n'importe où dans cette fourchette, ou en dehors.",
+    "chosen": "Choisi",
+    "netCash": "Cash net par an",
+    "netProfit": "Bénéfice net sur {years} ans",
+    "netIrr": "TRI net",
+    "beats": "Fait mieux qu'un dépôt bancaire",
+    "loses": "Fait moins bien qu'un dépôt bancaire"
+  },
+  "bank": {
+    "title": "Face à un dépôt bancaire",
+    "intro": "Bénéfice net sur {years} ans pour la même somme (scénario {scenario}, indicatif).",
+    "igudarRow": "Part IGUDAR, {scenario}",
+    "depositRow": "Dépôt bancaire à {rate}/an",
+    "wins": "Dans ce scénario, la part de bien rapporte plus qu'un dépôt. Elle porte aussi des risques qu'un dépôt n'a pas : vacance, baisse du prix et argent immobilisé pendant {years} ans.",
+    "loses": "Dans ce scénario, un dépôt bancaire aurait rapporté davantage."
+  },
+  "bridge": {
+    "title": "Où va votre loyer",
+    "intro": "Pour chaque {hundred} de loyer que le bien encaisse en année 1, scénario {scenario} (indicatif).",
+    "keep": "Vous gardez <share></share> sur chaque {hundred}.",
+    "segments": {
+      "reserveVacancy": { "name": "Réserve et vacance", "note": "Mis de côté pour les réparations et les mois sans locataire" },
+      "platformFee": { "name": "Frais de plateforme IGUDAR", "note": "Couvrent les frais de fonctionnement, TVA incluse" },
+      "is": { "name": "Impôt sur les sociétés", "note": "Payé par la société propriétaire du bien" },
+      "withholding": { "name": "Retenue à la source", "note": "{rate} sur le dividende que vous recevez" },
+      "investor": { "name": "Vous", "note": "Arrive sur votre compte bancaire" }
+    }
+  },
+  "fees": {
+    "title": "Ce que vous payez à IGUDAR",
+    "intro": "Pour {amount}. Les vendeurs et les gestionnaires paient leurs propres frais ; pas vous.",
+    "entry": { "name": "Frais d'entrée", "detail": "Rien à payer pour souscrire." },
+    "platform": {
+      "name": "Frais de plateforme, par an",
+      "amount": "{amount} TTC",
+      "detail": "{amount} HT. Payés via la société propriétaire du bien, ils couvrent ses frais de fonctionnement."
+    },
+    "exit": {
+      "name": "Frais de sortie, votre part",
+      "detail": "Facturés à la société propriétaire du bien lors de la vente de l'immeuble (prix de vente du scénario {scenario}, TVA incluse)."
+    },
+    "transfer": {
+      "name": "Frais de cession",
+      "amount": "{rate} du montant cédé",
+      "detail": "Uniquement si vous vendez votre part de façon anticipée, lors d'une fenêtre de sortie. Hors simulation sur {years} ans."
+    }
+  },
+  "interest": {
+    "title": "Intéressé(e) à ce montant ?",
+    "intro": "Laissez votre e-mail. Sans engagement, et aucun argent n'est collecté. Nous noterons <strong>{amount}</strong> et le scénario {scenario} que vous avez consulté.",
+    "email": "E-mail",
+    "website": "Site web",
+    "consent": "J'accepte qu'IGUDAR conserve cet e-mail, le montant et le scénario pour me contacter au sujet de cette marque d'intérêt sans engagement.",
+    "submit": "Noter mon intérêt",
+    "sending": "Envoi…",
+    "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+    "errorNetwork": "Impossible de joindre le serveur. Veuillez réessayer.",
+    "doneTitle": "Merci. Nous avons noté votre intérêt, sans engagement.",
+    "doneBody": "Consultez votre boîte de réception pour la confirmation. Aucun argent n'a été collecté."
+  },
+  "sticky": {
+    "label": "Résumé de votre résultat",
+    "figures": "{cash}/an · {profit} sur {years} ans",
+    "scenario": "{scenario} · {suffix}"
+  }
+}

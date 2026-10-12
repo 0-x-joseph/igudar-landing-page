@@ -1,18 +1,27 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { CheckCircle2 } from "lucide-react";
-import { formatMad, scenarioLabel, type ScenarioKey } from "@/lib/finance";
+import { type ScenarioKey } from "@/lib/finance";
+import { useFormat, useScenarioLabel } from "@/lib/i18n/use-format";
 import { ticketBucket } from "@/lib/simulator";
+import { isWaitlistErrorCode } from "@/lib/waitlist-validation";
 import { track } from "@/lib/analytics";
 
 type Status = "idle" | "sending" | "done" | "error";
 
 /**
  * Optional, non-binding interest capture (Gate 2 validation). Consent is never
- * pre-checked and its timestamp is taken when the visitor submits.
+ * pre-checked and its timestamp is taken when the visitor submits. The visitor's
+ * language travels with the request so the confirmation email matches it.
  */
 export function InterestCapture({ amountMad, scenario }: { amountMad: number; scenario: ScenarioKey }) {
+  const t = useTranslations("simulator.interest");
+  const tErrors = useTranslations("beta.errors");
+  const locale = useLocale();
+  const scenarioLabel = useScenarioLabel();
+  const { mad } = useFormat();
   const id = useId();
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -36,19 +45,21 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
           scenario,
           consentAt: new Date().toISOString(),
           source: "simulator",
+          locale,
         }),
       });
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      const data = (await res.json().catch(() => ({}))) as { error?: unknown };
       if (!res.ok) {
+        // The API answers with a code, never a sentence; the words come from the visitor's language.
         setStatus("error");
-        setMessage(data.error ?? "Something went wrong. Please try again.");
+        setMessage(isWaitlistErrorCode(data.error) ? tErrors(data.error) : t("errorGeneric"));
         return;
       }
       track("interest_submit", { amount_bucket: ticketBucket(amountMad), scenario });
       setStatus("done");
     } catch {
       setStatus("error");
-      setMessage("We could not reach the server. Please try again.");
+      setMessage(t("errorNetwork"));
     }
   };
 
@@ -57,9 +68,9 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
       <section className="rounded-3xl border border-border bg-card p-6" aria-live="polite">
         <p className="flex items-center gap-2 text-base font-semibold text-foreground">
           <CheckCircle2 className="size-5 text-success" aria-hidden="true" />
-          Thank you. We noted your interest, with no commitment.
+          {t("doneTitle")}
         </p>
-        <p className="mt-2 text-sm text-muted-foreground">Check your inbox for a confirmation. No money has been collected.</p>
+        <p className="mt-2 text-sm text-muted-foreground">{t("doneBody")}</p>
       </section>
     );
   }
@@ -67,17 +78,19 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
   return (
     <section aria-labelledby={`${id}-title`} className="rounded-3xl border border-border bg-card p-5 sm:p-6">
       <h2 id={`${id}-title`} className="text-lg font-bold text-foreground">
-        Interested at this amount?
+        {t("title")}
       </h2>
       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-        Leave your email. It is non-binding and no money is collected. We will note{" "}
-        <span className="financial-number font-semibold text-foreground">{formatMad(amountMad, { decimals: 0 })}</span>{" "}
-        and the {scenarioLabel(scenario)} scenario you looked at.
+        {t.rich("intro", {
+          amount: mad(amountMad, { decimals: 0 }),
+          scenario: scenarioLabel(scenario),
+          strong: (chunks) => <span className="financial-number font-semibold text-foreground">{chunks}</span>,
+        })}
       </p>
       <form onSubmit={onSubmit} className="mt-4 space-y-4" noValidate>
         <div>
           <label htmlFor={`${id}-email`} className="mb-1.5 block text-sm font-semibold text-foreground">
-            Email
+            {t("email")}
           </label>
           <input
             id={`${id}-email`}
@@ -90,8 +103,8 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
           />
         </div>
         {/* Honeypot: hidden from people, filled by bots. */}
-        <div className="absolute -left-[9999px]" aria-hidden="true">
-          <label htmlFor={`${id}-website`}>Website</label>
+        <div className="absolute -start-[9999px]" aria-hidden="true">
+          <label htmlFor={`${id}-website`}>{t("website")}</label>
           <input id={`${id}-website`} tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
         </div>
         <label className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-muted-foreground">
@@ -101,10 +114,7 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
             onChange={(e) => setConsent(e.target.checked)}
             className="mt-1 size-5 shrink-0 accent-primary"
           />
-          <span>
-            I agree that IGUDAR may store this email, the amount and the scenario to contact me about this
-            non-binding interest.
-          </span>
+          <span>{t("consent")}</span>
         </label>
         {status === "error" && (
           <p role="alert" className="text-sm font-medium text-destructive">
@@ -116,7 +126,7 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
           disabled={!consent || email.trim() === "" || status === "sending"}
           className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-6 text-base font-semibold text-primary-foreground transition-colors hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {status === "sending" ? "Sending…" : "Note my interest"}
+          {status === "sending" ? t("sending") : t("submit")}
         </button>
       </form>
     </section>

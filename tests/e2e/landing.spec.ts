@@ -135,7 +135,7 @@ for (const { path, slug } of pages) {
       await page.route("**/api/waitlist", async (route) => {
         posts += 1;
         posted = route.request().postDataJSON();
-        if (mode === "unconfigured") await route.fulfill({ status: 503, json: { error: "Sign-up is not configured yet." } });
+        if (mode === "unconfigured") await route.fulfill({ status: 503, json: { error: "not_configured" } });
         else await route.fulfill({ json: { success: true } });
       });
       await submit.click();
@@ -150,7 +150,7 @@ for (const { path, slug } of pages) {
       await form.getByLabel(/experience with property/).selectOption("some");
       await consent.check();
 
-      // Not configured: the form shows the server sentence and stays usable.
+      // Not configured: the API returns a code and the form shows its sentence, then stays usable.
       await submit.click();
       await expect(form.getByRole("alert")).toHaveText("Sign-up is not configured yet.");
       expect(posts).toBe(1);
@@ -169,7 +169,7 @@ for (const { path, slug } of pages) {
       for (const gone of ["Who pays what", "Early exit calculator", "Caps checker"]) {
         await expect(page.getByRole("heading", { name: gone })).toHaveCount(0);
       }
-      await expect(page.getByRole("spinbutton", { name: "Your amount" })).toBeVisible();
+      await expect(page.getByRole("textbox", { name: "Your amount" })).toBeVisible();
     }
     if (path === "/simulator") {
       await expect(page.getByText("Your cash, year by year")).toHaveCount(0);

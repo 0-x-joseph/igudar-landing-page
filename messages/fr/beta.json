@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "title": "Bêta fermée | IGUDAR",
+    "description": "Un test fermé de la plateforme IGUDAR avec une cinquantaine de personnes, uniquement avec de l'argent fictif. Candidatez à la bêta et dites-nous ce qui fonctionne."
+  },
+  "hero": {
+    "eyebrow": "Bêta fermée",
+    "title": "Essayez IGUDAR avec de <em>l'argent fictif.</em>",
+    "lede": "Nous testons la plateforme avec une cinquantaine de personnes. Explorez des biens, simulez une souscription à partir de {amount} et dites-nous ce qui fonctionne. Aucun argent réel n'est engagé.",
+    "ctaPrimary": "Candidater à la bêta",
+    "ctaSecondary": "Ce qu'est la bêta",
+    "rosetteLabel": "Argent fictif. Rien de réel n'est en jeu.",
+    "stepsLabel": "Comment ça marche",
+    "steps": {
+      "apply": { "title": "Candidater", "body": "Une minute, quelques questions." },
+      "approve": { "title": "Un fondateur valide à la main", "body": "Chaque candidature est lue par une personne." },
+      "access": { "title": "Vous recevez l'e-mail avec votre accès", "body": "Puis vous créez votre compte." }
+    }
+  },
+  "details": {
+    "what": {
+      "title": "Ce qu'est <em>la bêta</em>",
+      "lede": "Un petit test honnête de la vraie plateforme. Nous voulons voir si les règles, les chiffres et les écrans ont du sens pour les personnes à qui ils sont destinés, avant que quoi que ce soit ne soit proposé au public.",
+      "facts": {
+        "closed": {
+          "title": "Un test fermé",
+          "body": "Une cinquantaine de personnes, admises à la main. Un fondateur valide chaque compte avant votre entrée."
+        },
+        "demo": {
+          "title": "Argent fictif uniquement",
+          "body": "Chaque souscription utilise de l'argent fictif. Aucun argent réel n'est collecté ni déplacé, nulle part dans la bêta."
+        },
+        "clock": {
+          "title": "Le temps peut s'accélérer",
+          "body": "La simulation peut aller plus vite que le temps réel : jusqu'à un an d'activité en deux semaines environ. Vous verrez toujours quel mode est actif."
+        }
+      }
+    },
+    "who": {
+      "title": "À qui <em>elle s'adresse</em>",
+      "lede": "Les professionnels urbains au Maroc et les Marocains de l'étranger curieux de détenir une part d'un immeuble loué, et qui veulent lire les règles avant tout engagement d'argent réel.",
+      "dataTitle": "Ce que nous collectons, et pourquoi",
+      "dataBody": "Pour apprendre ce qui fonctionne, nous enregistrons votre usage de la bêta (événements d'utilisation) et les retours que vous nous donnez. Aucune pièce d'identité n'est conservée. Vos données sont traitées conformément à la loi marocaine sur la protection des données personnelles (loi 09-08), sous le contrôle de la CNDP. Un écran de consentement vous sera présenté avant de commencer."
+    },
+    "do": {
+      "title": "Ce que vous <em>ferez</em>",
+      "steps": {
+        "explore": {
+          "title": "Explorer des biens",
+          "body": "Lire les documents, les frais et les risques de chaque bien de démonstration."
+        },
+        "simulate": {
+          "title": "Simuler des souscriptions",
+          "body": "Souscrire avec de l'argent fictif, à partir de {amount} par bien, et voir où vous en êtes."
+        },
+        "receive": {
+          "title": "Recevoir des distributions simulées",
+          "body": "Voir arriver des loyers simulés, nets de frais et d'impôts, au fil du temps."
+        },
+        "feedback": {
+          "title": "Nous dire ce qui fonctionne",
+          "body": "Dire ce qui était clair, ce qui était confus et ce que vous changeriez."
+        }
+      }
+    }
+  },
+  "apply": {
+    "title": "Candidater à <em>la bêta</em>",
+    "lede": "Nous posons quelques questions pour choisir un ensemble varié de personnes et apprendre de chacune d'elles. Cela prend environ une minute. Un fondateur lit chaque réponse."
+  },
+  "access": {
+    "title": "Vous préférez entrer <em>directement ?</em>",
+    "body": "Créez un compte sur la plateforme. Vous lirez et accepterez d'abord le consentement de la bêta, puis un fondateur validera votre accès à la main.",
+    "cta": "Accès bêta"
+  },
+  "form": {
+    "ariaLabel": "Candidater à la bêta",
+    "legends": {
+      "about": "À propos de vous",
+      "interest": "Votre intérêt",
+      "consent": "Consentement"
+    },
+    "fields": {
+      "firstName": "Prénom",
+      "email": "E-mail",
+      "location": "Ville et pays",
+      "locationPlaceholder": "Casablanca, Maroc",
+      "ticketBucket": "Quel montant envisageriez-vous raisonnablement, par bien ?",
+      "ticketPlaceholder": "Choisissez une fourchette",
+      "ticketHint": "Cela nous aide seulement à comprendre l'ordre de grandeur. La bêta utilise de l'argent fictif.",
+      "experience": "Votre expérience des produits immobiliers ou d'épargne",
+      "experiencePlaceholder": "Choisissez une réponse",
+      "website": "Site web"
+    },
+    "buckets": {
+      "25-50k": "{from} à {to}",
+      "50-100k": "{from} à {to}",
+      "100-250k": "{from} à {to}",
+      "250k-plus": "Plus de {amount}",
+      "not-sure": "Pas encore sûr"
+    },
+    "experience": {
+      "new": "Débutant",
+      "some": "Un peu d'expérience (produits d'épargne, un bien en location ou un premier regard)",
+      "experienced": "Expérimenté (je possède ou j'investis dans l'immobilier ou des fonds)"
+    },
+    "consent": "J'accepte qu'IGUDAR conserve ces réponses et mon e-mail pour examiner ma candidature et me contacter au sujet de la bêta fermée. Je comprends que la bêta utilise de l'argent fictif.",
+    "submit": "Candidater à la bêta",
+    "sending": "Envoi…",
+    "next": "Ensuite : un fondateur lit votre candidature à la main et vous écrit par e-mail.",
+    "errors": {
+      "firstName": "Veuillez indiquer votre prénom.",
+      "email": "Veuillez saisir une adresse e-mail valide.",
+      "location": "Veuillez indiquer votre ville et votre pays.",
+      "ticketBucket": "Veuillez choisir une fourchette de montant.",
+      "experience": "Veuillez choisir votre niveau d'expérience.",
+      "consent": "Veuillez cocher la case pour accepter avant de candidater."
+    },
+    "genericError": "Une erreur est survenue. Veuillez réessayer.",
+    "networkError": "Impossible de joindre le serveur. Veuillez réessayer.",
+    "success": {
+      "title": "Merci — un fondateur examine chaque candidature à la main. Vous aurez de nos nouvelles par e-mail.",
+      "nextTitle": "Et ensuite",
+      "steps": {
+        "read": "1. Un fondateur lit votre candidature à la main.",
+        "email": "2. Vous recevez un e-mail avec votre accès.",
+        "create": "3. Une fois validé, créez votre compte ici."
+      },
+      "cta": "Créer votre compte",
+      "note": "Aucun argent n'est collecté, et rien n'est engagé."
+    }
+  },
+  "errors": {
+    "invalid_request": "Requête invalide.",
+    "invalid_email": "Veuillez fournir une adresse e-mail valide.",
+    "amount_out_of_range": "Veuillez indiquer un montant valide.",
+    "unknown_scenario": "Scénario inconnu.",
+    "unknown_source": "Source inconnue.",
+    "consent_required": "Le consentement est requis.",
+    "consent_invalid": "L'horodatage du consentement est invalide.",
+    "first_name_required": "Veuillez indiquer votre prénom.",
+    "location_required": "Veuillez indiquer votre ville et votre pays.",
+    "ticket_bucket_required": "Veuillez choisir une fourchette de montant.",
+    "experience_required": "Veuillez choisir votre niveau d'expérience.",
+    "not_configured": "L'inscription n'est pas encore configurée.",
+    "rate_limited": "Trop de requêtes. Veuillez réessayer dans une minute.",
+    "save_failed": "Nous n'avons pas pu enregistrer votre inscription. Veuillez réessayer.",
+    "application_failed": "Nous n'avons pas pu enregistrer votre candidature. Veuillez réessayer."
+  },
+  "waitlist": {
+    "placeholder": "Saisissez votre e-mail",
+    "submit": "Rejoindre la liste d'attente",
+    "joining": "Inscription…",
+    "genericError": "Une erreur est survenue.",
+    "networkError": "Erreur réseau. Veuillez réessayer.",
+    "success": "Vous êtes sur la liste ! Consultez votre e-mail pour la confirmation.",
+    "modal": {
+      "title": "Rejoindre la liste d'attente",
+      "lede": "Soyez les premiers informés du lancement et bénéficiez d'avantages exclusifs en accès anticipé.",
+      "emailLabel": "Adresse e-mail",
+      "placeholder": "Saisissez votre meilleure adresse e-mail",
+      "submit": "Réserver ma place",
+      "close": "Fermer",
+      "successTitle": "Vous êtes sur la liste !",
+      "successBody": "Nous avons envoyé un e-mail de confirmation à <strong>{email}</strong>. Nous vous préviendrons dès l'ouverture de l'accès anticipé."
+    }
+  }
+}

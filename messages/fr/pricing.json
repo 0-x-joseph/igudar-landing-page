@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "title": "Tarifs : qui paie quoi, et quand | IGUDAR",
+    "description": "La grille tarifaire IGUDAR, publiée dans son intégralité : qui paie quoi, et quand."
+  },
+  "hero": {
+    "eyebrow": "Tarifs",
+    "title": "Un bien, trois façons d'investir",
+    "lead": "Une seule grille tarifaire publiée, la même pour tous les investisseurs. Ce qui change d'une carte à l'autre, c'est le ticket.",
+    "beta": "Bêta fermée, validée à la main. Un prototype avec de l'argent fictif uniquement : rien n'est investi."
+  },
+  "plans": {
+    "sectionLabel": "Les trois formules",
+    "ariaLabel": "Formules",
+    "items": {
+      "individual": {
+        "eyebrow": "PARTICULIER",
+        "title": "Individuel",
+        "audience": "Pour une personne qui investit seule."
+      },
+      "family": {
+        "eyebrow": "CERCLE FAMILIAL",
+        "title": "Famille",
+        "audience": "Pour une famille qui place ses tickets dans le même bien."
+      },
+      "institutional": {
+        "eyebrow": "PROFESSIONNEL",
+        "title": "Institutionnel",
+        "audience": "Pour les sociétés, les fonds et les business angels."
+      }
+    },
+    "minimumTicket": "Ticket minimum",
+    "personalFees": "Vos frais",
+    "service": "Service",
+    "planned": "Prévu",
+    "notes": {
+      "individual": {
+        "cap": "plafond de {amount} par projet"
+      },
+      "family": {
+        "prefix": "par membre",
+        "addUp": "les tickets de la famille s'additionnent"
+      },
+      "institutional": {
+        "angels": "business angels exemptés des plafonds (art. 44)"
+      }
+    },
+    "fees": {
+      "entry": "Frais d'entrée",
+      "platform": "Frais de plateforme",
+      "platformValue": "{rate} / an HT",
+      "transfer": "Cession, uniquement si vous vendez avant terme",
+      "fileFee": "Frais de dossier",
+      "lowerTransfer": "Frais de cession réduits",
+      "memberTransfers": "Cessions entre membres",
+      "volumeDiscount": "Remise de volume sur les tickets cumulés",
+      "analytics": "Analytique, en option (D6)",
+      "analyticsValue": "{amount} / an",
+      "anchorDiscount": "Remise investisseur de référence"
+    },
+    "figures": {
+      "netIrr": "TRI net par an",
+      "totalGain": "Gain total après la vente sur {years} ans",
+      "pessimistic": "{scenario} {value}",
+      "notAvailable": "n.d."
+    },
+    "footnote": "Simulation nette de frais et d'impôts, non garantie : scénario Base du modèle financier IGUDAR, vente après {years} ans ; le TRI inclut la vente ; gain total = loyers nets + produit de la vente − montant investi. Le scénario Pessimiste est affiché à côté du scénario Base."
+  },
+  "table": {
+    "title": "Qui paie quoi, et quand",
+    "ariaLabel": "Grille tarifaire",
+    "caption": "Qui paie quoi, quand, et ce que cela représente pour {ticket}",
+    "headers": {
+      "fee": "Frais",
+      "paidBy": "Payés par",
+      "rate": "Taux",
+      "when": "Quand",
+      "means": "Pour {ticket}, cela représente…"
+    },
+    "mobile": {
+      "paidBy": "Payés par {who}. {when}.",
+      "means": "Pour {ticket} : {meaning}"
+    },
+    "lines": {
+      "S1": { "label": "Syndication", "paidBy": "Vendeur / promoteur, seulement si la levée aboutit", "when": "Clôture" },
+      "S2": { "label": "Structuration du bail principal", "paidBy": "Gestionnaire (preneur principal)", "when": "Signature du bail" },
+      "D1": { "label": "Frais d'entrée", "paidBy": "Investisseur", "when": "Souscription" },
+      "D2": { "label": "Frais de plateforme (tout compris)", "paidBy": "Investisseur, via la SAS", "when": "Trimestriel" },
+      "D3": { "label": "Frais de sortie", "paidBy": "SAS, déductibles", "when": "Vente de l'immeuble / vente en bloc" },
+      "D4": { "label": "Cession secondaire", "paidBy": "Associé cédant", "when": "À chaque fenêtre de cession" },
+      "D5": { "label": "Commission de performance", "paidBy": "SAS à la sortie", "when": "Sortie" },
+      "D6": { "label": "Analytique (en option)", "paidBy": "Utilisateur", "when": "Annuel" }
+    },
+    "rate": {
+      "S1": "{rate} du capital levé",
+      "S2": "{rate} du capital levé",
+      "D1": "{rate}",
+      "D2": "{rate}/an du capital, HT ({ttc} TVA incluse)",
+      "D3": "{rate} de la valeur de vente, HT",
+      "D4": "{rate} du montant cédé",
+      "D5": "{rate} du gain au-delà d'un seuil de {hurdle}/an",
+      "D6": "{individual} ou {premium}/an (entreprises : {b2b})"
+    },
+    "meaning": {
+      "notCharged": "Rien ne vous est facturé",
+      "D2": "{ht} par an HT ({ttc} TTC)",
+      "D3": "Payés par la société propriétaire du bien lors de la vente de l'immeuble. Dépend du prix de vente",
+      "D4": "{amount}, uniquement si vous vendez avant terme",
+      "D5": "Uniquement si le gain dépasse le seuil. Dépend du prix de vente",
+      "D6": "En option, jamais un accès prioritaire aux actifs"
+    },
+    "note": "La dernière colonne est calculée pour {ticket}, le ticket minimum. HT signifie hors TVA ; TTC inclut la TVA de {tva} que la société propriétaire du bien ne peut pas récupérer."
+  },
+  "notPaid": {
+    "title": "Ce que vous ne payez pas",
+    "items": {
+      "syndication": {
+        "title": "Les vendeurs paient les frais de syndication",
+        "text": "{rate} du capital levé, facturés au vendeur ou au promoteur, et seulement si la levée aboutit."
+      },
+      "structuring": {
+        "title": "Les gestionnaires paient les frais de structuration",
+        "text": "{rate} du capital levé, facturés au gestionnaire à la signature du bail."
+      },
+      "entry": {
+        "title": "Aucuns frais d'entrée pour vous",
+        "text": "Souscrire coûte {rate}. Si une levée échoue, la banque séquestre vous rend votre argent dans son intégralité."
+      }
+    },
+    "footnote": "Les frais des vendeurs et des gestionnaires ne réduisent jamais votre rendement. Les frais sont une prestation de service affichée, jamais déduite d'un rendement promis."
+  },
+  "cta": {
+    "title": "Voyez-le sur votre propre montant",
+    "calculator": "Calculez votre propre part dans le calculateur",
+    "faq": "Lire la FAQ"
+  }
+}

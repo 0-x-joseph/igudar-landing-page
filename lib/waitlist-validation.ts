@@ -16,9 +16,36 @@ export interface Interest {
   source: InterestSource;
 }
 
+/**
+ * Every error the waitlist flow can answer with, as a stable code. The UI shows `beta.errors.<code>`
+ * in the visitor's language; `lib/__tests__/waitlist-validation.test.ts` checks each code has a message.
+ */
+export const WAITLIST_ERROR_CODES = [
+  "invalid_request",
+  "invalid_email",
+  "amount_out_of_range",
+  "unknown_scenario",
+  "unknown_source",
+  "consent_required",
+  "consent_invalid",
+  "first_name_required",
+  "location_required",
+  "ticket_bucket_required",
+  "experience_required",
+  "not_configured",
+  "rate_limited",
+  "save_failed",
+  "application_failed",
+] as const;
+export type WaitlistErrorCode = (typeof WAITLIST_ERROR_CODES)[number];
+
+export function isWaitlistErrorCode(value: unknown): value is WaitlistErrorCode {
+  return typeof value === "string" && (WAITLIST_ERROR_CODES as readonly string[]).includes(value);
+}
+
 export type InterestParse =
   | { ok: true; value: Interest | null }
-  | { ok: false; error: string };
+  | { ok: false; error: WaitlistErrorCode };
 
 const MAX_AMOUNT_MAD = 10_000_000;
 const CLOCK_SKEW_MS = 5 * 60 * 1000;
@@ -30,7 +57,7 @@ const CLOCK_SKEW_MS = 5 * 60 * 1000;
  */
 export function parseInterestPayload(body: unknown, now: Date = new Date()): InterestParse {
   if (typeof body !== "object" || body === null) {
-    return { ok: false, error: "Invalid request." };
+    return { ok: false, error: "invalid_request" };
   }
   const { amountMad, scenario, consentAt, source } = body as Record<string, unknown>;
 
@@ -41,20 +68,20 @@ export function parseInterestPayload(body: unknown, now: Date = new Date()): Int
   if (!present) return { ok: true, value: null };
 
   if (typeof amountMad !== "number" || !Number.isFinite(amountMad) || amountMad <= 0 || amountMad > MAX_AMOUNT_MAD) {
-    return { ok: false, error: "Please provide a valid amount." };
+    return { ok: false, error: "amount_out_of_range" };
   }
   if (typeof scenario !== "string" || !(SCENARIO_KEYS as readonly string[]).includes(scenario)) {
-    return { ok: false, error: "Unknown scenario." };
+    return { ok: false, error: "unknown_scenario" };
   }
   if (typeof source !== "string" || !(INTEREST_SOURCES as readonly string[]).includes(source)) {
-    return { ok: false, error: "Unknown source." };
+    return { ok: false, error: "unknown_source" };
   }
   if (typeof consentAt !== "string") {
-    return { ok: false, error: "Consent is required." };
+    return { ok: false, error: "consent_required" };
   }
   const consentDate = new Date(consentAt);
   if (Number.isNaN(consentDate.getTime()) || consentDate.getTime() > now.getTime() + CLOCK_SKEW_MS) {
-    return { ok: false, error: "Consent timestamp is invalid." };
+    return { ok: false, error: "consent_invalid" };
   }
 
   return {
@@ -73,7 +100,10 @@ export function parseInterestPayload(body: unknown, now: Date = new Date()): Int
 export const BETA_TICKET_BUCKETS = ["25-50k", "50-100k", "100-250k", "250k-plus", "not-sure"] as const;
 export type BetaTicketBucket = (typeof BETA_TICKET_BUCKETS)[number];
 
-/** Display labels. The first bucket starts at the minimum ticket, read from the constants. */
+/**
+ * English labels for the team notification. Visitors see `beta.form.buckets.*` in their language.
+ * The first bucket starts at the minimum ticket, read from the constants.
+ */
 export const BETA_TICKET_BUCKET_LABELS: Record<BetaTicketBucket, string> = {
   "25-50k": `${formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })} to 50,000 MAD`,
   "50-100k": "50,000 to 100,000 MAD",
@@ -85,6 +115,7 @@ export const BETA_TICKET_BUCKET_LABELS: Record<BetaTicketBucket, string> = {
 export const BETA_EXPERIENCE_LEVELS = ["new", "some", "experienced"] as const;
 export type BetaExperience = (typeof BETA_EXPERIENCE_LEVELS)[number];
 
+/** English labels for the team notification. Visitors see `beta.form.experience.*`. */
 export const BETA_EXPERIENCE_LABELS: Record<BetaExperience, string> = {
   new: "New to this",
   some: "Some experience (savings products, a rental, or a first look)",
@@ -104,7 +135,7 @@ export interface BetaApplication {
 
 export type BetaParse =
   | { ok: true; value: BetaApplication | null }
-  | { ok: false; error: string };
+  | { ok: false; error: WaitlistErrorCode };
 
 const MAX_NAME = 60;
 const MAX_LOCATION = 80;
@@ -121,31 +152,31 @@ function cleanText(value: unknown): string | null {
  */
 export function parseBetaApplication(body: unknown, now: Date = new Date()): BetaParse {
   if (typeof body !== "object" || body === null) {
-    return { ok: false, error: "Invalid request." };
+    return { ok: false, error: "invalid_request" };
   }
   const { source, firstName, location, ticketBucket, experience, consentAt } = body as Record<string, unknown>;
   if (source !== "beta") return { ok: true, value: null };
 
   const name = cleanText(firstName);
   if (!name || name.length > MAX_NAME) {
-    return { ok: false, error: "Please tell us your first name." };
+    return { ok: false, error: "first_name_required" };
   }
   const place = cleanText(location);
   if (!place || place.length > MAX_LOCATION) {
-    return { ok: false, error: "Please tell us your city and country." };
+    return { ok: false, error: "location_required" };
   }
   if (typeof ticketBucket !== "string" || !(BETA_TICKET_BUCKETS as readonly string[]).includes(ticketBucket)) {
-    return { ok: false, error: "Please choose an amount range." };
+    return { ok: false, error: "ticket_bucket_required" };
   }
   if (typeof experience !== "string" || !(BETA_EXPERIENCE_LEVELS as readonly string[]).includes(experience)) {
-    return { ok: false, error: "Please choose your experience level." };
+    return { ok: false, error: "experience_required" };
   }
   if (typeof consentAt !== "string") {
-    return { ok: false, error: "Consent is required." };
+    return { ok: false, error: "consent_required" };
   }
   const consentDate = new Date(consentAt);
   if (Number.isNaN(consentDate.getTime()) || consentDate.getTime() > now.getTime() + CLOCK_SKEW_MS) {
-    return { ok: false, error: "Consent timestamp is invalid." };
+    return { ok: false, error: "consent_invalid" };
   }
 
   return {

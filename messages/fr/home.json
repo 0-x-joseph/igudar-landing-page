@@ -1,0 +1,63 @@
+{
+  "hero": {
+    "title": "Un bien réel. Un loyer réel. <em>Des règles claires.</em>",
+    "subtitle": "Détenez un bien immobilier marocain réel et loué, aux côtés de professionnels, à partir de {min}.",
+    "note": "Bêta fermée, approuvée manuellement. Un prototype avec de l'argent fictif uniquement : rien n'est investi.",
+    "imageAlt": "Vue aérienne d'une ville marocaine au crépuscule"
+  },
+  "painPoints": {
+    "title": "Nous avons construit quelque chose de <em>différent.</em>",
+    "cards": {
+      "access": {
+        "eyebrow": "Accès transparent",
+        "title": "Chaque opportunité commence par les faits.",
+        "body": "Les détails du bien, la logique de prix, les rendements indicatifs, les documents et les risques clés sont réunis en un seul endroit avant que quiconque n'investisse.",
+        "stat": "Contexte de l'opération"
+      },
+      "ownership": {
+        "eyebrow": "Propriété claire",
+        "title": "Les investisseurs peuvent comprendre ce qu'ils détiennent.",
+        "body": "IGUDAR repose sur des frais visibles, des structures documentées, des droits pour les investisseurs et des conditions simples pour l'immobilier fractionné.",
+        "stat": "Aucune couche cachée"
+      },
+      "visibility": {
+        "eyebrow": "Visibilité continue",
+        "title": "La plateforme continue de rendre compte après l'investissement.",
+        "body": "Le taux d'occupation, les charges, les distributions et les actualités du bien sont conçus pour rester visibles tout au long de la vie de l'actif.",
+        "stat": "Mises à jour en continu"
+      }
+    }
+  },
+  "partners": {
+    "title": "Programmes & partenaires",
+    "region": "Logos des partenaires",
+    "genericLogoAlt": "Logo d'un programme partenaire",
+    "play": "Relancer les logos",
+    "pause": "Mettre les logos en pause"
+  },
+  "facts": {
+    "eyebrow": "Les faits",
+    "title": "Trois choses à savoir avant tout le reste",
+    "items": {
+      "ticket": {
+        "label": "Ticket minimum",
+        "note": "Par projet, par paliers de {step}."
+      },
+      "entry": {
+        "label": "Frais d'entrée",
+        "note": "La souscription ne coûte rien. La grille tarifaire complète est publiée."
+      },
+      "exit": {
+        "figure": "Tous les {months, plural, =1 {# mois} other {# mois}}",
+        "label": "Fenêtres de sortie organisées",
+        "note": "Ouvertes après {years, plural, =1 {# an} other {# ans}} de détention."
+      }
+    },
+    "cta": "Voir qui paie quoi, et quand"
+  },
+  "finalCta": {
+    "title": "Cessez de regarder depuis la touche. <em>Commencez par une simulation.</em>",
+    "body": "Voyez ce que {min} pourraient donner, essayez la bêta fermée avec de l'argent fictif, ou rejoignez la liste d'attente pour être informé de l'ouverture d'IGUDAR.",
+    "ctaPrimary": "Candidater à la bêta"
+  }
+}

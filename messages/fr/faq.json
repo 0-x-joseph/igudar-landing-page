@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "FAQ : frais, risques et règles | IGUDAR",
+    "description": "Tout ce qu'il faut savoir sur IGUDAR : ce que vous détenez, ce que vous payez, comment fonctionnent les sorties et où en est l'agrément de l'AMMC. Les rendements ne sont pas garantis ; ceci n'est pas une offre."
+  },
+  "hero": {
+    "back": "Retour à l'accueil",
+    "title": "Tout ce qu'il faut savoir sur <brand>IGUDAR</brand>",
+    "lead": "IGUDAR vous permet de détenir une part d'un immeuble marocain loué, avec les frais, les risques et les règles écrits noir sur blanc, en langage clair."
+  },
+  "pillars": {
+    "participatory": {
+      "title": "Finance participative",
+      "desc": "Fondé sur les principes de la finance participative : vous détenez des parts, vous partagez le loyer, et il n'y a pas d'intérêt. Examen par le comité charia en cours."
+    },
+    "minimum": {
+      "title": "Un minimum clair",
+      "desc": "Les parts commencent à {min} par projet, et chaque frais est publié dans son intégralité."
+    },
+    "licence": {
+      "title": "Agrément en préparation",
+      "desc": "Conçu pour la loi marocaine 15-18. IGUDAR prépare son agrément auprès de l'AMMC et ne collecte aucun argent avant son obtention."
+    }
+  },
+  "section": {
+    "title": "Questions <accent>fréquentes</accent>",
+    "lead": "Les réponses aux questions que l'on nous pose le plus souvent sur IGUDAR"
+  },
+  "categories": {
+    "returns": "Rendements et risques",
+    "money": "Argent et sortie",
+    "platform": "La plateforme",
+    "rules": "Règles et agrément"
+  },
+  "explorer": {
+    "all": "Toutes",
+    "railLabel": "Catégories de questions",
+    "searchLabel": "Rechercher dans les questions",
+    "searchPlaceholder": "Rechercher dans les questions",
+    "clear": "Effacer la recherche",
+    "noMatch": "Aucune question ne correspond à « {query} ». Essayez un autre mot, ou effacez la recherche.",
+    "count": "{shown} sur {total} questions"
+  },
+  "items": {
+    "promise": {
+      "q": "IGUDAR peut-il me promettre un rendement ?",
+      "a": "Non. Un loyer peut arriver en retard, un bien peut rester vide et son prix peut baisser. C'est pourquoi chaque chiffre de ce site est présenté comme net, indicatif et non garanti, et pourquoi nous affichons toujours le cas Pessimiste à côté du cas Base. Pour {min}, le scénario Pessimiste rapporte {pessimisticProfit} sur {years} ans, soit {comparison} que les {bankProfit} que rapporterait un dépôt bancaire. Un rendement que personne ne peut garantir ne doit pas être promis, et ne pas le promettre vous protège d'un chiffre qui pourrait ne pas être tenu.",
+      "more": "plus",
+      "less": "moins"
+    },
+    "earlyExit": {
+      "q": "Puis-je récupérer mon argent avant terme ?",
+      "a": "Pas à tout moment. Votre argent est immobilisé tant que le bien est détenu, soit {years} ans. Après la première année, des fenêtres de sortie s'ouvrent tous les {months} mois, pendant lesquelles vous pouvez proposer votre part aux autres associés. Un acheteur n'est pas garanti, et vendre avant terme coûte des frais de cession de {transferFee} du montant cédé, plus les droits d'enregistrement et l'impôt sur l'éventuelle plus-value (à confirmer avec un conseil)."
+    },
+    "raiseFails": {
+      "q": "Que se passe-t-il si la levée échoue ?",
+      "a": "Votre argent attend sur un compte séquestre dans une banque régulée, un compte par projet, et n'est versé à la société propriétaire du bien que si la levée atteint son objectif. Si elle échoue, ou si le délai expire, la banque vous rembourse intégralement et IGUDAR ne prélève aucuns frais sur vous."
+    },
+    "irrVsYield": {
+      "q": "Pourquoi le TRI est-il inférieur au rendement en cash ?",
+      "a": "Le rendement en cash, c'est le loyer que vous recevez en un an divisé par ce que vous avez investi ({cashYield} dans le scénario Base). Le TRI compte aussi les {acquisition} de frais d'acquisition (enregistrement, conservation foncière et notaire) payés sur le capital, ainsi que ce que vous récupérez à la vente du bien : il est donc plus bas ({irr} dans le scénario Base). Les deux sont nets de frais et d'impôts, et aucun n'est une promesse.",
+      "notAvailable": "n.d."
+    },
+    "howItWorks": {
+      "q": "Comment fonctionne la plateforme IGUDAR ?",
+      "a": "Plusieurs personnes achètent chacune une part d'une même société propriétaire, qui détient un seul immeuble loué. La société loue l'immeuble à un gestionnaire professionnel, et le loyer qui reste après les charges, les frais et les impôts est partagé entre les associés. Le minimum est de {min} par projet. Vous ne payez aucuns frais d'entrée et des frais de plateforme de {platformFee} par an, prélevés via la société propriétaire du bien. Les vendeurs et les gestionnaires paient leurs propres frais."
+    },
+    "ownership": {
+      "q": "Qu'est-ce que je possède concrètement ?",
+      "a": "Des parts d'une société propriétaire (une SAS) créée pour un seul immeuble. La société loue l'immeuble à un gestionnaire professionnel, et le loyer, après les charges, les frais et les impôts, est partagé entre les associés. Il n'y a ni prêt qui vous est consenti ni intérêt dans un sens ou dans l'autre. Le loyer vient du gestionnaire au titre du bail, pas d'IGUDAR."
+    },
+    "participatory": {
+      "q": "IGUDAR est-il conforme à la charia ?",
+      "a": "Nous ne le revendiquons pas encore. IGUDAR est fondé sur les principes de la finance participative : vous détenez des parts, le loyer et le risque sont partagés, et il n'y a pas d'intérêt. Examen par le comité charia en cours. Tant que le comité n'a pas rendu son avis, nous ne décrirons IGUDAR avec aucune étiquette religieuse."
+    },
+    "sellers": {
+      "q": "Quel intérêt pour les vendeurs et les promoteurs ?",
+      "a": "Un vendeur peut lever une partie du financement auprès d'un groupe d'associés au lieu de dépendre uniquement d'un prêt bancaire. Le vendeur paie des frais de syndication de {syndication} du montant levé, seulement si la levée aboutit, et le gestionnaire paie {structuring} pour la structuration du bail. Ni l'un ni l'autre ne vous est facturé."
+    },
+    "audience": {
+      "q": "À qui s'adresse IGUDAR ?",
+      "a": "Aux actifs urbains et aux Marocains de l'étranger qui veulent détenir une part d'un bien loué sans acheter tout un immeuble. Le minimum est de {min} par projet. Ce que vous recevez dépend de la performance du bien, est affiché net de frais et d'impôts, et n'est jamais promis."
+    },
+    "licence": {
+      "q": "IGUDAR est-il agréé ?",
+      "a": "Pas encore. IGUDAR est conçu pour respecter la loi marocaine sur le financement collaboratif (loi 15-18) et prépare sa demande d'agrément auprès de l'AMMC. Tant que l'agrément n'est pas accordé, rien sur ce site ne constitue une offre ou une sollicitation."
+    },
+    "realMoney": {
+      "q": "Puis-je placer de l'argent réel aujourd'hui ?",
+      "a": "Non. La plateforme app.igudar.tech est une bêta fermée d'une cinquantaine de personnes, avec de l'argent fictif. Aucun argent réel n'est collecté nulle part, et aucun investissement n'est accepté avant l'agrément de l'AMMC. Vous pouvez candidater à la bêta sur la page Bêta."
+    },
+    "risks": {
+      "q": "Comment les risques sont-ils gérés ?",
+      "a": "Chaque bien est examiné avant d'être mis en ligne, et ses documents, ses frais et ses risques sont publiés sur sa page. L'argent attend sur un compte séquestre dédié à chaque projet, et chaque chiffre est affiché avec un cas Pessimiste à côté du cas Base. Rien de tout cela ne supprime le risque : vous pouvez perdre une partie ou la totalité de ce que vous avez placé."
+    },
+    "payment": {
+      "q": "Comment fonctionne le paiement ?",
+      "a": "Dans la bêta, avec de l'argent fictif uniquement. Une fois IGUDAR agréé, votre argent irait sur un compte séquestre dans une banque régulée, un par projet, et jamais chez IGUDAR. Nous confirmerons les moyens de paiement avant tout lancement."
+    }
+  },
+  "still": {
+    "title": "Encore une question ?",
+    "lead": "Notre équipe est là pour vous aider à comprendre comment IGUDAR peut fonctionner pour vous.",
+    "applyBeta": "Candidater à la bêta",
+    "joinWaitlist": "Rejoindre la liste d'attente"
+  }
+}
