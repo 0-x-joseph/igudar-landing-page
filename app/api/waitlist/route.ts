@@ -1,24 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { formatMad } from "@/lib/finance";
-import { parseBetaApplication, parseInterestPayload } from "@/lib/waitlist-validation";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/routing";
+import { parseBetaApplication, parseInterestPayload, type WaitlistErrorCode } from "@/lib/waitlist-validation";
 import {
   buildBetaEmail,
   buildBetaNotification,
   buildConfirmationEmail,
   buildInterestNotification,
+  emailI18nFor,
 } from "@/lib/waitlist-emails";
 
 /**
  * Sign-ups live in a Resend Audience (the source of truth). Nothing is written to disk: serverless
  * filesystems are read-only. Beta answers travel in a notification email to the team.
+ *
+ * Errors are answered as stable codes (`{ error: "invalid_email" }`); the forms show
+ * `beta.errors.<code>` in the visitor's language. The optional `locale` in the body picks the
+ * language of the confirmation email; the team notification stays in English.
  */
 
 const RESEND_API = "https://api.resend.com";
 const AUDIENCE_NAME = "IGUDAR waitlist";
 const DEFAULT_FROM = "IGUDAR <noreply@igudar.tech>";
 const DEFAULT_NOTIFY = "hello@igudar.tech";
-const NOT_CONFIGURED = "Sign-up is not configured yet.";
 
 const mailFrom = () => process.env.MAIL_FROM?.trim() || DEFAULT_FROM;
 const notifyTo = () => process.env.BETA_NOTIFY_EMAIL?.trim() || DEFAULT_NOTIFY;
@@ -93,45 +98,49 @@ function isValidEmail(email: string): boolean {
 }
 
 const json = (body: unknown, status = 200) => NextResponse.json(body, { status });
+const fail = (error: WaitlistErrorCode, status: number) => json({ error }, status);
 const errorMessage = (e: unknown) => (e instanceof Error ? e.message : "unknown error");
 
 // ── POST handler ───────────────────────────────────────────
 export async function POST(request: NextRequest) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
-  if (isRateLimited(ip)) return json({ error: "Too many requests. Please try again in a minute." }, 429);
+  if (isRateLimited(ip)) return fail("rate_limited", 429);
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  if (!apiKey) return json({ error: NOT_CONFIGURED }, 503);
+  if (!apiKey) return fail("not_configured", 503);
 
   let body: Record<string, unknown>;
   try {
     const parsed = await request.json();
-    if (typeof parsed !== "object" || parsed === null) return json({ error: "Invalid request." }, 400);
+    if (typeof parsed !== "object" || parsed === null) return fail("invalid_request", 400);
     body = parsed as Record<string, unknown>;
   } catch {
-    return json({ error: "Invalid request." }, 400);
+    return fail("invalid_request", 400);
   }
 
   // Honeypot: bots fill hidden fields. Accept silently and do nothing.
   if (body.honeypot) return json({ success: true });
 
   const interestResult = parseInterestPayload(body);
-  if (!interestResult.ok) return json({ error: interestResult.error }, 400);
+  if (!interestResult.ok) return fail(interestResult.error, 400);
   const betaResult = parseBetaApplication(body);
-  if (!betaResult.ok) return json({ error: betaResult.error }, 400);
+  if (!betaResult.ok) return fail(betaResult.error, 400);
   const interest = interestResult.value;
   const beta = betaResult.value;
 
-  if (!body.email || typeof body.email !== "string") return json({ error: "Please provide a valid email address." }, 400);
+  if (!body.email || typeof body.email !== "string") return fail("invalid_email", 400);
   const email = body.email.trim().toLowerCase();
-  if (!isValidEmail(email)) return json({ error: "Please provide a valid email address." }, 400);
+  if (!isValidEmail(email)) return fail("invalid_email", 400);
+
+  // The visitor's language, for their confirmation email. Anything unknown falls back to English.
+  const locale: Locale = isLocale(body.locale) ? body.locale : DEFAULT_LOCALE;
 
   try {
     await upsertContact(apiKey, email, beta?.firstName);
   } catch (e) {
     console.error("Waitlist contact upsert failed:", errorMessage(e));
-    return json({ error: "We could not save your sign-up. Please try again." }, 502);
+    return fail("save_failed", 502);
   }
 
   const resend = new Resend(apiKey);
@@ -146,7 +155,7 @@ export async function POST(request: NextRequest) {
     });
     if (error) {
       console.error("Beta notification failed:", error.message);
-      return json({ error: "We could not save your application. Please try again." }, 502);
+      return fail("application_failed", 502);
     }
   } else if (interest) {
     const { error } = await resend.emails.send({
@@ -158,21 +167,15 @@ export async function POST(request: NextRequest) {
     if (error) console.error("Team notification failed:", error.message);
   }
 
+  const i18n = await emailI18nFor(locale);
   const { error: confirmError } = await resend.emails.send({
     from: mailFrom(),
     to: [email],
-    subject: beta ? "We received your IGUDAR beta application" : "Welcome to the IGUDAR waitlist",
-    html: beta ? buildBetaEmail(beta) : buildConfirmationEmail(email, interest),
+    subject: beta ? i18n.t("beta.subject") : i18n.t("confirmation.subject"),
+    html: beta ? buildBetaEmail(i18n, beta) : buildConfirmationEmail(i18n, email, interest),
   });
   // The contact is already saved: a failed confirmation is logged, not shown as a failure.
   if (confirmError) console.error("Confirmation email failed:", confirmError.message);
 
-  return json({
-    success: true,
-    message: beta
-      ? "Thanks, a founder reviews every application by hand. You'll hear from us by email."
-      : interest
-        ? "Thank you, we noted your interest."
-        : "You're on the list! Check your email for confirmation.",
-  });
+  return json({ success: true, kind: beta ? "beta" : interest ? "interest" : "waitlist" });
 }

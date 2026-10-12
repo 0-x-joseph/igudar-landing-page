@@ -10,5 +10,52 @@
   "notice": {
     "indicative": "Indicative simulation based on the IGUDAR financial model. Returns are not guaranteed. Not an offer or solicitation; no investment is collected before the AMMC licence (Loi 15-18).",
     "netIndicative": "net · indicative · not guaranteed"
+  },
+  "cta": {
+    "betaAccess": "Beta access",
+    "joinWaitlist": "Join the waitlist",
+    "applyForBeta": "Apply for the beta"
+  },
+  "banner": {
+    "text": "The IGUDAR closed beta is open for applications. Demo money only.",
+    "cta": "Apply for the beta →",
+    "close": "Close banner"
+  },
+  "nav": {
+    "howItWorks": "How It Works",
+    "features": "Features",
+    "simulator": "Simulator",
+    "calculator": "Calculator",
+    "pricing": "Pricing",
+    "beta": "Beta",
+    "faq": "FAQ",
+    "toggleMenu": "Toggle menu"
+  },
+  "footer": {
+    "tagline": "Fractional ownership of rented Moroccan property, with the fees, risks and rules in plain language.",
+    "columns": {
+      "platform": "Platform",
+      "support": "Support",
+      "company": "Company"
+    },
+    "links": {
+      "howItWorks": "How it Works",
+      "features": "Features",
+      "pricing": "Pricing",
+      "simulator": "Simulator",
+      "beta": "Beta",
+      "helpCenter": "Help Center",
+      "contact": "Contact",
+      "faq": "FAQ",
+      "privacyPolicy": "Privacy Policy",
+      "about": "About",
+      "careers": "Careers",
+      "press": "Press",
+      "partners": "Partners"
+    },
+    "copyright": "© 2025 IGUDAR. All rights reserved.",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies"
   }
 }

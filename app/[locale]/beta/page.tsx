@@ -1,55 +1,28 @@
-import type { Metadata } from "next";
+import { setRequestLocale, getTranslations } from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
+import { pageMetadata } from "@/lib/i18n/metadata";
 import Navbar from "@/components/Navbar";
 import SiteFooter from "@/components/SiteFooter";
-import { Reveal } from "@/components/beta/Reveal";
-import BetaHero from "@/components/beta/BetaHero";
-import BetaDetails from "@/components/beta/BetaDetails";
-import BetaAccess from "@/components/beta/BetaAccess";
-import { BetaApplicationForm } from "@/components/beta/BetaApplicationForm";
-import { IndicativeNotice } from "@/components/simulator/IndicativeNotice";
-import { ZelligeBand } from "@/components/brand";
+import BetaPageContent from "@/components/beta/BetaPageContent";
 
-export const metadata: Metadata = {
-  title: "Closed beta | IGUDAR",
-  description:
-    "A closed test of the IGUDAR platform with about 50 people, using demo money only. Apply for the beta and tell us what works.",
-};
+type Params = { params: Promise<{ locale: string }> };
 
-export default function BetaPage() {
+export async function generateMetadata({ params }: Params) {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
+  const t = await getTranslations({ locale, namespace: "beta.meta" });
+  return pageMetadata(locale, "/beta", t("title"), t("description"));
+}
+
+export default async function BetaPage({ params }: Params) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-background text-foreground">
       <Navbar />
       <main>
-        <BetaHero />
-        <ZelligeBand className="mx-auto max-w-4xl" />
-        <BetaDetails />
-        <ZelligeBand className="mx-auto max-w-4xl" />
-
-        <section id="apply" className="scroll-mt-28 px-5 py-20 sm:px-6 lg:py-28">
-          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
-            <Reveal>
-              <h2 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-                Apply for the <span className="italic text-primary">beta</span>
-              </h2>
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-                We ask a few questions so we can choose a mix of people and learn from each of them. It takes about a
-                minute. A founder reads every answer.
-              </p>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <BetaApplicationForm />
-            </Reveal>
-          </div>
-        </section>
-
-        <ZelligeBand className="mx-auto max-w-4xl" />
-        <BetaAccess />
-
-        <section className="px-5 pb-16 sm:px-6">
-          <div className="mx-auto max-w-3xl">
-            <IndicativeNotice />
-          </div>
-        </section>
+        <BetaPageContent />
       </main>
       <SiteFooter />
     </div>

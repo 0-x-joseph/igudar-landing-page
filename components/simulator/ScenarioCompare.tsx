@@ -1,12 +1,9 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { CheckCircle2, MinusCircle } from "lucide-react";
-import {
-  SCENARIO_KEYS,
-  formatMad,
-  formatPercent,
-  scenarioLabel,
-  type ScenarioKey,
-  type SimulationResult,
-} from "@/lib/finance";
+import { SCENARIO_KEYS, type ScenarioKey, type SimulationResult } from "@/lib/finance";
+import { useFormat, useScenarioLabel } from "@/lib/i18n/use-format";
 
 /**
  * All three scenarios side by side, pessimistic first: the bad case is never hidden
@@ -19,14 +16,16 @@ export function ScenarioCompare({
   all: Record<ScenarioKey, SimulationResult>;
   selected: ScenarioKey;
 }) {
+  const t = useTranslations("simulator.compare");
+  const ts = useTranslations("simulator");
+  const scenarioLabel = useScenarioLabel();
+  const { mad, percent } = useFormat();
   return (
     <section aria-labelledby="sim-compare-title">
       <h2 id="sim-compare-title" className="mb-1 text-lg font-bold text-foreground">
-        The same amount in each scenario
+        {t("title")}
       </h2>
-      <p className="mb-4 text-sm text-muted-foreground">
-        We always show the pessimistic case first. Real life can land anywhere in this range, or outside it.
-      </p>
+      <p className="mb-4 text-sm text-muted-foreground">{t("intro")}</p>
       <ul className="grid gap-3 sm:grid-cols-3">
         {SCENARIO_KEYS.map((key) => {
           const r = all[key];
@@ -41,23 +40,23 @@ export function ScenarioCompare({
                 <span className="min-w-0">{scenarioLabel(key)}</span>
                 {isSelected && (
                   <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[11px] font-semibold text-accent-foreground">
-                    Chosen
+                    {t("chosen")}
                   </span>
                 )}
               </p>
               <dl className="financial-number mt-3 space-y-2 text-sm">
                 <div>
-                  <dt className="text-xs text-muted-foreground">Net cash per year</dt>
-                  <dd className="font-semibold text-foreground break-words">{formatMad(r.netCashYear1Mad)}</dd>
+                  <dt className="text-xs text-muted-foreground">{t("netCash")}</dt>
+                  <dd className="font-semibold text-foreground break-words">{mad(r.netCashYear1Mad)}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-muted-foreground">Net profit over {r.input.holdYears} years</dt>
-                  <dd className="font-semibold text-foreground break-words">{formatMad(r.netProfitMad)}</dd>
+                  <dt className="text-xs text-muted-foreground">{t("netProfit", { years: r.input.holdYears })}</dt>
+                  <dd className="font-semibold text-foreground break-words">{mad(r.netProfitMad)}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-muted-foreground">Net IRR</dt>
+                  <dt className="text-xs text-muted-foreground">{t("netIrr")}</dt>
                   <dd className="font-semibold text-foreground break-words">
-                    {r.netIrr === null ? "n/a" : formatPercent(r.netIrr, 2)}
+                    {r.netIrr === null ? ts("na") : percent(r.netIrr, 2)}
                   </dd>
                 </div>
               </dl>
@@ -67,7 +66,7 @@ export function ScenarioCompare({
                 ) : (
                   <MinusCircle className="mt-px size-4 shrink-0 text-destructive" aria-hidden="true" />
                 )}
-                {r.beatsBankDeposit ? "Beats a bank deposit" : "Loses to a bank deposit"}
+                {r.beatsBankDeposit ? t("beats") : t("loses")}
               </p>
             </li>
           );

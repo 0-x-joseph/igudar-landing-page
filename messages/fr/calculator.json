@@ -1,1 +1,33 @@
-{}
+{
+  "meta": {
+    "title": "Calculateur de frais et de parts | IGUDAR",
+    "description": "Calculez votre part dans une société propriétaire d'un bien à partir du montant que vous choisissez et de la taille du projet. Indicatif, ceci n'est pas une offre."
+  },
+  "page": {
+    "eyebrow": "Calculateur",
+    "title": "La mécanique : parts, frais et sorties",
+    "intro": "Pour celles et ceux qui veulent voir exactement comment une part se construit : votre montant, la taille du projet et la fraction de la société que vous détiendriez.",
+    "links": "Vous cherchez les frais ? <pricing>Voyez qui paie quoi, et quand</pricing>, ou <simulator>simulez un rendement</simulator> après frais et impôts."
+  },
+  "inputs": {
+    "title": "Votre montant et le projet",
+    "intro": "Votre part correspond à votre montant divisé par ce que le projet lève.",
+    "amountLabel": "Votre montant",
+    "projectLabel": "Taille du projet (capital levé, MAD)",
+    "projectNote": "Jusqu'à {max} par projet sur 12 mois."
+  },
+  "ownership": {
+    "title": "Votre part",
+    "shareLabel": "Votre part dans la société propriétaire du bien (SAS)",
+    "shareNote": "Vous devenez associé de la société propriétaire du bien, à hauteur de votre montant.",
+    "investorsLabel": "Investisseurs nécessaires pour boucler le projet",
+    "investorsNote": "Au ticket minimum de {min}."
+  },
+  "feeNotes": {
+    "perYearHt": "par an, HT",
+    "baseSaleTtc": "Vente du scénario Base, TVA incluse, supportée par la SAS",
+    "earlyExitOnly": "uniquement si vous vendez de façon anticipée",
+    "aboveHurdle": "Scénario Base, uniquement au-delà du seuil",
+    "optional": "optionnel"
+  }
+}

@@ -1,77 +1,77 @@
 "use client";
 
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import {
-  TAX,
-  formatMad,
-  formatPercent,
-  scenarioLabel,
-  type RentBridge as RentBridgeData,
-  type SimulationResult,
-} from "@/lib/finance";
+import { TAX, type RentBridge as RentBridgeData, type SimulationResult } from "@/lib/finance";
+import { useFormat, useScenarioLabel } from "@/lib/i18n/use-format";
 import { AnimatedNumber } from "./AnimatedNumber";
 
 interface Segment {
   id: keyof RentBridgeData;
-  name: string;
-  note: string;
   /** Swatch and bar colour: neutral tokens, violet only for "you". */
   fill: string;
   /** Text colour used when the figure is printed inside the bar. */
   ink: string;
 }
 
+/** Order and colours of the five parts; their names and notes live in `simulator.bridge.segments`. */
 const SEGMENTS: readonly Segment[] = [
-  { id: "reserveVacancy", name: "Reserve and vacancy", note: "Kept aside for repairs and empty months", fill: "bg-muted-foreground/30", ink: "text-foreground" },
-  { id: "platformFee", name: "IGUDAR platform fee", note: "Covers running costs, incl. TVA", fill: "bg-highlight", ink: "text-highlight-foreground" },
-  { id: "is", name: "Corporate tax", note: "Paid by the property company", fill: "bg-foreground/80", ink: "text-background" },
-  { id: "withholding", name: "Withholding tax", note: `${formatPercent(TAX.WITHHOLDING_INDIVIDUAL, 0)} on the dividend you receive`, fill: "bg-foreground/45", ink: "text-background" },
-  { id: "investor", name: "You", note: "Lands in your bank account", fill: "bg-primary", ink: "text-primary-foreground" },
+  { id: "reserveVacancy", fill: "bg-muted-foreground/30", ink: "text-foreground" },
+  { id: "platformFee", fill: "bg-highlight", ink: "text-highlight-foreground" },
+  { id: "is", fill: "bg-foreground/80", ink: "text-background" },
+  { id: "withholding", fill: "bg-foreground/45", ink: "text-background" },
+  { id: "investor", fill: "bg-primary", ink: "text-primary-foreground" },
 ];
 
 const LABEL_MIN_SHARE = 10;
 
+/** Logical corners: the first segment sits at the start of the row (right-hand side in Arabic). */
 function radius(i: number): string {
-  if (i === 0) return "rounded-l-2xl rounded-r-[3px]";
-  if (i === SEGMENTS.length - 1) return "rounded-r-2xl rounded-l-[3px]";
+  if (i === 0) return "rounded-s-2xl rounded-e-[3px]";
+  if (i === SEGMENTS.length - 1) return "rounded-e-2xl rounded-s-[3px]";
   return "rounded-[3px]";
 }
 const TICKS = [0, 25, 50, 75, 100];
 
 /** "Where your rent goes": every 100 MAD of year-1 rent, split into five labelled parts. */
 export function RentBridge({ result }: { result: SimulationResult }) {
+  const t = useTranslations("simulator.bridge");
+  const scenarioLabel = useScenarioLabel();
+  const { mad, number, percent } = useFormat();
   const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px 0px -15% 0px" });
   const show = reduce || inView;
   const key = result.input.scenarioKey === "custom" ? "base" : result.input.scenarioKey;
   const bridge = result.rentBridge;
-  
+  const hundred = mad(100, { decimals: 0 });
+  const segmentName = (id: Segment["id"]) => t(`segments.${id}.name`);
+  const segmentNote = (id: Segment["id"]) => t(`segments.${id}.note`, { rate: percent(TAX.WITHHOLDING_INDIVIDUAL, 0) });
+
   return (
-    <section
-      aria-labelledby="sim-bridge-title"
-      className="rounded-3xl border border-border bg-card p-5 sm:p-8"
-    >
+    <section aria-labelledby="sim-bridge-title" className="rounded-3xl border border-border bg-card p-5 sm:p-8">
       <h2 id="sim-bridge-title" className="text-lg font-bold text-foreground">
-        Where your rent goes
+        {t("title")}
       </h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Every 100 MAD of rent the property earns in year 1, {scenarioLabel(key)} scenario (indicative).
-      </p>
+      <p className="mt-1 text-sm text-muted-foreground">{t("intro", { hundred, scenario: scenarioLabel(key) })}</p>
 
       <p className="mt-6 text-lg text-foreground sm:text-xl">
-        You keep{" "}
-        <span className="financial-number text-3xl font-bold text-primary sm:text-4xl">
-          <AnimatedNumber value={bridge.investor} format={(n) => n.toFixed(1)} />
-        </span>{" "}
-        of every 100 MAD.
+        {t.rich("keep", {
+          hundred,
+          share: () => (
+            <span className="financial-number text-3xl font-bold text-primary sm:text-4xl">
+              <AnimatedNumber value={bridge.investor} format={(n) => number(n, 1)} />
+            </span>
+          ),
+        })}
       </p>
 
       <div ref={ref} className="mt-5">
+        {/* A flex row follows the page direction: the first part starts at the right in Arabic, with the ticks below. */}
         <div
           role="img"
-          aria-label={SEGMENTS.map((s) => `${s.name} ${formatMad(bridge[s.id], { decimals: 1 })}`).join(", ")}
+          aria-label={SEGMENTS.map((s) => `${segmentName(s.id)} ${mad(bridge[s.id], { decimals: 1 })}`).join(", ")}
           className="flex h-14 w-full gap-[3px] sm:h-16"
         >
           {SEGMENTS.map((s, i) => {
@@ -86,7 +86,7 @@ export function RentBridge({ result }: { result: SimulationResult }) {
               >
                 {v >= LABEL_MIN_SHARE && (
                   <span className={`financial-number whitespace-nowrap text-sm font-bold sm:text-base ${s.ink}`}>
-                    {v.toFixed(1)}
+                    {number(v, 1)}
                   </span>
                 )}
               </motion.div>
@@ -95,9 +95,9 @@ export function RentBridge({ result }: { result: SimulationResult }) {
         </div>
 
         <div aria-hidden="true" className="relative mt-1 flex justify-between text-[11px] text-muted-foreground">
-          {TICKS.map((t) => (
-            <span key={t} className="financial-number">
-              {t}
+          {TICKS.map((tick) => (
+            <span key={tick} className="financial-number">
+              {tick}
             </span>
           ))}
         </div>
@@ -108,11 +108,11 @@ export function RentBridge({ result }: { result: SimulationResult }) {
           <li key={s.id} className="flex min-w-0 gap-3">
             <span className={`mt-1 size-3.5 shrink-0 rounded-md ${s.fill}`} aria-hidden="true" />
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-foreground">{s.name}</p>
+              <p className="text-sm font-semibold text-foreground">{segmentName(s.id)}</p>
               <p className="financial-number text-base font-bold text-foreground break-words">
-                {formatMad(bridge[s.id], { decimals: 1 })}
+                {mad(bridge[s.id], { decimals: 1 })}
               </p>
-              <p className="text-xs leading-snug text-muted-foreground">{s.note}</p>
+              <p className="text-xs leading-snug text-muted-foreground">{segmentNote(s.id)}</p>
             </div>
           </li>
         ))}

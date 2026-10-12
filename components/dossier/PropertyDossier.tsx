@@ -1,46 +1,36 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { ChartNoAxesColumn, Clock, DoorOpen, ShieldCheck, Sparkles, TrendingDown } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { CountUp } from "@/components/CountUp";
 import { MOTION, Reveal } from "@/components/motion";
-import { LIMITS, MODEL_SCENARIOS, NET_INDICATIVE_SUFFIX, formatMad, formatPercent, simulate } from "@/lib/finance";
+import { LIMITS, MODEL_SCENARIOS, simulate } from "@/lib/finance";
+import { useFormat, useScenarioLabel } from "@/lib/i18n/use-format";
 import { DEMO_PROPERTY } from "./fixture";
 
+/** The three layers of the dossier; title and description live in `sections.dossier.layers.<key>`. */
 const layers = [
-  {
-    key: "market",
-    title: "Market Analysis",
-    desc: "Real-time analysis of Moroccan real estate market trends and emerging opportunities.",
-    icon: ChartNoAxesColumn,
-  },
-  {
-    key: "risk",
-    title: "Risk Assessment",
-    desc: "A plain-language view of the main risks of each property, next to the numbers.",
-    icon: ShieldCheck,
-  },
-  {
-    key: "match",
-    title: "Personalized Matching",
-    desc: "Tailored recommendations based on your profile, goals, and risk tolerance.",
-    icon: Sparkles,
-  },
+  { key: "market", icon: ChartNoAxesColumn },
+  { key: "risk", icon: ShieldCheck },
+  { key: "match", icon: Sparkles },
 ] as const;
 
+/** Risk chips: one icon and one word each, from `sections.dossier.risks.<id>`. */
 const RISKS = [
-  { word: "Late rent", icon: Clock },
-  { word: "Vacancy", icon: DoorOpen },
-  { word: "Price", icon: TrendingDown },
-];
+  { id: "lateRent", icon: Clock },
+  { id: "vacancy", icon: DoorOpen },
+  { id: "price", icon: TrendingDown },
+] as const;
 
+/** Bars of the rent chart, left to right; labels come from `sections.dossier.chart.bars.<name>`. */
 const BARS = [
-  { name: "property", label: "This property", value: MODEL_SCENARIOS.base.grossYield, tone: "fill-primary" },
-  { name: "district", label: "District", value: DEMO_PROPERTY.districtGrossYield, tone: "fill-primary/35" },
-  { name: "deposit", label: "Bank deposit", value: LIMITS.BANK_DEPOSIT_RATE, tone: "fill-foreground/25" },
-];
+  { name: "property", value: MODEL_SCENARIOS.base.grossYield, tone: "fill-primary" },
+  { name: "district", value: DEMO_PROPERTY.districtGrossYield, tone: "fill-primary/35" },
+  { name: "deposit", value: LIMITS.BANK_DEPOSIT_RATE, tone: "fill-foreground/25" },
+] as const;
 
 const CHART_H = 84;
 const BAR_W = 46;
@@ -48,13 +38,15 @@ const CHART_MAX = Math.max(...BARS.map((b) => b.value)) * 1.12;
 
 /** Inline-SVG bar chart: gross rent yield of this property against its district and a bank deposit. */
 function RentChart() {
+  const t = useTranslations("sections.dossier.chart");
+  const { percent } = useFormat();
   const reduce = useReducedMotion();
-  const desc = BARS.map((b) => `${b.label} ${formatPercent(b.value)}`).join(", ");
+  const desc = BARS.map((b) => `${t(`bars.${b.name}`)} ${percent(b.value)}`).join(", ");
   return (
     <svg
       data-chart="rent-vs-district"
       role="img"
-      aria-label={`Gross rent yield, example data: ${desc}`}
+      aria-label={t("label", { bars: desc })}
       viewBox="0 0 240 132"
       className="h-auto w-full max-w-xs"
     >
@@ -82,10 +74,10 @@ function RentChart() {
               />
             )}
             <text x={x + BAR_W / 2} y={y - 5} textAnchor="middle" fontSize={11} fontWeight={700} className="fill-foreground">
-              {formatPercent(b.value)}
+              {percent(b.value)}
             </text>
             <text x={x + BAR_W / 2} y={CHART_H + 30} textAnchor="middle" fontSize={9.5} className="fill-muted-foreground">
-              {b.label}
+              {t(`bars.${b.name}`)}
             </text>
           </g>
         );
@@ -95,17 +87,18 @@ function RentChart() {
 }
 
 function Meter() {
+  const t = useTranslations("sections.dossier");
   const { filled, of } = DEMO_PROPERTY.suitability;
   const reduce = useReducedMotion();
   return (
     <div>
       <div
         role="meter"
-        aria-label="Suitability for the example profile, demo data"
+        aria-label={t("meter.label")}
         aria-valuemin={0}
         aria-valuemax={of}
         aria-valuenow={filled}
-        aria-valuetext={`${filled} of ${of} segments`}
+        aria-valuetext={t("meter.valueText", { filled, of })}
         className="flex gap-1.5"
       >
         {Array.from({ length: of }, (_, i) => {
@@ -116,7 +109,7 @@ function Meter() {
           ) : (
             <motion.span
               key={i}
-              className={`${cls} origin-left`}
+              className={`${cls} origin-left rtl:origin-right`}
               initial={{ scaleX: 0, opacity: 0 }}
               whileInView={{ scaleX: 1, opacity: 1 }}
               viewport={{ once: true, margin: "-40px" }}
@@ -125,33 +118,32 @@ function Meter() {
           );
         })}
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">{DEMO_PROPERTY.profile}</p>
+      <p className="mt-2 text-xs text-muted-foreground">{t("demo.profile")}</p>
     </div>
   );
 }
 
 function Visual({ layer }: { layer: (typeof layers)[number]["key"] }): ReactNode {
+  const t = useTranslations("sections.dossier");
   if (layer === "market") {
     return (
       <div>
         <RentChart />
-        <p className="mt-2 text-xs text-muted-foreground">
-          Gross rent yield, example data. The district figure is a demo value. Indicative.
-        </p>
+        <p className="mt-2 text-xs text-muted-foreground">{t("chart.note")}</p>
       </div>
     );
   }
   if (layer === "risk") {
     return (
       <ul className="flex flex-wrap gap-2">
-        {RISKS.map(({ word, icon: Icon }) => (
+        {RISKS.map(({ id, icon: Icon }) => (
           <li
-            key={word}
+            key={id}
             data-risk-chip=""
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-sm font-semibold text-foreground"
           >
             <Icon className="size-4 text-primary" strokeWidth={1.8} aria-hidden="true" />
-            {word}
+            {t(`risks.${id}`)}
           </li>
         ))}
       </ul>
@@ -166,6 +158,10 @@ function Visual({ layer }: { layer: (typeof layers)[number]["key"] }): ReactNode
  * engine's Base case at the minimum ticket; the district value and the profile are demo fixtures.
  */
 export default function PropertyDossier() {
+  const t = useTranslations("sections.dossier");
+  const common = useTranslations("common");
+  const { mad, percent } = useFormat();
+  const scenarioLabel = useScenarioLabel();
   const [active, setActive] = useState<number | null>(null);
   const sim = simulate({ ticketMad: LIMITS.MIN_TICKET_MAD, scenario: "base" });
 
@@ -174,40 +170,42 @@ export default function PropertyDossier() {
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border bg-muted/50 p-6 sm:p-8">
         <div>
           <p className="inline-flex rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-muted-foreground">
-            Example · demo data
+            {t("badge")}
           </p>
           <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            {DEMO_PROPERTY.name}
+            {t("demo.name")}
           </h3>
-          <p className="mt-1 text-sm text-muted-foreground">{DEMO_PROPERTY.where}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("demo.where")}</p>
         </div>
         <div>
         <dl className="grid grid-cols-3 gap-x-6 text-sm sm:gap-x-8">
           <div>
-            <dt className="text-xs text-muted-foreground">Minimum ticket</dt>
+            <dt className="text-xs text-muted-foreground">{t("stats.minTicket")}</dt>
             <dd className="financial-number text-base font-bold text-foreground">
-              {formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })}
+              {mad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })}
             </dd>
           </div>
           <div>
-            <dt className="text-xs text-muted-foreground">Net cash yield</dt>
+            <dt className="text-xs text-muted-foreground">{t("stats.cashYield")}</dt>
             <dd className="financial-number text-base font-bold text-primary">
-              <CountUp value={sim.netCashYieldYear1} format={(n) => formatPercent(n)} />
+              <CountUp value={sim.netCashYieldYear1} format={(n) => percent(n)} />
             </dd>
           </div>
           <div>
-            <dt className="text-xs text-muted-foreground">Net IRR</dt>
+            <dt className="text-xs text-muted-foreground">{t("stats.irr")}</dt>
             <dd className="financial-number text-base font-bold text-primary">
-              <CountUp value={sim.netIrr ?? 0} format={(n) => formatPercent(n)} />
+              <CountUp value={sim.netIrr ?? 0} format={(n) => percent(n)} />
             </dd>
           </div>
         </dl>
-        <p className="mt-2 text-xs text-muted-foreground">Base scenario, {NET_INDICATIVE_SUFFIX}</p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {t("stats.scenario", { scenario: scenarioLabel("base"), notice: common("notice.netIndicative") })}
+        </p>
         </div>
       </div>
 
       <ol className="relative divide-y divide-border">
-        {layers.map(({ key, title, desc, icon: Icon }, i) => (
+        {layers.map(({ key, icon: Icon }, i) => (
           <Reveal as="li" key={key} index={i}>
             <div
               data-layer={key}
@@ -221,7 +219,7 @@ export default function PropertyDossier() {
             >
               <span
                 aria-hidden="true"
-                className={`absolute inset-y-0 left-0 w-1 origin-top bg-primary transition-transform duration-300 ease-out ${
+                className={`absolute inset-y-0 start-0 w-1 origin-top bg-primary transition-transform duration-300 ease-out ${
                   active === i ? "scale-y-100" : "scale-y-0"
                 }`}
               />
@@ -230,8 +228,8 @@ export default function PropertyDossier() {
                   <Icon className="size-5" strokeWidth={1.7} aria-hidden="true" />
                 </span>
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">{title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+                  <h3 className="text-lg font-semibold text-foreground">{t(`layers.${key}.title`)}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(`layers.${key}.desc`)}</p>
                 </div>
               </div>
               <div className="flex items-center md:justify-end">

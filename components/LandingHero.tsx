@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { LIMITS, formatMad } from "@/lib/finance";
+import { useTranslations } from "next-intl";
+import { LIMITS } from "@/lib/finance";
+import { useFormat } from "@/lib/i18n/use-format";
 import { ArchFrame, BuildingSketch, ReactiveGlow } from "@/components/brand";
 
 // The closed-beta sign-up. Approval is manual and the money is demo money.
@@ -15,6 +17,9 @@ const ctaSecondary =
 
 export default function LandingHero() {
   const reduceMotion = useReducedMotion();
+  const t = useTranslations("home.hero");
+  const tc = useTranslations("common.cta");
+  const { mad } = useFormat();
 
   return (
     <section className="relative isolate overflow-hidden bg-background px-5 pb-12 pt-32 sm:px-6 sm:pt-40 lg:pb-16">
@@ -34,8 +39,9 @@ export default function LandingHero() {
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="font-display text-[clamp(2.75rem,7.2vw,5.5rem)] font-semibold leading-[1.02] tracking-tight text-foreground"
             >
-              Real property. Real rent.{" "}
-              <span className="mt-1 block italic text-primary">Clear rules.</span>
+              {t.rich("title", {
+                em: (chunks) => <span className="mt-1 block italic text-primary">{chunks}</span>,
+              })}
             </motion.h1>
           </div>
 
@@ -45,8 +51,7 @@ export default function LandingHero() {
             transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
             className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
           >
-            Own real, rented Moroccan property alongside professionals, from{" "}
-            {formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })}.
+            {t("subtitle", { min: mad(LIMITS.MIN_TICKET_MAD, { decimals: 0 }) })}
           </motion.p>
 
           <motion.div
@@ -56,15 +61,13 @@ export default function LandingHero() {
           >
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
               <a href={BETA_URL} className={ctaPrimary}>
-                Beta access
+                {tc("betaAccess")}
               </a>
               <a href="#waitlist-cta" className={ctaSecondary}>
-                Join the waitlist
+                {tc("joinWaitlist")}
               </a>
             </div>
-            <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Closed beta, approved by hand. A prototype with demo money only: nothing is invested.
-            </p>
+            <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">{t("note")}</p>
           </motion.div>
         </div>
 
@@ -77,12 +80,12 @@ export default function LandingHero() {
           {/* A granary tower standing beside the arch frame, in the empty space under the body copy. */}
           <BuildingSketch
             variant="agadir"
-            className="absolute -left-44 bottom-0 -z-10 hidden h-52 w-48 min-[420px]:block lg:-left-52 lg:h-64 lg:w-56"
+            className="absolute -start-44 bottom-0 -z-10 hidden h-52 w-48 min-[420px]:block lg:-start-52 lg:h-64 lg:w-56"
           />
           <ArchFrame className="aspect-[4/5] w-full bg-accent">
             <Image
               src="/images/hero-bg.png"
-              alt="Aerial view of a Moroccan city at dusk"
+              alt={t("imageAlt")}
               fill
               priority
               sizes="(min-width: 1024px) 380px, (min-width: 640px) 384px, 320px"

@@ -1,20 +1,11 @@
 "use client";
 
 import { useId, useState, type KeyboardEvent } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { HelpCircle } from "lucide-react";
-import {
-  LIMITS,
-  NET_INDICATIVE_SUFFIX,
-  TAX,
-  formatMad,
-  formatPercent,
-  irrLabel,
-  scenarioLabel,
-  yieldLabel,
-  type SimulationResult,
-} from "@/lib/finance";
-import { formatMultiple } from "@/lib/simulator";
+import { LIMITS, TAX, type SimulationResult } from "@/lib/finance";
+import { Link } from "@/i18n/navigation";
+import { useFormat, useScenarioLabel } from "@/lib/i18n/use-format";
 import { track } from "@/lib/analytics";
 import { AnimatedNumber } from "./AnimatedNumber";
 
@@ -31,6 +22,7 @@ function StatCard({
   caption: string;
   children: React.ReactNode;
 }) {
+  const t = useTranslations("simulator.results");
   const [open, setOpen] = useState(false);
   const panelId = useId();
 
@@ -47,7 +39,7 @@ function StatCard({
             type="button"
             aria-expanded={open}
             aria-controls={panelId}
-            aria-label={`What does "${label}" mean?`}
+            aria-label={t("explainerLabel", { label })}
             onClick={() => {
               if (!open) track("sim_explainer_open", { topic });
               setOpen((o) => !o);
@@ -59,18 +51,15 @@ function StatCard({
           <span
             id={panelId}
             role="tooltip"
-            className={`absolute right-0 top-full z-20 mt-1 w-64 rounded-2xl border border-border bg-popover px-4 py-3 text-sm leading-relaxed text-popover-foreground shadow-lg transition-opacity duration-150 sm:w-72 ${
+            className={`absolute end-0 top-full z-20 mt-1 w-64 rounded-2xl border border-border bg-popover px-4 py-3 text-start text-sm leading-relaxed text-popover-foreground shadow-lg transition-opacity duration-150 sm:w-72 ${
               open
                 ? "visible opacity-100"
                 : "invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
             }`}
           >
             {explainer}
-            <Link
-              href="/#how-your-money-moves"
-              className="mt-2 block font-semibold text-primary underline underline-offset-2"
-            >
-              How is this calculated?
+            <Link href="/#how-your-money-moves" className="mt-2 block font-semibold text-primary underline underline-offset-2">
+              {t("howCalculated")}
             </Link>
           </span>
         </span>
@@ -83,55 +72,61 @@ function StatCard({
 
 /** The four headline figures for the chosen scenario. All values come from the engine. */
 export function BigNumbers({ result }: { result: SimulationResult }) {
+  const t = useTranslations("simulator.results");
+  const ts = useTranslations("simulator");
+  const tc = useTranslations("common");
+  const scenarioLabel = useScenarioLabel();
+  const { mad: formatMad, percent, number } = useFormat();
   const key = result.input.scenarioKey === "custom" ? "base" : result.input.scenarioKey;
   const name = scenarioLabel(key);
   const years = result.input.holdYears;
+  const suffix = tc("notice.netIndicative");
   const mad = (n: number) => formatMad(n);
+  /** "1.17×" · "1,17×". A non-finite multiple is shown as an em dash. */
+  const multiple = (n: number) => (Number.isFinite(n) ? `${number(n, 2)}×` : "—");
 
   return (
     <section aria-labelledby="sim-results-title">
       <h2 id="sim-results-title" className="mb-1 text-lg font-bold text-foreground">
-        Your result, {name} scenario
+        {t("title", { scenario: name })}
       </h2>
-      <p className="mb-4 text-sm text-muted-foreground">
-        All figures are {NET_INDICATIVE_SUFFIX}, after fees and taxes.
-      </p>
+      <p className="mb-4 text-sm text-muted-foreground">{t("intro", { suffix })}</p>
       <div className="grid gap-4 sm:grid-cols-2">
         <StatCard
           topic="net_cash"
-          label="Net cash per year"
-          caption={yieldLabel(result.netCashYieldYear1, key)}
-          explainer={`The rent your share earns in year 1, after the property reserve, IGUDAR's platform fee (incl. TVA), corporate tax and the ${formatPercent(TAX.WITHHOLDING_INDIVIDUAL, 0)} withholding on dividends. It is a projection, not a promise.`}
+          label={t("netCash.label")}
+          caption={t("netCash.caption", { rate: percent(result.netCashYieldYear1), scenario: name })}
+          explainer={t("netCash.explainer", { withholding: percent(TAX.WITHHOLDING_INDIVIDUAL, 0) })}
         >
           <AnimatedNumber value={result.netCashYear1Mad} format={mad} />
         </StatCard>
         <StatCard
           topic="net_profit"
-          label={`Net profit over ${years} years`}
-          caption={`Cash received plus your share of the sale, minus what you put in (${NET_INDICATIVE_SUFFIX}).`}
-          explainer={`Everything you receive over ${years} years (yearly cash plus your share of the sale at the end) minus the amount you invested, after all fees and taxes. The property could sell for more or less than assumed.`}
+          label={t("netProfit.label", { years })}
+          caption={t("netProfit.caption", { suffix })}
+          explainer={t("netProfit.explainer", { years })}
         >
           <AnimatedNumber value={result.netProfitMad} format={mad} />
         </StatCard>
         <StatCard
           topic="net_irr"
-          label="Net IRR"
-          caption={irrLabel(result.netIrr, key)}
-          explainer={`IRR is your yearly rate of return counting when each payment arrives. It includes the ${formatPercent(LIMITS.ACQUISITION_COSTS)} purchase costs (registration, land registry, notary) paid from the capital, so it is lower than the cash yield.`}
+          label={t("netIrr.label")}
+          caption={
+            result.netIrr === null
+              ? t("netIrr.captionUnavailable", { scenario: name })
+              : t("netIrr.caption", { rate: percent(result.netIrr), scenario: name })
+          }
+          explainer={t("netIrr.explainer", { acquisition: percent(LIMITS.ACQUISITION_COSTS) })}
         >
-          {result.netIrr === null ? (
-            "n/a"
-          ) : (
-            <AnimatedNumber value={result.netIrr} format={(n) => formatPercent(n, 2)} />
-          )}
+          {result.netIrr === null ? ts("na") : <AnimatedNumber value={result.netIrr} format={(n) => percent(n, 2)} />}
         </StatCard>
         <StatCard
           topic="money_multiple"
-          label="Money multiple"
-          caption={`Total money back divided by money in, over ${years} years (${NET_INDICATIVE_SUFFIX}).`}
-          explainer="How many dirhams come back for each dirham invested, after fees and taxes. 1.00× means you only get your money back; below 1.00× would be a loss."
+          label={t("moneyMultiple.label")}
+          caption={t("moneyMultiple.caption", { years, suffix })}
+          explainer={t("moneyMultiple.explainer")}
         >
-          <AnimatedNumber value={result.moneyMultiple} format={formatMultiple} />
+          <AnimatedNumber value={result.moneyMultiple} format={multiple} />
         </StatCard>
       </div>
     </section>

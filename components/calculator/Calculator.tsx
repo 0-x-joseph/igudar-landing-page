@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useId, useMemo, useState } from "react";
-import { LIMITS, formatMad, formatPercent } from "@/lib/finance";
+import { useTranslations } from "next-intl";
+import { LIMITS } from "@/lib/finance";
+import { useFormat } from "@/lib/i18n/use-format";
 import { calculateOwnership, clampProject } from "@/lib/calculator";
-import { DEFAULT_TICKET_MAD, clampTicket } from "@/lib/simulator";
+import { DEFAULT_TICKET_MAD, clampTicket, parseAmount } from "@/lib/simulator";
 import { track } from "@/lib/analytics";
 import { TicketField } from "@/components/simulator/TicketField";
 import { AnimatedNumber } from "@/components/simulator/AnimatedNumber";
@@ -26,15 +28,18 @@ function Card({ title, intro, children }: { title: string; intro?: string; child
   );
 }
 
+/** A typed project size in any language's notation; nothing or nonsense reads as 0. */
 function numberFrom(value: string): number {
-  const n = Number(value);
-  return value.trim() === "" || !Number.isFinite(n) || n < 0 ? 0 : n;
+  const n = parseAmount(value);
+  return !Number.isFinite(n) || n < 0 ? 0 : n;
 }
 
 /** Fees and ownership calculator. Every figure comes from lib/finance through lib/calculator. */
 export function Calculator() {
+  const t = useTranslations("calculator");
+  const { mad, number, percent } = useFormat();
   const [ticket, setTicket] = useState(DEFAULT_TICKET_MAD);
-  const [projectInput, setProjectInput] = useState(String(DEFAULT_PROJECT_MAD));
+  const [projectInput, setProjectInput] = useState(() => number(DEFAULT_PROJECT_MAD));
 
   useEffect(() => {
     track("calc_view");
@@ -45,27 +50,25 @@ export function Calculator() {
 
   return (
     <div className="space-y-8">
-      <Card title="Your amount and the project" intro="Ownership is your amount divided by what the project raises.">
+      <Card title={t("inputs.title")} intro={t("inputs.intro")}>
         <div className="grid gap-5 sm:grid-cols-2">
-          <TicketField id="calc-amount" label="Your amount" value={ticket} onChange={(n) => setTicket(clampTicket(n))} />
+          <TicketField id="calc-amount" label={t("inputs.amountLabel")} value={ticket} onChange={(n) => setTicket(clampTicket(n))} />
           <div>
             <label htmlFor="calc-project" className="mb-2 block text-sm font-semibold text-foreground">
-              Project size (capital raised, MAD)
+              {t("inputs.projectLabel")}
             </label>
             <input
               id="calc-project"
-              type="number"
+              type="text"
               inputMode="numeric"
-              min={ticket}
-              max={LIMITS.MAX_RAISE_MAD}
-              step={100_000}
+              autoComplete="off"
               value={projectInput}
               onChange={(e) => setProjectInput(e.target.value)}
-              onBlur={() => setProjectInput(String(project))}
+              onBlur={() => setProjectInput(number(project))}
               className={inputClass}
             />
             <p className="mt-2 text-xs text-muted-foreground">
-              Up to {formatMad(LIMITS.MAX_RAISE_MAD, { decimals: 0 })} per project over 12 months.
+              {t("inputs.projectNote", { max: mad(LIMITS.MAX_RAISE_MAD, { decimals: 0 }) })}
             </p>
           </div>
         </div>
@@ -73,25 +76,23 @@ export function Calculator() {
 
       <section aria-labelledby="calc-own-title">
         <h2 id="calc-own-title" className="sr-only">
-          Ownership
+          {t("ownership.title")}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-3xl border border-border bg-card p-5">
-            <h3 className="text-sm font-semibold text-muted-foreground">Your ownership of the property company (SAS)</h3>
+            <h3 className="text-sm font-semibold text-muted-foreground">{t("ownership.shareLabel")}</h3>
             <p className="financial-number mt-1 text-3xl font-bold text-foreground sm:text-4xl">
-              <AnimatedNumber value={ownership.share} format={(n) => formatPercent(n, 3)} />
+              <AnimatedNumber value={ownership.share} format={(n) => percent(n, 3)} />
             </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              You become a shareholder of the company that owns the property, in proportion to your amount.
-            </p>
+            <p className="mt-2 text-xs text-muted-foreground">{t("ownership.shareNote")}</p>
           </div>
           <div className="rounded-3xl border border-border bg-card p-5">
-            <h3 className="text-sm font-semibold text-muted-foreground">Investors needed to fill the project</h3>
+            <h3 className="text-sm font-semibold text-muted-foreground">{t("ownership.investorsLabel")}</h3>
             <p className="financial-number mt-1 text-3xl font-bold text-foreground sm:text-4xl">
-              <AnimatedNumber value={ownership.investorsNeeded} format={(n) => Math.round(n).toLocaleString("en-US")} />
+              <AnimatedNumber value={ownership.investorsNeeded} format={(n) => number(Math.round(n))} />
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
-              At the {formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })} minimum ticket.
+              {t("ownership.investorsNote", { min: mad(LIMITS.MIN_TICKET_MAD, { decimals: 0 }) })}
             </p>
           </div>
         </div>

@@ -1,29 +1,35 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useRouter, usePathname } from '@/i18n/navigation';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import WaitlistModal from './WaitlistModal';
 type SectionId = 'how-it-works' | 'ai-powered';
 
 // The closed-beta sign-up (approval is manual).
 const BETA_URL = 'https://app.igudar.tech/auth/register';
 
-const navLinks: { label: string; type: 'section' | 'page'; id: SectionId | string }[] = [
-  { label: 'How It Works', type: 'section', id: 'how-it-works' },
-  { label: 'Features', type: 'section', id: 'ai-powered' },
-  { label: 'Simulator', type: 'page', id: 'simulator' },
-  { label: 'Calculator', type: 'page', id: 'calculator' },
-  { label: 'Pricing', type: 'page', id: 'pricing' },
-  { label: 'Beta', type: 'page', id: 'beta' },
-  { label: 'FAQ', type: 'page', id: 'faq' },
+type NavKey = 'howItWorks' | 'features' | 'simulator' | 'calculator' | 'pricing' | 'beta' | 'faq';
+
+// Labels live in common.nav.<key>; the order and the targets stay here.
+const navLinks: { key: NavKey; type: 'section' | 'page'; id: SectionId | string }[] = [
+  { key: 'howItWorks', type: 'section', id: 'how-it-works' },
+  { key: 'features', type: 'section', id: 'ai-powered' },
+  { key: 'simulator', type: 'page', id: 'simulator' },
+  { key: 'calculator', type: 'page', id: 'calculator' },
+  { key: 'pricing', type: 'page', id: 'pricing' },
+  { key: 'beta', type: 'page', id: 'beta' },
+  { key: 'faq', type: 'page', id: 'faq' },
 ];
 
 const Navbar = () => {
+  const t = useTranslations('common');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId | ''>('');
   const navigate = useRouter();
+  // Locale-free: "/fr/pricing" reads as "/pricing", so the home check below holds in every language.
   const pathname = usePathname();
 
   useEffect(() => {
@@ -82,7 +88,7 @@ const Navbar = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex flex-col">
+    <div className="fixed top-0 inset-x-0 z-50 flex flex-col">
       {/* Top Banner */}
       <AnimatePresence>
         {isBannerVisible && (
@@ -93,15 +99,15 @@ const Navbar = () => {
             className="bg-card border-b border-border w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 px-10 relative overflow-hidden"
           >
             <p className="text-muted-foreground text-[13px] font-medium text-center">
-              The IGUDAR closed beta is open for applications. Demo money only.
+              {t('banner.text')}
             </p>
             <Link href="/beta" className="text-primary text-[13px] font-semibold hover:text-primary/80 transition-colors whitespace-nowrap">
-              Apply for the beta →
+              {t('banner.cta')}
             </Link>
-            <button 
+            <button
               onClick={() => setIsBannerVisible(false)}
-              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 transition-colors"
-              aria-label="Close banner"
+              className="absolute end-3 sm:end-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 transition-colors"
+              aria-label={t('banner.close')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -129,7 +135,7 @@ const Navbar = () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            className="flex items-center"
+            className="flex shrink-0 items-center"
           >
             <img
               src="/images/Logo-IGUDAR-2-Photoroom.png"
@@ -139,7 +145,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-5 xl:gap-7">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-5 whitespace-nowrap">
             {navLinks.map((item) =>
               item.type === 'section' ? (
                 <button
@@ -149,11 +155,11 @@ const Navbar = () => {
                       isActive(item) ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  {item.label}
+                  {t(`nav.${item.key}`)}
                   {isActive(item) && (
                     <motion.div
                       layoutId="nav-indicator"
-                      className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-primary rounded-full"
+                      className="absolute -bottom-1.5 inset-x-0 h-[2px] bg-primary rounded-full"
                       transition={{ duration: 0.2, ease: 'easeOut' }}
                     />
                   )}
@@ -166,11 +172,11 @@ const Navbar = () => {
                       isActive(item) ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  {item.label}
+                  {t(`nav.${item.key}`)}
                   {isActive(item) && (
                     <motion.div
                       layoutId="nav-indicator"
-                      className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-primary rounded-full"
+                      className="absolute -bottom-1.5 inset-x-0 h-[2px] bg-primary rounded-full"
                       transition={{ duration: 0.2, ease: 'easeOut' }}
                     />
                   )}
@@ -181,17 +187,18 @@ const Navbar = () => {
 
           {/* Right Actions */}
           <div className="hidden lg:flex items-center gap-2">
+            <LanguageSwitcher compact className="me-1" />
             <button type="button"
               onClick={() => setIsWaitlistOpen(true)}
-              className="px-4 text-[13px] font-medium text-foreground border border-border bg-card hover:bg-muted transition-colors h-9 rounded-full flex items-center justify-center cursor-pointer"
+              className="hidden 2xl:flex px-4 text-[13px] font-medium text-foreground border border-border bg-card hover:bg-muted transition-colors h-9 rounded-full items-center justify-center cursor-pointer whitespace-nowrap"
             >
-              Join the waitlist
+              {t('cta.joinWaitlist')}
             </button>
             <a
               href={BETA_URL}
-              className="px-5 text-[13px] font-medium text-primary-foreground bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center"
+              className="px-5 text-[13px] font-medium text-primary-foreground bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center whitespace-nowrap"
             >
-              Beta access
+              {t('cta.betaAccess')}
             </a>
           </div>
 
@@ -199,7 +206,8 @@ const Navbar = () => {
           <button
             className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label={t('nav.toggleMenu')}
+            aria-expanded={isMenuOpen}
           >
             <div className="w-5 flex flex-col gap-[5px]">
               <span
@@ -229,7 +237,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:hidden overflow-hidden bg-card rounded-b-xl shadow-sm absolute left-0 right-0 border-b border-border"
+              className="lg:hidden overflow-hidden bg-card rounded-b-xl shadow-sm absolute inset-x-0 border-b border-border"
             >
               <div className="py-3 px-4 sm:px-6 space-y-0.5">
                 {navLinks.map((item) =>
@@ -241,7 +249,7 @@ const Navbar = () => {
                         isActive(item) ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                       }`}
                     >
-                      {item.label}
+                      {t(`nav.${item.key}`)}
                     </button>
                   ) : (
                     <Link
@@ -252,28 +260,31 @@ const Navbar = () => {
                         isActive(item) ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                       }`}
                     >
-                      {item.label}
+                      {t(`nav.${item.key}`)}
                     </Link>
                   )
                 )}
-                
+
                 <div className="pt-3 mt-2 border-t border-border space-y-2">
                   <a
                     href={BETA_URL}
                     onClick={() => setIsMenuOpen(false)}
                     className="w-full px-4 py-2.5 text-[14px] font-medium text-primary-foreground bg-primary rounded-lg hover:bg-accent-foreground transition-colors flex items-center justify-center"
                   >
-                    Beta access
+                    {t('cta.betaAccess')}
                   </a>
-                  <button 
+                  <button
                     onClick={() => {
                       setIsWaitlistOpen(true);
                       setIsMenuOpen(false);
                     }}
                     className="w-full px-4 py-2.5 text-[14px] font-medium text-foreground border border-border bg-card rounded-lg hover:bg-muted transition-colors flex items-center justify-center"
                   >
-                    Join the waitlist
+                    {t('cta.joinWaitlist')}
                   </button>
+                  <div className="flex justify-center pt-1">
+                    <LanguageSwitcher />
+                  </div>
                 </div>
               </div>
             </motion.div>

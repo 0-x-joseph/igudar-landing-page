@@ -33,18 +33,19 @@ export function calculateOwnership(input: { ticketMad: number; projectMad: numbe
   };
 }
 
+/** Key under `calculator.feeNotes` in the messages: the words that qualify a row live there, not here. */
+export type CalculatorFeeNote = "perYearHt" | "baseSaleTtc" | "earlyExitOnly" | "aboveHurdle" | "optional";
+
+/** One fee line for the calculator. Its name, payer and timing come from `FEE_LINES` by code. */
 export interface CalculatorFeeRow {
   code: FeeCode;
-  label: string;
-  paidBy: string;
-  when: string;
   /** What the fee is on the whole project (null when it depends on the sale). */
   lineTotalMad: number | null;
   /** What this investor pays: 0 when someone else pays, null when it depends on events. */
   yourShareMad: number | null;
   /** True when the fee reduces the investor's return. */
   paidByYou: boolean;
-  note?: string;
+  noteKey?: CalculatorFeeNote;
 }
 
 /**
@@ -58,7 +59,7 @@ export function calculatorFeeRows(input: { ticketMad: number; projectMad: number
   const tva = 1 + TAX.TVA_ON_FEES;
 
   return FEE_LINES.map((line): CalculatorFeeRow => {
-    const base = { code: line.code, label: line.label, paidBy: line.paidBy, when: line.when };
+    const base = { code: line.code };
     switch (line.code) {
       case "S1":
         return { ...base, lineTotalMad: projectMad * FEE_GRID.S1_SYNDICATION, yourShareMad: 0, paidByYou: false };
@@ -72,7 +73,7 @@ export function calculatorFeeRows(input: { ticketMad: number; projectMad: number
           lineTotalMad: projectMad * FEE_GRID.D2_PLATFORM_HT,
           yourShareMad: ticketMad * FEE_GRID.D2_PLATFORM_HT,
           paidByYou: true,
-          note: "per year, HT",
+          noteKey: "perYearHt",
         };
       case "D3":
         return {
@@ -80,20 +81,20 @@ export function calculatorFeeRows(input: { ticketMad: number; projectMad: number
           lineTotalMad: sim.exit.saleMad * FEE_GRID.D3_EXIT_HT * tva,
           yourShareMad: sim.share * sim.exit.saleMad * FEE_GRID.D3_EXIT_HT * tva,
           paidByYou: true,
-          note: "Base scenario sale, incl. TVA, borne by the SAS",
+          noteKey: "baseSaleTtc",
         };
       case "D4":
-        return { ...base, lineTotalMad: null, yourShareMad: null, paidByYou: false, note: "only if you sell early" };
+        return { ...base, lineTotalMad: null, yourShareMad: null, paidByYou: false, noteKey: "earlyExitOnly" };
       case "D5":
         return {
           ...base,
           lineTotalMad: sim.exit.performanceFeeMad,
           yourShareMad: sim.share * sim.exit.performanceFeeMad,
           paidByYou: true,
-          note: "Base scenario, only above the hurdle",
+          noteKey: "aboveHurdle",
         };
       default:
-        return { ...base, lineTotalMad: null, yourShareMad: null, paidByYou: false, note: "optional" };
+        return { ...base, lineTotalMad: null, yourShareMad: null, paidByYou: false, noteKey: "optional" };
     }
   });
 }

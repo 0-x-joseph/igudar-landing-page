@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { WAITLIST_ERROR_CODES } from "@/lib/waitlist-validation";
 
 const sendMock = vi.hoisted(() => vi.fn());
 vi.mock("resend", () => ({
@@ -61,12 +64,12 @@ afterEach(() => {
 });
 
 describe("POST /api/waitlist, configuration", () => {
-  it("returns 503 with the not-configured sentence when RESEND_API_KEY is unset", async () => {
+  it("returns 503 with the not_configured code when RESEND_API_KEY is unset", async () => {
     vi.stubEnv("RESEND_API_KEY", "");
     const { POST } = await load();
     const res = await POST(req(BETA));
     expect(res.status).toBe(503);
-    expect(await res.json()).toEqual({ error: "Sign-up is not configured yet." });
+    expect(await res.json()).toEqual({ error: "not_configured" });
     expect(calls).toHaveLength(0);
     expect(sendMock).not.toHaveBeenCalled();
   });
@@ -135,7 +138,7 @@ describe("POST /api/waitlist, contact upsert", () => {
     const { POST } = await load();
     const res = await POST(req(BETA));
     expect(res.status).toBe(502);
-    expect((await res.json()).error).toMatch(/could not save/i);
+    expect((await res.json()).error).toBe("save_failed");
     expect(sendMock).not.toHaveBeenCalled();
   });
 });
@@ -223,7 +226,7 @@ describe("POST /api/waitlist, validation and abuse", () => {
     const { POST } = await load();
     const res = await POST(req(body));
     expect(res.status).toBe(400);
-    expect(typeof (await res.json()).error).toBe("string");
+    expect(WAITLIST_ERROR_CODES).toContain((await res.json()).error);
     expect(calls).toHaveLength(0);
     expect(sendMock).not.toHaveBeenCalled();
   });
@@ -256,5 +259,57 @@ describe("POST /api/waitlist, validation and abuse", () => {
     const logged = JSON.stringify((console.error as unknown as { mock: { calls: unknown[] } }).mock.calls);
     expect(logged).not.toContain("7.7.7.7");
     expect(logged).not.toContain("salma@example.com");
+  });
+});
+
+describe("POST /api/waitlist, the visitor's language", () => {
+  const ROOT = path.resolve(import.meta.dirname, "..", "..");
+  const emails = (locale: string) =>
+    JSON.parse(readFileSync(path.join(ROOT, "messages", locale, "emails.json"), "utf8")) as {
+      confirmation: { subject: string; title: string };
+      beta: { subject: string; whatTitle: string };
+    };
+
+  it("sends the confirmation in French with lang=\"fr\" when the body says so", async () => {
+    const { POST } = await load();
+    const res = await POST(req({ email: "a@example.com", locale: "fr" }));
+    expect(res.status).toBe(200);
+    const confirm = sendMock.mock.calls[0][0];
+    expect(confirm.subject).toBe(emails("fr").confirmation.subject);
+    expect(confirm.subject).not.toBe(emails("en").confirmation.subject);
+    expect(confirm.html).toContain('<html lang="fr" dir="ltr">');
+    expect(confirm.html).toContain(emails("fr").confirmation.title.replace(/'/g, "&#39;"));
+  });
+
+  it("sends the beta confirmation in Arabic, right to left, while the team notification stays English", async () => {
+    const { POST } = await load();
+    const res = await POST(req({ ...BETA, locale: "ar" }));
+    expect(res.status).toBe(200);
+    const [notify, confirm] = sendMock.mock.calls.map((c) => c[0]);
+    expect(notify.subject).toBe("Beta application: Salma, Paris, France");
+    expect(notify.text).toMatch(/Amount range: 25,000.MAD to 50,000.MAD/);
+    expect(confirm.subject).toBe(emails("ar").beta.subject);
+    expect(confirm.html).toContain('<html lang="ar" dir="rtl">');
+    expect(confirm.html).toContain("text-align:start");
+    expect(confirm.html).toContain("padding-right:20px");
+    expect(confirm.html).toContain(emails("ar").beta.whatTitle);
+    expect(confirm.html).toContain("https://app.igudar.tech/auth/register");
+  });
+
+  it("falls back to English for a missing or unknown locale", async () => {
+    const { POST } = await load();
+    await POST(req({ email: "a@example.com" }));
+    await POST(req({ email: "b@example.com", locale: "de" }));
+    await POST(req({ email: "c@example.com", locale: 42 }));
+    for (const call of sendMock.mock.calls) {
+      expect(call[0].subject).toBe(emails("en").confirmation.subject);
+      expect(call[0].html).toContain('<html lang="en" dir="ltr">');
+    }
+  });
+
+  it("answers with the kind of sign-up and no English sentence", async () => {
+    const { POST } = await load();
+    expect(await (await POST(req({ email: "a@example.com" }))).json()).toEqual({ success: true, kind: "waitlist" });
+    expect(await (await POST(req(BETA))).json()).toEqual({ success: true, kind: "beta" });
   });
 });

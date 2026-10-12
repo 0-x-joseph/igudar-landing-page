@@ -1,3 +1,4 @@
+import { setRequestLocale } from "next-intl/server";
 import Navbar from "@/components/Navbar";
 import LandingHero from "@/components/LandingHero";
 import { HeroSimulator } from "@/components/simulator/HeroSimulator";
@@ -11,12 +12,17 @@ import FinalCtaSection from "@/components/FinalCtaSection";
 import SiteFooter from "@/components/SiteFooter";
 import { ZelligeBand } from "@/components/brand";
 
+type Params = { params: Promise<{ locale: string }> };
+
 /** One-row zellige divider between the major sections: static, faded at both ends. */
 function Divider() {
   return <ZelligeBand className="mx-auto max-w-4xl" />;
 }
 
-export default function LandingPage() {
+export default async function LandingPage({ params }: Params) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <div className="min-h-screen w-full overflow-x-clip bg-background text-foreground">
       <Navbar />

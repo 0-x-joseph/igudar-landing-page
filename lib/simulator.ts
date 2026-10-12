@@ -1,17 +1,8 @@
 /**
- * Small, pure helpers for the simulator UI (input clamping, analytics buckets).
+ * Small, pure helpers for the simulator UI (input clamping, parsing, analytics buckets).
  * No financial maths here: every figure comes from lib/finance.
  */
-import {
-  FEE_GRID,
-  LIMITS,
-  MODEL_SCENARIOS,
-  TAX,
-  formatMad,
-  formatPercent,
-  type FeeLine,
-  type ScenarioKey,
-} from "@/lib/finance";
+import { FEE_GRID, LIMITS, TAX, formatMad, formatPercent, type FeeLine } from "@/lib/finance";
 
 /** Ticket the slider and input start on. */
 export const DEFAULT_TICKET_MAD: number = LIMITS.MIN_TICKET_MAD;
@@ -42,24 +33,36 @@ export function ticketBucket(amountMad: number): string {
   return "500k+";
 }
 
-/** One-line summary of a scenario's assumptions, read from MODEL_SCENARIOS. */
-export function scenarioDescription(key: ScenarioKey): string {
-  const a = MODEL_SCENARIOS[key];
-  const parts = [
-    `${formatPercent(a.grossYield, 2)} gross rental yield`,
-    a.vacancy > 0 ? `${formatPercent(a.vacancy, 0)} vacancy or operator default` : "no vacancy",
-    `${formatPercent(a.rentReserve, 0)} rent reserve`,
-    `property price ${a.priceGrowth > 0 ? `+${formatPercent(a.priceGrowth)}` : "flat"}${a.priceGrowth > 0 ? "/yr" : ""}`,
-  ];
-  if (a.rentIndexation > 0) parts.push(`rent indexed ${formatPercent(a.rentIndexation, 0)}/yr`);
-  if (a.sellerCostsAtExit > 0) parts.push(`${formatPercent(a.sellerCostsAtExit, 0)} seller-side costs at exit`);
-  return parts.join(" · ");
+const ARABIC_INDIC_ZERO = 0x0660; // ٠
+const EXTENDED_ARABIC_INDIC_ZERO = 0x06f0; // ۰ (Persian keyboards)
+
+/** Maps Arabic-Indic digits (٠-٩, ۰-۹) to 0-9; everything else is returned as is. */
+function westernDigits(text: string): string {
+  return text.replace(/[٠-٩۰-۹]/g, (d) => {
+    const code = d.charCodeAt(0);
+    const zero = code >= EXTENDED_ARABIC_INDIC_ZERO ? EXTENDED_ARABIC_INDIC_ZERO : ARABIC_INDIC_ZERO;
+    return String(code - zero);
+  });
 }
 
-/** "1.17×". A null multiple is shown as an em dash. */
-export function formatMultiple(multiple: number): string {
-  if (!Number.isFinite(multiple)) return "—";
-  return `${multiple.toFixed(2)}×`;
+/**
+ * Reads an amount the way people type it in any of the site's languages: "25000", "25 000",
+ * "25.000", "25,000", "٢٥٠٠٠", "1 250 000,50". Spaces of every kind are ignored; a point or a comma
+ * followed by exactly three digits is a thousands separator, any other one is the decimal mark.
+ * Returns NaN when nothing numeric was typed, so callers can fall back to the minimum.
+ */
+export function parseAmount(text: string): number {
+  let s = westernDigits(text)
+    .replace(/[\s    ٬']/g, "") // spaces, NBSP, thin spaces, Arabic thousands sign, apostrophes
+    .replace(/٫/g, ",") // Arabic decimal separator
+    .replace(/[^\d.,-]/g, ""); // currency words and anything else
+  if (s === "" || !/\d/.test(s)) return Number.NaN;
+  // Grouping marks: a point or comma followed by exactly three digits and then another mark or the end.
+  s = s.replace(/[.,](?=\d{3}(?:[.,]|$))/g, "");
+  // What is left of "." or "," is a decimal mark.
+  s = s.replace(",", ".");
+  const n = Number(s);
+  return Number.isFinite(n) ? n : Number.NaN;
 }
 
 /** Rate column of the public fee grid, in plain words. */

@@ -1,1 +1,63 @@
-{}
+{
+  "hero": {
+    "title": "Real property. Real rent. <em>Clear rules.</em>",
+    "subtitle": "Own real, rented Moroccan property alongside professionals, from {min}.",
+    "note": "Closed beta, approved by hand. A prototype with demo money only: nothing is invested.",
+    "imageAlt": "Aerial view of a Moroccan city at dusk"
+  },
+  "painPoints": {
+    "title": "We built something <em>different.</em>",
+    "cards": {
+      "access": {
+        "eyebrow": "Transparent access",
+        "title": "Every opportunity starts with the facts.",
+        "body": "Property details, pricing logic, indicative returns, documents, and key risks are organized in one place before anyone invests.",
+        "stat": "Deal context"
+      },
+      "ownership": {
+        "eyebrow": "Clear ownership",
+        "title": "Investors can understand what they own.",
+        "body": "IGUDAR is built around visible fees, documented structures, investor rights, and simple terms for fractional real estate.",
+        "stat": "No hidden layers"
+      },
+      "visibility": {
+        "eyebrow": "Ongoing visibility",
+        "title": "The platform keeps reporting after investment.",
+        "body": "Occupancy, expenses, distributions, and property updates are designed to stay visible across the full asset lifecycle.",
+        "stat": "Live updates"
+      }
+    }
+  },
+  "partners": {
+    "title": "Programmes & partners",
+    "region": "Partner logos",
+    "genericLogoAlt": "Programme partner logo",
+    "play": "Play logos",
+    "pause": "Pause logos"
+  },
+  "facts": {
+    "eyebrow": "The facts",
+    "title": "Three things to know before anything else",
+    "items": {
+      "ticket": {
+        "label": "Minimum ticket",
+        "note": "Per project, in steps of {step}."
+      },
+      "entry": {
+        "label": "Entry fee",
+        "note": "Subscribing costs nothing. The full fee grid is published."
+      },
+      "exit": {
+        "figure": "Every {months, plural, =1 {# month} other {# months}}",
+        "label": "Organised exit windows",
+        "note": "Open after {years, plural, =1 {# year} other {# years}} of holding."
+      }
+    },
+    "cta": "See who pays what, when"
+  },
+  "finalCta": {
+    "title": "Stop watching from the sidelines. <em>Start with a simulation.</em>",
+    "body": "See what {min} could look like, try the closed beta with demo money, or join the waitlist to hear when IGUDAR opens.",
+    "ctaPrimary": "Apply for beta"
+  }
+}

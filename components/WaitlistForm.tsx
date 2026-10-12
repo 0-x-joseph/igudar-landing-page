@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
+import { isWaitlistErrorCode } from "@/lib/waitlist-validation";
 
 interface WaitlistFormProps {
   className?: string;
@@ -8,6 +10,9 @@ interface WaitlistFormProps {
 }
 
 export default function WaitlistForm({ className = "", onSuccess }: WaitlistFormProps) {
+  const t = useTranslations("beta.waitlist");
+  const tErrors = useTranslations("beta.errors");
+  const locale = useLocale();
   const [email, setEmail] = useState("");
   const [honeypot, setHoneypot] = useState(""); // hidden spam trap
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -24,19 +29,19 @@ export default function WaitlistForm({ className = "", onSuccess }: WaitlistForm
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), honeypot }),
+        body: JSON.stringify({ email: email.trim(), honeypot, locale }),
       });
 
-      const data = await res.json();
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
 
       if (!res.ok) {
         setStatus("error");
-        setMessage(data.error || "Something went wrong.");
+        setMessage(isWaitlistErrorCode(data.error) ? tErrors(data.error) : t("genericError"));
         return;
       }
 
       setStatus("success");
-      setMessage(data.message || "You're on the list!");
+      setMessage(t("success"));
       onSuccess?.(email.trim());
 
       // Reset after 5 seconds
@@ -47,7 +52,7 @@ export default function WaitlistForm({ className = "", onSuccess }: WaitlistForm
       }, 5000);
     } catch {
       setStatus("error");
-      setMessage("Network error. Please try again.");
+      setMessage(t("networkError"));
     }
   };
 
@@ -85,14 +90,14 @@ export default function WaitlistForm({ className = "", onSuccess }: WaitlistForm
               onChange={(e) => setHoneypot(e.target.value)}
               tabIndex={-1}
               autoComplete="off"
-              style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }}
+              style={{ position: "absolute", insetInlineStart: "-9999px", opacity: 0, height: 0, width: 0 }}
               aria-hidden="true"
             />
 
             <div className="flex gap-3 max-sm:flex-col">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t("placeholder")}
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -110,10 +115,10 @@ export default function WaitlistForm({ className = "", onSuccess }: WaitlistForm
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    Joining...
+                    {t("joining")}
                   </>
                 ) : (
-                  "Join waitlist"
+                  t("submit")
                 )}
               </button>
             </div>

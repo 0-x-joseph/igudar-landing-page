@@ -22,6 +22,9 @@ export default defineConfig({
           environment: "jsdom",
           include: ["lib/**/__tests__/**/*.test.tsx"],
           setupFiles: ["./vitest.setup.ts"],
+          // next-intl/navigation imports bare "next/navigation", which Node cannot resolve when the package is
+          // externalised; inlining lets Vite resolve it, so tests use the real locale-aware Link.
+          server: { deps: { inline: ["next-intl"] } },
         },
       },
     ],

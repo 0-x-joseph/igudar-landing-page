@@ -1,1 +1,168 @@
-{}
+{
+  "meta": {
+    "title": "Closed beta | IGUDAR",
+    "description": "A closed test of the IGUDAR platform with about 50 people, using demo money only. Apply for the beta and tell us what works."
+  },
+  "hero": {
+    "eyebrow": "Closed beta",
+    "title": "Try IGUDAR with <em>demo money.</em>",
+    "lede": "We are testing the platform with about 50 people. Explore properties, simulate a subscription from {amount} and tell us what works. No real money is involved.",
+    "ctaPrimary": "Apply for the beta",
+    "ctaSecondary": "What the beta is",
+    "rosetteLabel": "Demo money. Nothing real at stake.",
+    "stepsLabel": "How it works",
+    "steps": {
+      "apply": { "title": "Apply", "body": "A minute, a few questions." },
+      "approve": { "title": "A founder approves by hand", "body": "Every application is read by a person." },
+      "access": { "title": "You get the email with your access", "body": "Then you create your account." }
+    }
+  },
+  "details": {
+    "what": {
+      "title": "What the beta <em>is</em>",
+      "lede": "A small, honest test of the real platform. We want to see whether the rules, the numbers and the screens make sense to the people they are built for, before anything is offered to the public.",
+      "facts": {
+        "closed": {
+          "title": "A closed test",
+          "body": "About 50 people, let in by hand. A founder approves every account before you get in."
+        },
+        "demo": {
+          "title": "Demo money only",
+          "body": "Every subscription uses demo money. No real money is collected or moved, anywhere in the beta."
+        },
+        "clock": {
+          "title": "Time can run faster",
+          "body": "The simulation may run faster than real time: up to a year of activity in about two weeks. You will always see which mode is on."
+        }
+      }
+    },
+    "who": {
+      "title": "Who it is <em>for</em>",
+      "lede": "Urban professionals in Morocco and Moroccans abroad who are curious about owning a share of a rented building, and who want to read the rules before any real money is involved.",
+      "dataTitle": "What we collect, and why",
+      "dataBody": "To learn what works, we record how you use the beta (usage events) and the feedback you give us. No identity documents are stored. Your data is handled under Moroccan personal-data law (Law 09-08), overseen by the CNDP. You will see a consent screen before you start."
+    },
+    "do": {
+      "title": "What you will <em>do</em>",
+      "steps": {
+        "explore": {
+          "title": "Explore properties",
+          "body": "Read the documents, the fees and the risks of each demo property."
+        },
+        "simulate": {
+          "title": "Simulate subscriptions",
+          "body": "Subscribe with demo money, from {amount} per property, and see where it sits."
+        },
+        "receive": {
+          "title": "Receive simulated distributions",
+          "body": "Watch simulated rent arrive, net of fees and taxes, as the clock moves."
+        },
+        "feedback": {
+          "title": "Tell us what works",
+          "body": "Say what was clear, what was confusing and what you would change."
+        }
+      }
+    }
+  },
+  "apply": {
+    "title": "Apply for the <em>beta</em>",
+    "lede": "We ask a few questions so we can choose a mix of people and learn from each of them. It takes about a minute. A founder reads every answer."
+  },
+  "access": {
+    "title": "Prefer to go <em>straight in?</em>",
+    "body": "Create an account on the platform. You will read and accept the beta consent first, then a founder approves your access by hand.",
+    "cta": "Beta access"
+  },
+  "form": {
+    "ariaLabel": "Apply for the beta",
+    "legends": {
+      "about": "About you",
+      "interest": "Your interest",
+      "consent": "Consent"
+    },
+    "fields": {
+      "firstName": "First name",
+      "email": "Email",
+      "location": "City and country",
+      "locationPlaceholder": "Casablanca, Morocco",
+      "ticketBucket": "What would you realistically consider, per property?",
+      "ticketPlaceholder": "Choose a range",
+      "ticketHint": "This only helps us understand the range. The beta uses demo money.",
+      "experience": "Your experience with property or savings products",
+      "experiencePlaceholder": "Choose one",
+      "website": "Website"
+    },
+    "buckets": {
+      "25-50k": "{from} to {to}",
+      "50-100k": "{from} to {to}",
+      "100-250k": "{from} to {to}",
+      "250k-plus": "More than {amount}",
+      "not-sure": "Not sure yet"
+    },
+    "experience": {
+      "new": "New to this",
+      "some": "Some experience (savings products, a rental, or a first look)",
+      "experienced": "Experienced (I own or invest in property or funds)"
+    },
+    "consent": "I agree that IGUDAR may store these answers and my email to review my application and contact me about the closed beta. I understand the beta uses demo money.",
+    "submit": "Apply for the beta",
+    "sending": "Sending…",
+    "next": "Next: a founder reads your application by hand and writes to you by email.",
+    "errors": {
+      "firstName": "Please tell us your first name.",
+      "email": "Please enter a valid email address.",
+      "location": "Please tell us your city and country.",
+      "ticketBucket": "Please choose an amount range.",
+      "experience": "Please choose your experience level.",
+      "consent": "Please tick the box to agree before applying."
+    },
+    "genericError": "Something went wrong. Please try again.",
+    "networkError": "We could not reach the server. Please try again.",
+    "success": {
+      "title": "Thanks — a founder reviews every application by hand. You'll hear from us by email.",
+      "nextTitle": "What happens next",
+      "steps": {
+        "read": "1. A founder reads your application by hand.",
+        "email": "2. You get an email with your access.",
+        "create": "3. Once approved, create your account here."
+      },
+      "cta": "Create your account",
+      "note": "No money is collected, and nothing is committed."
+    }
+  },
+  "errors": {
+    "invalid_request": "Invalid request.",
+    "invalid_email": "Please provide a valid email address.",
+    "amount_out_of_range": "Please provide a valid amount.",
+    "unknown_scenario": "Unknown scenario.",
+    "unknown_source": "Unknown source.",
+    "consent_required": "Consent is required.",
+    "consent_invalid": "Consent timestamp is invalid.",
+    "first_name_required": "Please tell us your first name.",
+    "location_required": "Please tell us your city and country.",
+    "ticket_bucket_required": "Please choose an amount range.",
+    "experience_required": "Please choose your experience level.",
+    "not_configured": "Sign-up is not configured yet.",
+    "rate_limited": "Too many requests. Please try again in a minute.",
+    "save_failed": "We could not save your sign-up. Please try again.",
+    "application_failed": "We could not save your application. Please try again."
+  },
+  "waitlist": {
+    "placeholder": "Enter your email",
+    "submit": "Join waitlist",
+    "joining": "Joining...",
+    "genericError": "Something went wrong.",
+    "networkError": "Network error. Please try again.",
+    "success": "You're on the list! Check your email for confirmation.",
+    "modal": {
+      "title": "Join the Waitlist",
+      "lede": "Be the first to know when we launch and get exclusive early access benefits.",
+      "emailLabel": "Email Address",
+      "placeholder": "Enter your best email",
+      "submit": "Secure My Spot",
+      "close": "Close",
+      "successTitle": "You're on the list!",
+      "successBody": "We've sent a confirmation email to <strong>{email}</strong>. We'll notify you when early access begins."
+    }
+  }
+}

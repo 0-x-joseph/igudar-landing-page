@@ -55,6 +55,13 @@ describe("calculatorFeeRows", () => {
   it("leaves the transfer fee for the early-exit calculator", () => {
     expect(row("D4").yourShareMad).toBeNull();
   });
+
+  it("carries no English wording, only a message key for the note", () => {
+    expect(row("D4").noteKey).toBe("earlyExitOnly");
+    expect(row("D2").noteKey).toBe("perYearHt");
+    expect(row("S1").noteKey).toBeUndefined();
+    for (const r of rows) expect(Object.keys(r)).not.toContain("label");
+  });
 });
 
 describe("earlyExitFor", () => {

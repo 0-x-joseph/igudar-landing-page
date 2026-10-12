@@ -1,32 +1,33 @@
 "use client";
 
 import { useId, useState, type FormEvent, type ReactNode } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { CheckCircle2 } from "lucide-react";
 import { track } from "@/lib/analytics";
+import { LIMITS } from "@/lib/finance";
+import { useFormat } from "@/lib/i18n/use-format";
 import {
-  BETA_EXPERIENCE_LABELS,
   BETA_EXPERIENCE_LEVELS,
   BETA_TICKET_BUCKETS,
-  BETA_TICKET_BUCKET_LABELS,
+  isWaitlistErrorCode,
+  type BetaTicketBucket,
 } from "@/lib/waitlist-validation";
 
 type Status = "idle" | "sending" | "done" | "error";
 type Field = "firstName" | "email" | "location" | "ticketBucket" | "experience" | "consent";
 type Errors = Partial<Record<Field, string>>;
 
-export const BETA_SUCCESS_MESSAGE = "Thanks — a founder reviews every application by hand. You'll hear from us by email.";
 export const REGISTER_URL = "https://app.igudar.tech/auth/register";
 
-const ERROR_TEXT: Record<Field, string> = {
-  firstName: "Please tell us your first name.",
-  email: "Please enter a valid email address.",
-  location: "Please tell us your city and country.",
-  ticketBucket: "Please choose an amount range.",
-  experience: "Please choose your experience level.",
-  consent: "Please tick the box to agree before applying.",
-};
-
 const FIELD_ORDER: Field[] = ["firstName", "email", "location", "ticketBucket", "experience", "consent"];
+
+/** Bucket boundaries in MAD. The first starts at the minimum ticket, read from the constants. */
+const BUCKET_BOUNDS: Record<Exclude<BetaTicketBucket, "250k-plus" | "not-sure">, [number, number]> = {
+  "25-50k": [LIMITS.MIN_TICKET_MAD, 50_000],
+  "50-100k": [50_000, 100_000],
+  "100-250k": [100_000, 250_000],
+};
+const TOP_BUCKET_FLOOR_MAD = 250_000;
 
 const fieldClass =
   "h-12 w-full rounded-2xl border border-border bg-background px-4 text-base text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-[invalid=true]:border-destructive";
@@ -38,6 +39,9 @@ const legendClass = "mb-4 text-xs font-semibold uppercase tracking-wide text-mut
  * pre-checked and its timestamp is taken when the applicant submits.
  */
 export function BetaApplicationForm() {
+  const t = useTranslations("beta");
+  const locale = useLocale();
+  const { mad, number } = useFormat();
   const id = useId();
   const [values, setValues] = useState({
     firstName: "",
@@ -54,6 +58,17 @@ export function BetaApplicationForm() {
 
   const fid = (f: Field) => `${id}-${f}`;
   const errId = (f: Field) => `${id}-${f}-error`;
+  const fieldErrorText = (f: Field) => t(`form.errors.${f}`);
+
+  /** "25,000 MAD to 50,000 MAD", "50,000 to 100,000 MAD", "More than 250,000 MAD", in the visitor's language. */
+  const bucketLabel = (b: BetaTicketBucket): string => {
+    if (b === "not-sure") return t("form.buckets.not-sure");
+    if (b === "250k-plus") return t("form.buckets.250k-plus", { amount: mad(TOP_BUCKET_FLOOR_MAD, { decimals: 0 }) });
+    const [from, to] = BUCKET_BOUNDS[b];
+    // The first bucket spells the currency twice, because the minimum ticket stands on its own.
+    const fromText = b === "25-50k" ? mad(from, { decimals: 0 }) : number(from);
+    return t(`form.buckets.${b}`, { from: fromText, to: mad(to, { decimals: 0 }) });
+  };
 
   const set = (f: keyof typeof values, v: string) => {
     setValues((prev) => ({ ...prev, [f]: v }));
@@ -62,12 +77,12 @@ export function BetaApplicationForm() {
 
   const validate = (): Errors => {
     const e: Errors = {};
-    if (values.firstName.trim() === "") e.firstName = ERROR_TEXT.firstName;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim())) e.email = ERROR_TEXT.email;
-    if (values.location.trim() === "") e.location = ERROR_TEXT.location;
-    if (values.ticketBucket === "") e.ticketBucket = ERROR_TEXT.ticketBucket;
-    if (values.experience === "") e.experience = ERROR_TEXT.experience;
-    if (!consent) e.consent = ERROR_TEXT.consent;
+    if (values.firstName.trim() === "") e.firstName = fieldErrorText("firstName");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim())) e.email = fieldErrorText("email");
+    if (values.location.trim() === "") e.location = fieldErrorText("location");
+    if (values.ticketBucket === "") e.ticketBucket = fieldErrorText("ticketBucket");
+    if (values.experience === "") e.experience = fieldErrorText("experience");
+    if (!consent) e.consent = fieldErrorText("consent");
     return e;
   };
 
@@ -98,19 +113,20 @@ export function BetaApplicationForm() {
           ticketBucket: values.ticketBucket,
           experience: values.experience,
           consentAt: new Date().toISOString(),
+          locale,
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
         setStatus("error");
-        setMessage(data.error ?? "Something went wrong. Please try again.");
+        setMessage(isWaitlistErrorCode(data.error) ? t(`errors.${data.error}`) : t("form.genericError"));
         return;
       }
       track("beta_apply", { ticket_bucket: values.ticketBucket, experience: values.experience });
       setStatus("done");
     } catch {
       setStatus("error");
-      setMessage("We could not reach the server. Please try again.");
+      setMessage(t("form.networkError"));
     }
   };
 
@@ -128,23 +144,21 @@ export function BetaApplicationForm() {
       <div className="rounded-3xl border border-border bg-card p-6 sm:p-8" role="status" aria-live="polite">
         <p className="flex items-start gap-3 text-lg font-semibold leading-snug text-foreground">
           <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-success" aria-hidden="true" />
-          {BETA_SUCCESS_MESSAGE}
+          {t("form.success.title")}
         </p>
-        <h3 className="mt-6 text-sm font-semibold text-foreground">What happens next</h3>
+        <h3 className="mt-6 text-sm font-semibold text-foreground">{t("form.success.nextTitle")}</h3>
         <ol className="mt-3 space-y-2 text-sm leading-relaxed text-muted-foreground">
-          <li>1. A founder reads your application by hand.</li>
-          <li>2. You get an email with your access.</li>
-          <li>3. Once approved, create your account here.</li>
+          <li>{t("form.success.steps.read")}</li>
+          <li>{t("form.success.steps.email")}</li>
+          <li>{t("form.success.steps.create")}</li>
         </ol>
         <a
           href={REGISTER_URL}
           className="mt-6 inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
-          Create your account
+          {t("form.success.cta")}
         </a>
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          No money is collected, and nothing is committed.
-        </p>
+        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t("form.success.note")}</p>
       </div>
     );
   }
@@ -153,16 +167,16 @@ export function BetaApplicationForm() {
     <form
       onSubmit={onSubmit}
       noValidate
-      aria-label="Apply for the beta"
+      aria-label={t("form.ariaLabel")}
       className="relative space-y-8 rounded-3xl border border-border bg-card p-5 shadow-sm sm:p-8"
     >
       <fieldset className="min-w-0">
-        <legend className={legendClass}>About you</legend>
+        <legend className={legendClass}>{t("form.legends.about")}</legend>
         <div className="space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label htmlFor={fid("firstName")} className={labelClass}>
-                First name
+                {t("form.fields.firstName")}
               </label>
               <input
                 id={fid("firstName")}
@@ -179,7 +193,7 @@ export function BetaApplicationForm() {
             </div>
             <div>
               <label htmlFor={fid("email")} className={labelClass}>
-                Email
+                {t("form.fields.email")}
               </label>
               <input
                 id={fid("email")}
@@ -197,14 +211,14 @@ export function BetaApplicationForm() {
           </div>
           <div>
             <label htmlFor={fid("location")} className={labelClass}>
-              City and country
+              {t("form.fields.location")}
             </label>
             <input
               id={fid("location")}
               required
               autoComplete="off"
               maxLength={80}
-              placeholder="Casablanca, Morocco"
+              placeholder={t("form.fields.locationPlaceholder")}
               value={values.location}
               onChange={(e) => set("location", e.target.value)}
               aria-invalid={errors.location ? true : undefined}
@@ -217,11 +231,11 @@ export function BetaApplicationForm() {
       </fieldset>
 
       <fieldset className="min-w-0">
-        <legend className={legendClass}>Your interest</legend>
+        <legend className={legendClass}>{t("form.legends.interest")}</legend>
         <div className="space-y-5">
           <div>
             <label htmlFor={fid("ticketBucket")} className={labelClass}>
-              What would you realistically consider, per property?
+              {t("form.fields.ticketBucket")}
             </label>
             <select
               id={fid("ticketBucket")}
@@ -232,22 +246,22 @@ export function BetaApplicationForm() {
               aria-describedby={describe("ticketBucket", `${id}-amount-hint`)}
               className={fieldClass}
             >
-              <option value="">Choose a range</option>
+              <option value="">{t("form.fields.ticketPlaceholder")}</option>
               {BETA_TICKET_BUCKETS.map((b) => (
                 <option key={b} value={b}>
-                  {BETA_TICKET_BUCKET_LABELS[b]}
+                  {bucketLabel(b)}
                 </option>
               ))}
             </select>
             {fieldError("ticketBucket")}
             <p id={`${id}-amount-hint`} className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-              This only helps us understand the range. The beta uses demo money.
+              {t("form.fields.ticketHint")}
             </p>
           </div>
 
           <div>
             <label htmlFor={fid("experience")} className={labelClass}>
-              Your experience with property or savings products
+              {t("form.fields.experience")}
             </label>
             <select
               id={fid("experience")}
@@ -258,10 +272,10 @@ export function BetaApplicationForm() {
               aria-describedby={describe("experience")}
               className={fieldClass}
             >
-              <option value="">Choose one</option>
+              <option value="">{t("form.fields.experiencePlaceholder")}</option>
               {BETA_EXPERIENCE_LEVELS.map((x) => (
                 <option key={x} value={x}>
-                  {BETA_EXPERIENCE_LABELS[x]}
+                  {t(`form.experience.${x}`)}
                 </option>
               ))}
             </select>
@@ -271,8 +285,8 @@ export function BetaApplicationForm() {
       </fieldset>
 
       {/* Honeypot: hidden from people, filled by bots. */}
-      <div className="absolute -left-[9999px]" aria-hidden="true">
-        <label htmlFor={`${id}-website`}>Website</label>
+      <div className="absolute -start-[9999px]" aria-hidden="true">
+        <label htmlFor={`${id}-website`}>{t("form.fields.website")}</label>
         <input
           id={`${id}-website`}
           tabIndex={-1}
@@ -283,7 +297,7 @@ export function BetaApplicationForm() {
       </div>
 
       <fieldset className="min-w-0">
-        <legend className="sr-only">Consent</legend>
+        <legend className="sr-only">{t("form.legends.consent")}</legend>
         <label className="flex min-h-11 cursor-pointer items-start gap-3 text-sm leading-relaxed text-muted-foreground">
           <input
             id={fid("consent")}
@@ -297,10 +311,7 @@ export function BetaApplicationForm() {
             aria-describedby={describe("consent")}
             className="mt-0.5 size-6 shrink-0 accent-primary"
           />
-          <span>
-            I agree that IGUDAR may store these answers and my email to review my application and contact me about the
-            closed beta. I understand the beta uses demo money.
-          </span>
+          <span>{t("form.consent")}</span>
         </label>
         {fieldError("consent")}
       </fieldset>
@@ -317,11 +328,9 @@ export function BetaApplicationForm() {
           disabled={status === "sending"}
           className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
-          {status === "sending" ? "Sending…" : "Apply for the beta"}
+          {status === "sending" ? t("form.sending") : t("form.submit")}
         </button>
-        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-          Next: a founder reads your application by hand and writes to you by email.
-        </p>
+        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{t("form.next")}</p>
       </div>
     </form>
   );

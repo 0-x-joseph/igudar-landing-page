@@ -1,6 +1,8 @@
 "use client";
 import { useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
+import { isWaitlistErrorCode } from '@/lib/waitlist-validation';
 
 interface WaitlistModalProps {
   isOpen: boolean;
@@ -8,6 +10,9 @@ interface WaitlistModalProps {
 }
 
 const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
+  const t = useTranslations('beta.waitlist');
+  const tErrors = useTranslations('beta.errors');
+  const locale = useLocale();
   const [email, setEmail] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -24,19 +29,19 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), honeypot }),
+        body: JSON.stringify({ email: email.trim(), honeypot, locale }),
       });
 
-      const data = await res.json();
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
 
       if (!res.ok) {
         setStatus('error');
-        setMessage(data.error || 'Something went wrong.');
+        setMessage(isWaitlistErrorCode(data.error) ? tErrors(data.error) : t('genericError'));
         return;
       }
 
       setStatus('success');
-      setMessage(data.message || "You're on the list!");
+      setMessage(t('success'));
 
       // Auto-close after 4 seconds
       setTimeout(() => {
@@ -50,7 +55,7 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
       }, 4000);
     } catch {
       setStatus('error');
-      setMessage('Network error. Please try again.');
+      setMessage(t('networkError'));
     }
   };
 
@@ -82,10 +87,12 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
           >
             <div className="relative p-8">
               <button
+                type="button"
                 onClick={handleClose}
-                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-2"
+                aria-label={t('modal.close')}
+                className="absolute top-4 end-4 text-muted-foreground hover:text-foreground transition-colors p-2"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -104,9 +111,12 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2">You&apos;re on the list!</h3>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">{t('modal.successTitle')}</h3>
                     <p className="text-muted-foreground text-[15px]">
-                      We&apos;ve sent a confirmation email to <span className="font-semibold text-foreground">{email}</span>. We&apos;ll notify you when early access begins.
+                      {t.rich('modal.successBody', {
+                        email,
+                        strong: (chunks) => <span className="font-semibold text-foreground">{chunks}</span>,
+                      })}
                     </p>
                   </motion.div>
                 ) : (
@@ -117,10 +127,8 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                     exit={{ opacity: 0, y: -10 }}
                   >
                     <div className="text-center mb-6">
-                      <h3 className="text-2xl font-bold text-foreground mb-2">Join the Waitlist</h3>
-                      <p className="text-muted-foreground text-[15px]">
-                        Be the first to know when we launch and get exclusive early access benefits.
-                      </p>
+                      <h3 className="text-2xl font-bold text-foreground mb-2">{t('modal.title')}</h3>
+                      <p className="text-muted-foreground text-[15px]">{t('modal.lede')}</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -132,13 +140,13 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                         onChange={(e) => setHoneypot(e.target.value)}
                         tabIndex={-1}
                         autoComplete="off"
-                        style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }}
+                        style={{ position: "absolute", insetInlineStart: "-9999px", opacity: 0, height: 0, width: 0 }}
                         aria-hidden="true"
                       />
 
                       <div>
                         <label htmlFor="modal-email" className="block text-sm font-medium text-muted-foreground mb-1">
-                          Email Address
+                          {t('modal.emailLabel')}
                         </label>
                         <input
                           type="email"
@@ -147,7 +155,7 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           disabled={status === 'loading'}
-                          placeholder="Enter your best email"
+                          placeholder={t('modal.placeholder')}
                           className="w-full px-4 py-3 rounded-xl bg-card border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-foreground placeholder:text-muted-foreground disabled:opacity-50"
                         />
                       </div>
@@ -158,15 +166,15 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                       >
                         {status === 'loading' ? (
                           <>
-                            <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <svg className="animate-spin -ms-1 me-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            Joining...
+                            {t('joining')}
                           </>
-                        ) : 'Secure My Spot'}
+                        ) : t('modal.submit')}
                       </button>
-                      
+
                       {/* Error message */}
                       <AnimatePresence>
                         {status === 'error' && message && (

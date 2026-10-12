@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { messagesFor, renderIntl } from "@/lib/__tests__/helpers/intl";
 
 const mockPath = vi.hoisted(() => ({ current: "/" }));
 const scrollSpy = vi.hoisted(() => vi.fn());
@@ -13,9 +14,13 @@ vi.mock("framer-motion", async (importOriginal) => ({
   useReducedMotion: () => reduced.on,
 }));
 
+// ScrollToTop reads next/navigation directly.
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
   usePathname: () => mockPath.current,
+  useParams: () => ({}),
+  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
 }));
 vi.mock("next/image", () => ({
   // eslint-disable-next-line @next/next/no-img-element
@@ -30,6 +35,8 @@ import FinalCtaSection from "@/components/FinalCtaSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import LandingHero from "@/components/LandingHero";
 import Navbar from "@/components/Navbar";
+import PainPointsSection from "@/components/PainPointsSection";
+import SiteFooter from "@/components/SiteFooter";
 import { HeroSimulator } from "@/components/simulator/HeroSimulator";
 import { BuildingSketch, ZELLIGE_CORNER_CLASS } from "@/components/brand";
 
@@ -70,18 +77,24 @@ afterEach(() => {
 
 describe("edit 1 + 3: hero", () => {
   it("offers Beta access to the register link, keeps the prototype wording, drops the yield sentence", () => {
-    render(<LandingHero />);
+    renderIntl(<LandingHero />);
     expect(screen.getByRole("link", { name: "Beta access" })).toHaveAttribute("href", REGISTER);
     expect(screen.queryByRole("link", { name: "Access the demo" })).toBeNull();
     expect(screen.getByRole("link", { name: "Join the waitlist" })).toBeInTheDocument();
     expect(screen.getByText(/prototype/i)).toBeInTheDocument();
     expect(screen.queryByText(/indicative net cash yield/i)).toBeNull();
   });
+
+  it("reads the headline and the minimum ticket from the engine, in English", () => {
+    renderIntl(<LandingHero />);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Real property. Real rent. Clear rules.");
+    expect(screen.getByText(/from 25,000 MAD\./)).toBeInTheDocument();
+  });
 });
 
 describe("edit 2: navbar", () => {
   it("has a primary Beta access button next to Join the waitlist, and both in the mobile menu", () => {
-    render(<Navbar />);
+    renderIntl(<Navbar />);
     const beta = screen.getAllByRole("link", { name: "Beta access" });
     expect(beta).toHaveLength(1);
     expect(beta[0]).toHaveAttribute("href", REGISTER);
@@ -92,11 +105,26 @@ describe("edit 2: navbar", () => {
     expect(screen.getAllByRole("link", { name: "Beta access" })).toHaveLength(2);
     expect(screen.getAllByRole("button", { name: "Join the waitlist" })).toHaveLength(2);
   });
+
+  it("carries a language switcher in the desktop bar and in the mobile menu, and locale-aware page links", () => {
+    const { container } = renderIntl(<Navbar />);
+    expect(container.querySelectorAll("[data-language-switcher]")).toHaveLength(1);
+    fireEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    expect(container.querySelectorAll("[data-language-switcher]")).toHaveLength(2);
+    expect(screen.getAllByRole("link", { name: "Pricing" })[0]).toHaveAttribute("href", "/pricing");
+    expect(screen.getByRole("link", { name: "Apply for the beta →" })).toHaveAttribute("href", "/beta");
+  });
+
+  it("prefixes page links with the locale when the page is read in French", () => {
+    renderIntl(<Navbar />, { locale: "fr" });
+    const nav = messagesFor("fr").common.nav as Record<string, string>;
+    expect(screen.getAllByRole("link", { name: nav.pricing })[0]).toHaveAttribute("href", "/fr/pricing");
+  });
 });
 
 describe("edit 4: simulator card", () => {
   it("is wider at lg, with four results each with a picto, tabular figures and a pessimistic value beside base", () => {
-    const { container } = render(<HeroSimulator />);
+    const { container } = renderIntl(<HeroSimulator />);
     expect(container.querySelector("section > div")!.className).toContain("lg:max-w-6xl");
     const tiles = container.querySelectorAll("[data-result-tile]");
     expect(tiles).toHaveLength(4);
@@ -122,7 +150,7 @@ describe("CountUp", () => {
   it("counts up from zero once in view and ends on the exact value", () => {
     vi.useFakeTimers(RAF_ONLY);
     vi.stubGlobal("IntersectionObserver", IntersectingIO);
-    const { container } = render(<CountUp value={1000} format={fmt} />);
+    const { container } = renderIntl(<CountUp value={1000} format={fmt} />);
     act(() => {
       vi.advanceTimersByTime(120);
     });
@@ -139,7 +167,7 @@ describe("CountUp", () => {
     vi.useFakeTimers(RAF_ONLY);
     mockReducedMotion(true);
     vi.stubGlobal("IntersectionObserver", IntersectingIO);
-    const { container } = render(<CountUp value={1000} format={fmt} />);
+    const { container } = renderIntl(<CountUp value={1000} format={fmt} />);
     expect(container.textContent).toBe("1000 u");
     act(() => {
       vi.advanceTimersByTime(120);
@@ -148,7 +176,7 @@ describe("CountUp", () => {
   });
 
   it("renders the final value when it never scrolls into view (no flash of zero)", () => {
-    const { container } = render(<CountUp value={42} format={fmt} />);
+    const { container } = renderIntl(<CountUp value={42} format={fmt} />);
     expect(container.textContent).toBe("42 u");
   });
 });
@@ -177,7 +205,7 @@ describe("edit 5: zellige and building sketches", () => {
   });
 
   it("gives two sketches on one page distinct gradient ids", () => {
-    const { container } = render(
+    const { container } = renderIntl(
       <>
         <BuildingSketch variant="agadir" />
         <BuildingSketch variant="agadir" />
@@ -189,7 +217,7 @@ describe("edit 5: zellige and building sketches", () => {
 
   it("appears in the hero, how it works and the final CTA", () => {
     for (const el of [<LandingHero key="a" />, <HowItWorksSection key="b" />, <FinalCtaSection key="c" />]) {
-      const { container, unmount } = render(el);
+      const { container, unmount } = renderIntl(el);
       expect(container.querySelectorAll("[data-building-sketch]").length).toBeGreaterThanOrEqual(1);
       unmount();
     }
@@ -198,7 +226,7 @@ describe("edit 5: zellige and building sketches", () => {
 
 describe("edit 6: partners marquee", () => {
   it("renders every logo on a white plate inside a labelled region, duplicated for a seamless loop", () => {
-    const { container } = render(<BackedBySection />);
+    const { container } = renderIntl(<BackedBySection />);
     expect(screen.getByRole("region", { name: /partner logos/i })).toBeInTheDocument();
     const live = container.querySelectorAll("[data-marquee-set='a'] img");
     const dup = container.querySelectorAll("[data-marquee-set='b'] img");
@@ -218,7 +246,7 @@ describe("edit 6: partners marquee", () => {
   });
 
   it("can be paused with a button", () => {
-    const { container } = render(<BackedBySection />);
+    const { container } = renderIntl(<BackedBySection />);
     const track = container.querySelector("[data-marquee-track]")!;
     expect(track).not.toHaveAttribute("data-paused");
     fireEvent.click(screen.getByRole("button", { name: /pause/i }));
@@ -245,7 +273,7 @@ describe("edit 6: partners marquee", () => {
 
 describe("edit 7: facts in violet cards", () => {
   it("renders three cards with a violet icon and violet figure on the mist surface", () => {
-    const { container } = render(<FactsSection />);
+    const { container } = renderIntl(<FactsSection />);
     const cards = container.querySelectorAll("[data-fact-card]");
     expect(cards).toHaveLength(3);
     for (const c of Array.from(cards)) {
@@ -256,11 +284,20 @@ describe("edit 7: facts in violet cards", () => {
     expect(container.querySelector("section")!.className).toContain("bg-surface-mist");
     expect(container.querySelector("section")!.className).not.toContain("bg-surface-clay");
   });
+
+  it("reads the figures from the fee grid, with the words from the English file", () => {
+    renderIntl(<FactsSection />);
+    expect(screen.getByText("25,000 MAD")).toBeInTheDocument();
+    expect(screen.getByText("Per project, in steps of 5,000 MAD.")).toBeInTheDocument();
+    expect(screen.getByText("Every 6 months")).toBeInTheDocument();
+    expect(screen.getByText("Open after 1 year of holding.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See who pays what, when" })).toHaveAttribute("href", "/pricing");
+  });
 });
 
 describe("edit 8: final CTA", () => {
   it("has exactly two controls: Apply for beta (register) and Join the waitlist (modal)", () => {
-    const { container } = render(<FinalCtaSection />);
+    const { container } = renderIntl(<FinalCtaSection />);
     const section = container.querySelector("section")!;
     const controls = within(section).queryAllByRole("link").concat(within(section).queryAllByRole("button"));
     expect(controls).toHaveLength(2);
@@ -276,7 +313,7 @@ describe("edit 9: navigation scroll", () => {
   it("scrolls to the top instantly when the pathname changes", () => {
     const spy = vi.spyOn(window, "scrollTo").mockImplementation(scrollSpy);
     mockPath.current = "/";
-    const { rerender } = render(<ScrollToTop />);
+    const { rerender } = renderIntl(<ScrollToTop />);
     scrollSpy.mockClear();
     mockPath.current = "/faq";
     rerender(<ScrollToTop />);
@@ -284,8 +321,8 @@ describe("edit 9: navigation scroll", () => {
     spy.mockRestore();
   });
 
-  it("is mounted in the root layout, which opts in to Next's scroll-behavior handling", () => {
-    const layout = read("app/layout.tsx");
+  it("is mounted in the locale layout, which opts in to Next's scroll-behavior handling", () => {
+    const layout = read("app/[locale]/layout.tsx");
     expect(layout).toContain('data-scroll-behavior="smooth"');
     expect(layout).toContain("<ScrollToTop");
   });
@@ -293,5 +330,54 @@ describe("edit 9: navigation scroll", () => {
   it("css has no unconditional smooth scroll on html", () => {
     const css = read("app/globals.css");
     expect(css).not.toMatch(/^html\s*\{[^}]*scroll-behavior:\s*smooth/m);
+  });
+});
+
+describe("pain points", () => {
+  it("renders the three cards from the English file, in order", () => {
+    renderIntl(<PainPointsSection />);
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent("We built something different.");
+    const titles = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
+    expect(titles).toEqual([
+      "Every opportunity starts with the facts.",
+      "Investors can understand what they own.",
+      "The platform keeps reporting after investment.",
+    ]);
+  });
+});
+
+describe("footer", () => {
+  it("carries the pre-licence notice from common and locale-aware links", () => {
+    renderIntl(<SiteFooter />);
+    const common = messagesFor("en").common as { notice: { indicative: string } };
+    expect(screen.getByRole("note")).toHaveTextContent(common.notice.indicative);
+    expect(screen.getByRole("link", { name: "Beta" })).toHaveAttribute("href", "/beta");
+    expect(screen.getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "/faq");
+  });
+});
+
+describe("home shell in French and Arabic", () => {
+  const plain = (s: string) => s.replace(/<\/?em>/g, "");
+
+  it("renders the French copy with French number grouping", () => {
+    const home = messagesFor("fr").home as { hero: { title: string; note: string }; facts: { title: string } };
+    renderIntl(<LandingHero />, { locale: "fr" });
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(plain(home.hero.title));
+    expect(screen.getByText(home.hero.note)).toBeInTheDocument();
+    expect(screen.getByText(/25[   .]000 MAD/)).toBeInTheDocument();
+    renderIntl(<FactsSection />, { locale: "fr" });
+    expect(screen.getByRole("heading", { name: home.facts.title })).toBeInTheDocument();
+  });
+
+  it("renders the Arabic copy with the dirham word from the formatter", () => {
+    const home = messagesFor("ar").home as { hero: { title: string; note: string }; facts: { title: string } };
+    const common = messagesFor("ar").common as { cta: { betaAccess: string } };
+    renderIntl(<LandingHero />, { locale: "ar" });
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(plain(home.hero.title));
+    expect(screen.getByText(home.hero.note)).toBeInTheDocument();
+    expect(screen.getByText(/25[   .,]000 درهم/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: common.cta.betaAccess })).toHaveAttribute("href", REGISTER);
+    renderIntl(<FactsSection />, { locale: "ar" });
+    expect(screen.getByRole("heading", { name: home.facts.title })).toBeInTheDocument();
   });
 });

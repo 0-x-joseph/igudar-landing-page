@@ -10,5 +10,52 @@
   "notice": {
     "indicative": "Simulation indicative fondée sur le modèle financier IGUDAR. Les rendements ne sont pas garantis. Ceci n'est ni une offre ni une sollicitation ; aucun investissement n'est collecté avant l'agrément de l'AMMC (loi 15-18).",
     "netIndicative": "net · indicatif · non garanti"
+  },
+  "cta": {
+    "betaAccess": "Accès bêta",
+    "joinWaitlist": "Rejoindre la liste d'attente",
+    "applyForBeta": "Candidater à la bêta"
+  },
+  "banner": {
+    "text": "La bêta fermée d'IGUDAR est ouverte aux candidatures. Argent fictif uniquement.",
+    "cta": "Candidater à la bêta →",
+    "close": "Fermer la bannière"
+  },
+  "nav": {
+    "howItWorks": "Comment ça marche",
+    "features": "Fonctionnalités",
+    "simulator": "Simulateur",
+    "calculator": "Calculateur",
+    "pricing": "Tarifs",
+    "beta": "Bêta",
+    "faq": "FAQ",
+    "toggleMenu": "Ouvrir ou fermer le menu"
+  },
+  "footer": {
+    "tagline": "Propriété fractionnée de biens immobiliers marocains loués, avec les frais, les risques et les règles expliqués en langage clair.",
+    "columns": {
+      "platform": "Plateforme",
+      "support": "Assistance",
+      "company": "Entreprise"
+    },
+    "links": {
+      "howItWorks": "Comment ça marche",
+      "features": "Fonctionnalités",
+      "pricing": "Tarifs",
+      "simulator": "Simulateur",
+      "beta": "Bêta",
+      "helpCenter": "Centre d'aide",
+      "contact": "Contact",
+      "faq": "FAQ",
+      "privacyPolicy": "Politique de confidentialité",
+      "about": "À propos",
+      "careers": "Carrières",
+      "press": "Presse",
+      "partners": "Partenaires"
+    },
+    "copyright": "© 2025 IGUDAR. Tous droits réservés.",
+    "terms": "Conditions",
+    "privacy": "Confidentialité",
+    "cookies": "Cookies"
   }
 }

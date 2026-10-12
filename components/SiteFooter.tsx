@@ -1,38 +1,43 @@
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { ZelligeBand } from '@/components/brand';
-import { INDICATIVE_NOTICE } from '@/lib/finance';
+
+type FooterLink = { key: string; href: string; isLink?: boolean };
+
+// Headings and labels live in common.footer.*; the order and the targets stay here.
+const columns: { key: 'platform' | 'support' | 'company'; links: FooterLink[] }[] = [
+  {
+    key: 'platform',
+    links: [
+      { key: 'howItWorks', href: '/#how-it-works', isLink: true },
+      { key: 'features', href: '/#ai-powered', isLink: true },
+      { key: 'pricing', href: '/pricing', isLink: true },
+      { key: 'simulator', href: '/simulator', isLink: true },
+      { key: 'beta', href: '/beta', isLink: true },
+    ],
+  },
+  {
+    key: 'support',
+    links: [
+      { key: 'helpCenter', href: '#' },
+      { key: 'contact', href: '#' },
+      { key: 'faq', href: '/faq', isLink: true },
+      { key: 'privacyPolicy', href: '#' },
+    ],
+  },
+  {
+    key: 'company',
+    links: [
+      { key: 'about', href: '#' },
+      { key: 'careers', href: '#' },
+      { key: 'press', href: '#' },
+      { key: 'partners', href: '#' },
+    ],
+  },
+];
 
 export default function SiteFooter() {
-  const columns = [
-    {
-      heading: 'Platform',
-      links: [
-        { label: 'How it Works', href: '/#how-it-works', isLink: true },
-        { label: 'Features', href: '/#ai-powered', isLink: true },
-        { label: 'Pricing', href: '/pricing', isLink: true },
-        { label: 'Simulator', href: '/simulator', isLink: true },
-        { label: 'Beta', href: '/beta', isLink: true },
-      ],
-    },
-    {
-      heading: 'Support',
-      links: [
-        { label: 'Help Center', href: '#' },
-        { label: 'Contact', href: '#' },
-        { label: 'FAQ', href: '/faq', isLink: true },
-        { label: 'Privacy Policy', href: '#' },
-      ],
-    },
-    {
-      heading: 'Company',
-      links: [
-        { label: 'About', href: '#' },
-        { label: 'Careers', href: '#' },
-        { label: 'Press', href: '#' },
-        { label: 'Partners', href: '#' },
-      ],
-    },
-  ];
+  const t = useTranslations('common');
 
   return (
     <footer className="relative bg-background text-foreground pt-16 pb-8 border-t border-border">
@@ -48,20 +53,20 @@ export default function SiteFooter() {
               />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Fractional ownership of rented Moroccan property, with the fees, risks and rules in plain language.
+              {t('footer.tagline')}
             </p>
           </div>
 
           {columns.map((col) => (
-            <div key={col.heading}>
-              <h3 className="text-sm font-semibold text-foreground mb-4">{col.heading}</h3>
+            <div key={col.key}>
+              <h3 className="text-sm font-semibold text-foreground mb-4">{t(`footer.columns.${col.key}`)}</h3>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
-                  <li key={link.label}>
+                  <li key={link.key}>
                     {link.isLink ? (
-                      <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{link.label}</Link>
+                      <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t(`footer.links.${link.key}`)}</Link>
                     ) : (
-                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{link.label}</a>
+                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t(`footer.links.${link.key}`)}</a>
                     )}
                   </li>
                 ))}
@@ -71,15 +76,15 @@ export default function SiteFooter() {
         </div>
 
         <p role="note" className="mb-6 max-w-3xl text-xs leading-relaxed text-muted-foreground">
-          {INDICATIVE_NOTICE}
+          {t('notice.indicative')}
         </p>
 
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-muted-foreground">&copy; 2025 IGUDAR. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">{t('footer.copyright')}</p>
           <div className="flex gap-6">
-            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Terms</a>
-            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Cookies</a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t('footer.terms')}</a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t('footer.privacy')}</a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t('footer.cookies')}</a>
           </div>
         </div>
       </div>

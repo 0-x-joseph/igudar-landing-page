@@ -1,1 +1,211 @@
-{}
+{
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "An old idea, built for today",
+    "intro": "IGUDAR is named after the igudar, the collective granaries of the Amazigh. The same four ideas hold up the platform.",
+    "tablist": "The four ideas",
+    "inIgudar": "In IGUDAR",
+    "pillars": {
+      "building": {
+        "title": "One shared building",
+        "story": "The igudar were the Amazigh collective granaries: one strong building that many families raised and guarded together.",
+        "inIgudar": "A property bought through IGUDAR works the same way. One building, many owners."
+      },
+      "chamber": {
+        "title": "Your own chamber",
+        "story": "Each family kept its own chamber, marked and remembered.",
+        "inIgudar": "You hold shares of the company that owns the property, a defined and recorded part, never an unwritten promise."
+      },
+      "keeper": {
+        "title": "A trusted keeper",
+        "story": "A granary needed a keeper everyone trusted.",
+        "inIgudar": "Here, a regulated bank holds your money in escrow, and a professional operator rents and looks after the property."
+      },
+      "rules": {
+        "title": "Rules written down",
+        "story": "Everyone agreed the rules before the first harvest.",
+        "inIgudar": "Ours are written in the shareholders' agreement, and the fee grid is published in full, the same for everyone."
+      }
+    },
+    "follow": {
+      "title": "Follow every dirham",
+      "body": "Your wallet shows four things: what you committed, what sits in escrow, what is invested in the property company, and the rent you have actually received. Nothing hidden, nothing to guess.",
+      "cta": "Simulate your own amount"
+    }
+  },
+  "dirhamPath": {
+    "stops": {
+      "bank": "Your bank",
+      "escrow": "Escrow",
+      "building": "The building"
+    }
+  },
+  "wallet": {
+    "heading": "Wallet",
+    "badge": "Illustration — demo data",
+    "tiles": {
+      "committed": {
+        "label": "Committed",
+        "note": "Your amount, pledged to one project"
+      },
+      "escrow": {
+        "label": "In escrow",
+        "note": "Held at the bank until the raise closes"
+      },
+      "invested": {
+        "label": "Invested",
+        "note": "Shares in the property company"
+      },
+      "received": {
+        "label": "Received",
+        "note": "Net rent after year 1 ({scenario})"
+      }
+    },
+    "footnote": "A {amount} example, {scenario} scenario, one year after the raise closed. Figures are {notice}."
+  },
+  "moneyMoves": {
+    "eyebrow": "How your money moves",
+    "title": "From your bank account to the building, and back",
+    "intro": "Your money is never mixed with ours. It waits in an escrow account until the raise succeeds, and goes back to you in full if it does not.",
+    "timeline": {
+      "commit": {
+        "when": "Day 0",
+        "what": "You commit. A {days}-day cooling-off period applies."
+      },
+      "close": {
+        "when": "Raise closes",
+        "what": "If the target is reached, escrow releases the funds to the property company."
+      },
+      "windows": {
+        "when": "From year {years}",
+        "what": "Exit windows open every {months} months."
+      },
+      "sale": {
+        "when": "About year {years}",
+        "what": "The property is sold, or sold in a block."
+      }
+    },
+    "fees": {
+      "title": "The fee grid: who pays what, and when",
+      "body": "The same for every investor, published in full. Sellers and operators pay their own fees; they never reduce your return.",
+      "grid": "See the full fee grid",
+      "calculator": "Work out your own share in the calculator",
+      "simulator": "Open the simulator"
+    }
+  },
+  "flow": {
+    "label": "How your money moves, from your bank account to the escrow account, the property company, the rent and back to you.",
+    "or": "or",
+    "nodes": {
+      "you": {
+        "title": "You",
+        "wide": "You commit an amount and\ntransfer it from your\nown bank account",
+        "tall": "You commit an amount and transfer it from\nyour own bank account"
+      },
+      "escrow": {
+        "title": "Escrow account",
+        "wide": "Held at a regulated bank,\none account per project.\nNot spent until it closes",
+        "tall": "Held at a regulated bank, one account per\nproject. Not spent until the raise closes"
+      },
+      "sas": {
+        "title": "Property company",
+        "wide": "Buys the property when\nthe raise hits its target.\nYou hold shares in it",
+        "tall": "Buys the property\nwhen the raise hits\nits target. You hold\nshares in the SAS"
+      },
+      "property": {
+        "title": "Property",
+        "wide": "Rented to a professional\noperator under a\nmaster lease",
+        "tall": "Rented to a professional operator under a\nmaster lease"
+      },
+      "refund": {
+        "title": "Full refund",
+        "wide": "If the raise fails or the\ndeadline passes, the bank\nreturns all your money",
+        "tall": "If the raise fails or\nthe deadline passes,\nthe bank returns all\nyour money"
+      },
+      "rent": {
+        "title": "Rent",
+        "wide": "Reserve, taxes and the\nplatform fee come out\nof the rent first",
+        "tall": "Reserve, taxes and the platform fee come\nout of the rent first"
+      },
+      "net": {
+        "title": "Net distribution",
+        "wide": "What is left is paid to\nyour bank account, after\nfees and taxes",
+        "tall": "What is left is paid to your bank account,\nafter fees and taxes"
+      },
+      "exit": {
+        "title": "Your capital back",
+        "wide": "Windows every {months} months\nafter year {lockYears}; sale or\nblock sale about year {holdYears}.\nPrice may rise or fall",
+        "tall": "Exit windows every {months} months after year {lockYears};\nsale or block sale around year {holdYears}.\nThe property price may rise or fall."
+      }
+    },
+    "edges": {
+      "transfer": "transfer",
+      "target": "target",
+      "reached": "reached",
+      "targetReached": "target reached",
+      "buys": "buys",
+      "raiseFails": "raise fails",
+      "raiseFailsOrDeadline": "raise fails or deadline passes",
+      "operatorPaysRent": "operator pays rent",
+      "exitWindows": "exit windows"
+    },
+    "steps": {
+      "transfer": "You transfer your amount from your own bank account to an escrow account at a regulated bank, one account per project.",
+      "close": "If the raise reaches its target, the property company (SAS) buys the property. If it fails or the deadline passes, the bank refunds you in full.",
+      "lease": "The property is rented to a professional operator under a master lease.",
+      "rent": "Rent first pays the reserve, taxes and the platform fee. What is left is paid to your bank account as a net distribution.",
+      "exit": "Exit windows open every {months} months after the first year. The property is sold, or sold in a block, around year {holdYears}, and you get your capital back plus or minus the change in the property value."
+    }
+  },
+  "features": {
+    "eyebrow": "Platform Features",
+    "title": "Clear data on every property",
+    "intro": "Market context, a plain view of the risks and the fees, all in one place."
+  },
+  "dossier": {
+    "badge": "Example · demo data",
+    "demo": {
+      "name": "Rented apartment building",
+      "where": "Example city · example district",
+      "profile": "Example profile: balanced, five-year horizon"
+    },
+    "stats": {
+      "minTicket": "Minimum ticket",
+      "cashYield": "Net cash yield",
+      "irr": "Net IRR",
+      "scenario": "{scenario} scenario, {notice}"
+    },
+    "layers": {
+      "market": {
+        "title": "Market Analysis",
+        "desc": "Real-time analysis of Moroccan real estate market trends and emerging opportunities."
+      },
+      "risk": {
+        "title": "Risk Assessment",
+        "desc": "A plain-language view of the main risks of each property, next to the numbers."
+      },
+      "match": {
+        "title": "Personalized Matching",
+        "desc": "Tailored recommendations based on your profile, goals, and risk tolerance."
+      }
+    },
+    "chart": {
+      "label": "Gross rent yield, example data: {bars}",
+      "bars": {
+        "property": "This property",
+        "district": "District",
+        "deposit": "Bank deposit"
+      },
+      "note": "Gross rent yield, example data. The district figure is a demo value. Indicative."
+    },
+    "risks": {
+      "lateRent": "Late rent",
+      "vacancy": "Vacancy",
+      "price": "Price"
+    },
+    "meter": {
+      "label": "Suitability for the example profile, demo data",
+      "valueText": "{filled} of {of} segments"
+    }
+  }
+}

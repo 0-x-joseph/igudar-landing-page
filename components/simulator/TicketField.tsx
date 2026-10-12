@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Minus, Plus } from "lucide-react";
 import { LIMITS } from "@/lib/finance";
-import { clampTicket, stepTicket } from "@/lib/simulator";
+import { useFormat } from "@/lib/i18n/use-format";
+import { clampTicket, parseAmount, stepTicket } from "@/lib/simulator";
 
 /**
  * Amount input with minus and plus steppers. Never goes below the 25,000 MAD
- * minimum, snaps to the 5,000 step on blur or Enter.
+ * minimum, snaps to the 5,000 step on blur or Enter. The field is free text so
+ * "25 000", "25.000", "25,000" and Arabic-Indic digits all read as 25,000; the
+ * settled value is shown with the language's own grouping.
  */
 export function TicketField({
   id,
@@ -25,12 +29,15 @@ export function TicketField({
   max?: number;
   className?: string;
 }) {
+  const t = useTranslations("simulator.ticket");
+  const { mad, number } = useFormat();
   const [draft, setDraft] = useState<string | null>(null);
   const opts = { max };
+  const step = mad(LIMITS.TICKET_STEP_MAD, { decimals: 0 });
 
   const commit = () => {
     if (draft === null) return;
-    onChange(clampTicket(draft.trim() === "" ? Number.NaN : Number(draft), opts));
+    onChange(clampTicket(parseAmount(draft), opts));
     setDraft(null);
   };
 
@@ -46,7 +53,7 @@ export function TicketField({
         <button
           type="button"
           className={stepButton}
-          aria-label={`Decrease amount by ${LIMITS.TICKET_STEP_MAD.toLocaleString("en-US")} MAD`}
+          aria-label={t("decrease", { step })}
           disabled={value <= LIMITS.MIN_TICKET_MAD}
           onClick={() => onChange(stepTicket(value, -1, opts))}
         >
@@ -55,15 +62,14 @@ export function TicketField({
         <div className="relative min-w-0 flex-1">
           <input
             id={id}
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={LIMITS.MIN_TICKET_MAD}
-            step={LIMITS.TICKET_STEP_MAD}
-            value={draft ?? String(value)}
+            autoComplete="off"
+            value={draft ?? number(value)}
             onChange={(e) => {
               setDraft(e.target.value);
-              const n = Number(e.target.value);
-              if (e.target.value.trim() !== "" && Number.isFinite(n) && n >= LIMITS.MIN_TICKET_MAD) {
+              const n = parseAmount(e.target.value);
+              if (Number.isFinite(n) && n >= LIMITS.MIN_TICKET_MAD) {
                 onChange(clampTicket(n, opts));
               }
             }}
@@ -71,19 +77,19 @@ export function TicketField({
             onKeyDown={(e) => {
               if (e.key === "Enter") commit();
             }}
-            className="financial-number h-12 w-full rounded-2xl border border-border bg-card pl-4 pr-16 text-lg font-semibold text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="financial-number h-12 w-full rounded-2xl border border-border bg-card pe-16 ps-4 text-lg font-semibold text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           />
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground"
+            className="pointer-events-none absolute end-4 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground"
           >
-            MAD
+            {t("currency")}
           </span>
         </div>
         <button
           type="button"
           className={stepButton}
-          aria-label={`Increase amount by ${LIMITS.TICKET_STEP_MAD.toLocaleString("en-US")} MAD`}
+          aria-label={t("increase", { step })}
           disabled={max !== undefined && value >= max}
           onClick={() => onChange(stepTicket(value, 1, opts))}
         >

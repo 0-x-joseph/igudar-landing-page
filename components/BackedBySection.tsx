@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Pause, Play } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 
@@ -12,13 +13,14 @@ import AnimatedSection from "@/components/AnimatedSection";
 // - fondation-ocp.svg: coloured vector, shown as is.
 // zoom: the square PNGs carry a lot of empty canvas, so each is scaled up (from its measured content box) to read at a
 // similar size inside the plate; the plate clips the empty margin.
+// alt: proper names stay as they are in every language; a logo without a public name reads home.partners.genericLogoAlt.
 const partners = [
   { src: "/images/um6p.png", alt: "UM6P", tone: "multiply", zoom: 1.7 },
   { src: "/images/mit-sandbox.png", alt: "MIT Sandbox", tone: "plain", zoom: 1.3 },
   { src: "/images/explorer.png", alt: "Explorer", tone: "multiply", zoom: 1 },
   { src: "/images/fondation-ocp.svg", alt: "Fondation OCP", tone: "plain", zoom: 1 },
   { src: "/images/um6p-launchpad.png", alt: "UM6P Launchpad", tone: "ink", zoom: 1.6 },
-  { src: "/images/coe-white.png", alt: "Programme partner logo", tone: "ink", zoom: 2 },
+  { src: "/images/coe-white.png", alt: null, tone: "ink", zoom: 2 },
 ] as const;
 
 const TONE = {
@@ -28,11 +30,12 @@ const TONE = {
 } as const;
 
 function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
+  const t = useTranslations("home.partners");
   return (
     <ul
       data-marquee-set={id}
       aria-hidden={hidden ? true : undefined}
-      className="flex shrink-0 items-center gap-4 pr-4"
+      className="flex shrink-0 items-center gap-4 pe-4"
     >
       {partners.map((p) => (
         <li
@@ -42,7 +45,7 @@ function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={p.src}
-            alt={hidden ? "" : p.alt}
+            alt={hidden ? "" : (p.alt ?? t("genericLogoAlt"))}
             loading="lazy"
             style={p.zoom === 1 ? undefined : { transform: `scale(${p.zoom})` }}
             className={`h-full w-full object-contain ${TONE[p.tone]}`.trim()}
@@ -55,6 +58,7 @@ function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
 
 /** A continuous, pausable strip of the programmes IGUDAR is part of. No invented logos. */
 export default function BackedBySection() {
+  const t = useTranslations("home.partners");
   const [paused, setPaused] = useState(false);
 
   return (
@@ -62,12 +66,12 @@ export default function BackedBySection() {
       <div className="mx-auto max-w-6xl">
         <AnimatedSection>
           <h2 id="partners-title" className="text-center text-sm font-semibold text-muted-foreground">
-            Programmes &amp; partners
+            {t("title")}
           </h2>
         </AnimatedSection>
         <div
           role="region"
-          aria-label="Partner logos"
+          aria-label={t("region")}
           className="relative mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
         >
           <div
@@ -86,7 +90,7 @@ export default function BackedBySection() {
             className="marquee-toggle inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             {paused ? <Play className="size-4" aria-hidden="true" /> : <Pause className="size-4" aria-hidden="true" />}
-            {paused ? "Play logos" : "Pause logos"}
+            {paused ? t("play") : t("pause")}
           </button>
         </div>
       </div>

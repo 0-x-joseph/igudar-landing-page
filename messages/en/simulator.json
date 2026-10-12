@@ -1,1 +1,154 @@
-{}
+{
+  "meta": {
+    "title": "Investment simulator | IGUDAR",
+    "description": "See what a share of rented Moroccan property could return after fees and taxes, from {min}. Pessimistic, Base and Optimistic scenarios, shown honestly. Indicative, not guaranteed."
+  },
+  "page": {
+    "eyebrow": "Simulator",
+    "title": "What could a share of rented property return?",
+    "intro": "Pick an amount and a scenario. Every figure is after fees and taxes, and the bad case is always next to the good one."
+  },
+  "na": "n/a",
+  "notice": {
+    "label": "Important notice"
+  },
+  "ticket": {
+    "currency": "MAD",
+    "decrease": "Decrease amount by {step}",
+    "increase": "Increase amount by {step}"
+  },
+  "hero": {
+    "eyebrow": "Simulator",
+    "title": "Own real, rented property alongside professionals, from {min}.",
+    "amountLabel": "If I put in",
+    "assumptions": "Base scenario, held {years} years. {suffix}.",
+    "tiles": {
+      "netCash": "Net cash per year",
+      "netProfit": "Net profit over {years} years",
+      "netIrr": "Net IRR",
+      "platformFee": "Platform fee per year"
+    },
+    "pessimistic": "Pessimistic",
+    "entryFee": "Entry fee {rate}. Same in every scenario.",
+    "bankDeposit": "Same money in a bank deposit",
+    "badCaseLead": "The bad case, too.",
+    "badCaseBeats": "In the Pessimistic scenario the same amount makes <strong>{profit}</strong> over {years} years.",
+    "badCaseLoses": "In the Pessimistic scenario the same amount makes <strong>{profit}</strong> over {years} years, and a bank deposit would have earned more.",
+    "openFull": "Open the full simulator",
+    "howCalculated": "How is this calculated?"
+  },
+  "controls": {
+    "amountLabel": "Amount to simulate",
+    "sliderLabel": "Amount slider, from {min} to {max}",
+    "angelsUncapped": "Business angels are not capped. <link>Talk to us</link>.",
+    "stepsNote": "Steps of {step}. The limit is {max} per project. Above that: business angels are not capped, talk to us.",
+    "holding": "Holding period: {years} years, fixed",
+    "holdingNote": "Your money is locked up while the property is held. After the first year, organised exit windows open every {months} months, where you can offer your share to other associates. A buyer is not guaranteed and a transfer fee applies. This simulation assumes you stay until the sale in year {years}."
+  },
+  "scenario": {
+    "legend": "Scenario",
+    "current": "{label}:",
+    "grossYield": "{rate} gross rental yield",
+    "vacancy": "{rate} vacancy or operator default",
+    "noVacancy": "no vacancy",
+    "rentReserve": "{rate} rent reserve",
+    "priceGrowth": "property price +{rate}/yr",
+    "priceFlat": "property price flat",
+    "rentIndexed": "rent indexed {rate}/yr",
+    "sellerCosts": "{rate} seller-side costs at exit"
+  },
+  "results": {
+    "title": "Your result, {scenario} scenario",
+    "intro": "All figures are {suffix}, after fees and taxes.",
+    "explainerLabel": "What does \"{label}\" mean?",
+    "howCalculated": "How is this calculated?",
+    "netCash": {
+      "label": "Net cash per year",
+      "caption": "{rate} indicative net cash yield ({scenario}) · not guaranteed",
+      "explainer": "The rent your share earns in year 1, after the property reserve, IGUDAR's platform fee (incl. TVA), corporate tax and the {withholding} withholding on dividends. It is a projection, not a promise."
+    },
+    "netProfit": {
+      "label": "Net profit over {years} years",
+      "caption": "Cash received plus your share of the sale, minus what you put in ({suffix}).",
+      "explainer": "Everything you receive over {years} years (yearly cash plus your share of the sale at the end) minus the amount you invested, after all fees and taxes. The property could sell for more or less than assumed."
+    },
+    "netIrr": {
+      "label": "Net IRR",
+      "caption": "{rate} net IRR ({scenario}) · indicative · not guaranteed",
+      "captionUnavailable": "Net IRR not available ({scenario}) · indicative · not guaranteed",
+      "explainer": "IRR is your yearly rate of return counting when each payment arrives. It includes the {acquisition} purchase costs (registration, land registry, notary) paid from the capital, so it is lower than the cash yield."
+    },
+    "moneyMultiple": {
+      "label": "Money multiple",
+      "caption": "Total money back divided by money in, over {years} years ({suffix}).",
+      "explainer": "How many dirhams come back for each dirham invested, after fees and taxes. 1.00× means you only get your money back; below 1.00× would be a loss."
+    }
+  },
+  "compare": {
+    "title": "The same amount in each scenario",
+    "intro": "We always show the pessimistic case first. Real life can land anywhere in this range, or outside it.",
+    "chosen": "Chosen",
+    "netCash": "Net cash per year",
+    "netProfit": "Net profit over {years} years",
+    "netIrr": "Net IRR",
+    "beats": "Beats a bank deposit",
+    "loses": "Loses to a bank deposit"
+  },
+  "bank": {
+    "title": "Versus a bank deposit",
+    "intro": "Net profit over {years} years on the same amount ({scenario} scenario, indicative).",
+    "igudarRow": "IGUDAR share, {scenario}",
+    "depositRow": "Bank deposit at {rate}/yr",
+    "wins": "In this scenario the property share earns more than a deposit. It also carries risks a deposit does not: vacancy, a falling price, and money locked up for {years} years.",
+    "loses": "In this scenario a bank deposit would have earned more."
+  },
+  "bridge": {
+    "title": "Where your rent goes",
+    "intro": "Every {hundred} of rent the property earns in year 1, {scenario} scenario (indicative).",
+    "keep": "You keep <share></share> of every {hundred}.",
+    "segments": {
+      "reserveVacancy": { "name": "Reserve and vacancy", "note": "Kept aside for repairs and empty months" },
+      "platformFee": { "name": "IGUDAR platform fee", "note": "Covers running costs, incl. TVA" },
+      "is": { "name": "Corporate tax", "note": "Paid by the property company" },
+      "withholding": { "name": "Withholding tax", "note": "{rate} on the dividend you receive" },
+      "investor": { "name": "You", "note": "Lands in your bank account" }
+    }
+  },
+  "fees": {
+    "title": "What you pay IGUDAR",
+    "intro": "For {amount}. Sellers and operators pay their own fees; you do not.",
+    "entry": { "name": "Entry fee", "detail": "Nothing to pay to subscribe." },
+    "platform": {
+      "name": "Platform fee, per year",
+      "amount": "{amount} incl. TVA",
+      "detail": "{amount} before TVA. Paid through the property company, it covers its running costs."
+    },
+    "exit": {
+      "name": "Exit fee, your share",
+      "detail": "Charged to the property company when the building is sold ({scenario} scenario sale price, incl. TVA)."
+    },
+    "transfer": {
+      "name": "Transfer fee",
+      "amount": "{rate} of the amount traded",
+      "detail": "Only if you sell your share early, in an exit window. Not part of the {years}-year simulation."
+    }
+  },
+  "interest": {
+    "title": "Interested at this amount?",
+    "intro": "Leave your email. It is non-binding and no money is collected. We will note <strong>{amount}</strong> and the {scenario} scenario you looked at.",
+    "email": "Email",
+    "website": "Website",
+    "consent": "I agree that IGUDAR may store this email, the amount and the scenario to contact me about this non-binding interest.",
+    "submit": "Note my interest",
+    "sending": "Sending…",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorNetwork": "We could not reach the server. Please try again.",
+    "doneTitle": "Thank you. We noted your interest, with no commitment.",
+    "doneBody": "Check your inbox for a confirmation. No money has been collected."
+  },
+  "sticky": {
+    "label": "Summary of your result",
+    "figures": "{cash}/yr · {profit} over {years} yrs",
+    "scenario": "{scenario} · {suffix}"
+  }
+}

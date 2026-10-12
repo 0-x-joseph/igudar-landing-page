@@ -28,7 +28,8 @@ export function LanguageSwitcher({ className, compact = false }: { className?: s
 
   return (
     <label className={cn("relative inline-flex items-center gap-1.5 text-sm font-semibold text-foreground", className)}>
-      <Languages className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+      {/* The icon is dropped in the compact desktop bar, where French labels already fill the row. */}
+      {!compact && <Languages className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
       <span className="sr-only">{t("label")}</span>
       <select
         data-language-switcher=""
