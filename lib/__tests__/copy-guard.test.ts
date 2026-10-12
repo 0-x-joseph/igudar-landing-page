@@ -65,6 +65,7 @@ const SHARIA_ALLOWED: Record<string, string[]> = {
   "messages/en/faq.json": ["Is IGUDAR Sharia-compliant?", "Sharia board review in progress"],
   "messages/fr/faq.json": ["IGUDAR est-il conforme à la charia ?", "Examen par le comité charia en cours"],
   "messages/ar/faq.json": ["هل إݣودار متوافق مع الشريعة؟", "مراجعة هيئة الشريعة جارية"],
+  "messages/ary/faq.json": ["هل إݣودار متوافق مع الشريعة؟", "مراجعة هيئة الشريعة جارية"],
 };
 
 function scrub(rel: string, line: string): string {

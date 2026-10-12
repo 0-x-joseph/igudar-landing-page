@@ -1,29 +1,33 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Languages } from "lucide-react";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { getPathname, usePathname } from "@/i18n/navigation";
 import { LOCALES, LOCALE_META, isLocale, type Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 /**
- * Language choice: the same page in English, French or Arabic. A plain select so it works without
- * JavaScript assumptions and with every screen reader; the current language is the selected option.
+ * Language choice: the same page in English, French, Arabic or Darija. A plain select so it works with
+ * every screen reader; the current language is the selected option.
+ *
+ * Switching is a full navigation on purpose: `<html lang dir>` and the fonts live in the root layout,
+ * which a soft client-side navigation does not re-render, so the page would keep the old direction.
  */
 export function LanguageSwitcher({ className, compact = false }: { className?: string; compact?: boolean }) {
   const t = useTranslations("common.language");
   const raw = useLocale();
   const current: Locale = isLocale(raw) ? raw : "en";
   const pathname = usePathname();
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
 
   const change = (next: Locale) => {
     if (next === current) return;
-    startTransition(() => {
-      router.replace(pathname, { locale: next });
-    });
+    setPending(true);
+    // The proxy honours this cookie over the URL for unprefixed paths, so it must change before the request.
+    document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000; SameSite=Lax`;
+    const target = getPathname({ href: pathname, locale: next });
+    window.location.assign(`${target}${window.location.search}${window.location.hash}`);
   };
 
   return (

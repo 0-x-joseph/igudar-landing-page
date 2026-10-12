@@ -1,7 +1,7 @@
 import { defineRouting } from "next-intl/routing";
 
 /** The site's languages. Adding one is: add it here, add `messages/<code>/*.json`, done. */
-export const LOCALES = ["en", "fr", "ar"] as const;
+export const LOCALES = ["en", "fr", "ar", "ary"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "en";
 
@@ -26,6 +26,8 @@ export const LOCALE_META: Record<Locale, LocaleMeta> = {
   en: { nativeLabel: "English", intl: "en-US", dir: "ltr", og: "en_US" },
   fr: { nativeLabel: "Français", intl: "fr-MA", dir: "ltr", og: "fr_MA" },
   ar: { nativeLabel: "العربية", intl: "ar-MA", dir: "rtl", og: "ar_MA" },
+  // Moroccan Darija (ISO 639-3 "ary"), Arabic script; numbers and dates follow ar-MA.
+  ary: { nativeLabel: "الدارجة", intl: "ar-MA", dir: "rtl", og: "ar_MA" },
 };
 
 export function isLocale(value: unknown): value is Locale {

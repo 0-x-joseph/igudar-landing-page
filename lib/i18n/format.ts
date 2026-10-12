@@ -9,7 +9,7 @@ const NBSP = " ";
 const EM_DASH = "—";
 
 /** The currency word that follows an amount. Moroccan French keeps "MAD"; Arabic reads "درهم". */
-const CURRENCY_WORD: Record<Locale, string> = { en: "MAD", fr: "MAD", ar: "درهم" };
+const CURRENCY_WORD: Record<Locale, string> = { en: "MAD", fr: "MAD", ar: "درهم", ary: "درهم" };
 
 const cache = new Map<string, Intl.NumberFormat>();
 

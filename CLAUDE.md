@@ -19,13 +19,14 @@ The platform is on Tailwind v3 — express the same tokens here as hex in `@them
 
 ## Languages (next-intl)
 
-English at `/`, French at `/fr`, Arabic at `/ar` (right-to-left). Pages live in `app/[locale]/` and are thin; all markup and copy sit in components. Copy lives in `messages/<locale>/<area>.json` (one file = one namespace: `useTranslations("pricing")`); `lib/__tests__/i18n.test.ts` enforces that `fr` and `ar` carry exactly the English keys and placeholders, and `copy-guard.test.ts` scans all three languages. Rules:
+English at `/`, French at `/fr`, Arabic at `/ar`, Moroccan Darija at `/ary` (both right-to-left). Pages live in `app/[locale]/` and are thin; all markup and copy sit in components. Copy lives in `messages/<locale>/<area>.json` (one file = one namespace: `useTranslations("pricing")`); `lib/__tests__/i18n.test.ts` enforces that every other language carries exactly the English keys and placeholders, and `copy-guard.test.ts` scans all of them. Rules:
 
-- Never hard-code visible text in a component; add the English key first, then `fr` and `ar` with the same key. Keep the glossary (Beta access → Accès bêta → النسخة التجريبية, escrow → séquestre → حساب الضمان, …) consistent; the brand in Arabic running text is إݣودار.
+- Never hard-code visible text in a component; add the English key first, then `fr`, `ar` and `ary` with the same key. Keep the glossary (Beta access → Accès bêta → النسخة التجريبية, escrow → séquestre → حساب الضمان, …) consistent; the brand in Arabic running text is إݣودار.
 - Money and percentages through `useFormat()` (`lib/i18n/use-format.ts`) or `formattersFor(locale)`; never `formatMad` from `lib/finance` in a component (that module is shared with the platform and stays en-US).
 - Internal links and `usePathname`/`useRouter` from `@/i18n/navigation`, never `next/link` / `next/navigation` directly.
 - Use logical Tailwind utilities (`ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`/`text-start`) and `rtl:-scale-x-100` on directional icons so Arabic mirrors correctly.
-- Adding a language: `i18n/routing.ts` (LOCALES + LOCALE_META) and a `messages/<code>/` folder. Darija is planned but waits for founder confirmation on script and tone.
+- Darija (`ary`) is Arabic script, conversational, and keeps every legal, financial and technical term in Modern Standard Arabic exactly as in `messages/ar` (founder decision, 2026-10-12). Translate Darija from the `ar` file, not from English.
+- Adding a language: `i18n/routing.ts` (LOCALES + LOCALE_META) and a `messages/<code>/` folder.
 
 ## Commands
 

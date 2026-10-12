@@ -74,7 +74,7 @@ describe("routing", () => {
 
   it("hreflang alternates cover every language plus x-default", () => {
     const { languages } = alternatesFor("/faq") as { languages: Record<string, string> };
-    expect(languages).toEqual({ en: "/faq", fr: "/fr/faq", ar: "/ar/faq", "x-default": "/faq" });
+    expect(languages).toEqual({ en: "/faq", fr: "/fr/faq", ar: "/ar/faq", ary: "/ary/faq", "x-default": "/faq" });
   });
 
   it("Arabic is right-to-left and uses Moroccan Intl tags", () => {
@@ -90,6 +90,7 @@ describe("locale formatting", () => {
     // CLDR groups Moroccan French and Arabic with a point or a narrow space depending on the ICU build.
     expect(formatMadIn("fr", 25000, { decimals: 0 })).toMatch(/^25[   .]000 MAD$/);
     expect(formatMadIn("ar", 25000, { decimals: 0 })).toMatch(/^25[   ,.]000 درهم$/);
+    expect(formatMadIn("ary", 25000, { decimals: 0 })).toBe(formatMadIn("ar", 25000, { decimals: 0 }));
     expect(formatMadIn("fr", Number.NaN)).toBe("—");
   });
 

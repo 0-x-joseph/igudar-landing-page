@@ -6,6 +6,7 @@ const PATHS = ["/", "/simulator", "/calculator", "/pricing", "/beta", "/faq"] as
 const LOCALES = [
   { code: "fr", dir: "ltr" },
   { code: "ar", dir: "rtl" },
+  { code: "ary", dir: "rtl" },
 ] as const;
 
 // A missing translation renders as its key path (see i18n/request.ts), which this catches.
@@ -59,7 +60,7 @@ test("the language switcher keeps the visitor on the same page", async ({ page }
   }
   const back = page.locator("[data-language-switcher]").filter({ visible: true }).first();
   await back.selectOption("en");
-  await expect(page).toHaveURL(/\/pricing$/, { timeout: 20_000 });
+  await expect(page).toHaveURL(/^https?:\/\/[^/]+\/pricing$/, { timeout: 20_000 });
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr", { timeout: 20_000 });
 });
 
