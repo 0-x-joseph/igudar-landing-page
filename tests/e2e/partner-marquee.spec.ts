@@ -10,6 +10,7 @@ async function seekLoop(page: Page, milliseconds: number) {
     const windowBounds = track.parentElement!.getBoundingClientRect();
     const sets = Array.from(track.querySelectorAll<HTMLElement>("[data-marquee-set]"));
     const logos = Array.from(track.querySelectorAll<HTMLImageElement>("img"));
+    const rowTops = logos.map((logo) => logo.parentElement!.getBoundingClientRect().top);
     const visible = logos.filter((logo) => {
       const plate = logo.parentElement!.getBoundingClientRect();
       return plate.right > windowBounds.left + 1 && plate.left < windowBounds.right - 1;
@@ -20,6 +21,7 @@ async function seekLoop(page: Page, milliseconds: number) {
       setWidths: sets.map((set) => set.getBoundingClientRect().width),
       windowWidth: windowBounds.width,
       firstSource: visible[0]?.getAttribute("src"),
+      rowSpread: Math.max(...rowTops) - Math.min(...rowTops),
     };
   }, milliseconds);
 }
@@ -44,6 +46,7 @@ for (const route of ["/", "/fr", "/ar", "/ary"]) {
       expect(state.setWidths).toHaveLength(2);
       expect(Math.abs(state.setWidths[0] - state.setWidths[1])).toBeLessThan(1);
       expect(state.setWidths[0]).toBeGreaterThanOrEqual(state.windowWidth);
+      expect(state.rowSpread, "logos must not stack into multiple rows").toBeLessThan(1);
     }
     const before = await seekLoop(page, 41_999);
     const after = await seekLoop(page, 42_000);
@@ -67,7 +70,7 @@ test("the logo strip still pauses on hover and keyboard focus without a button",
   await expect(track).toHaveCSS("animation-play-state", "paused");
 });
 
-test("reduced motion shows all six logos once in a static wrapped list", async ({ page }) => {
+test("reduced motion keeps all six logos in a single swipeable horizontal row", async ({ page }, info) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/ar");
   await page.waitForLoadState("networkidle");
@@ -77,5 +80,17 @@ test("reduced motion shows all six logos once in a static wrapped list", async (
   await expect(track).toHaveCSS("animation-name", "none");
   await expect(page.locator("[data-marquee-set='b']")).toBeHidden();
   await expect(region.locator("img:visible")).toHaveCount(6);
-  expect(await region.evaluate((node) => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+  await expect(region).toHaveCSS("overflow-x", "auto");
+  await expect(page.locator("[data-marquee-set='a']")).toHaveCSS("flex-wrap", "nowrap");
+  const tops = await page.locator("[data-marquee-set='a'] li").evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().top));
+  expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(1);
+  const height = await region.evaluate((node) => node.clientHeight);
+  expect(height).toBeLessThan(130);
+  await region.evaluate((node) => { node.scrollLeft = node.scrollWidth - node.clientWidth; });
+  await expect.poll(() => region.evaluate((node) => {
+    const last = node.querySelector("[data-marquee-set='a'] li:last-child")!.getBoundingClientRect();
+    const bounds = node.getBoundingClientRect();
+    return last.left < bounds.right && last.right > bounds.left;
+  })).toBe(true);
+  await page.screenshot({ path: `test-results/partners-horizontal-reduced-${info.project.name}.png` });
 });

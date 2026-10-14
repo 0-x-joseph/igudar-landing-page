@@ -122,6 +122,7 @@ html[dir="rtl"] .tracking-tighter {
 
 .marquee-track {
   display: flex;
+  flex-flow: row nowrap;
   width: max-content;
   min-width: 200%;
   animation: marquee 42s linear infinite;
@@ -129,6 +130,7 @@ html[dir="rtl"] .tracking-tighter {
 
 .marquee-set {
   display: flex;
+  flex-flow: row nowrap;
   flex: 1 0 auto;
   align-items: center;
   justify-content: space-around;
@@ -210,19 +212,19 @@ html[dir="rtl"] .tracking-tighter {
     scroll-behavior: auto;
   }
 
-  /* The logo strip stands still: one set, wrapped and centred. */
+  /* Keep one horizontal, swipeable row even when animation is disabled. */
   .marquee-track {
     animation: none !important;
-    width: 100%;
+    width: max-content;
     min-width: 0;
     transform: none;
   }
 
   .marquee-track [data-marquee-set='a'] {
-    flex-wrap: wrap;
-    justify-content: center;
-    row-gap: 1rem;
-    width: 100%;
+    flex: none;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: max-content;
     padding-inline-end: 0;
   }
 
@@ -232,6 +234,8 @@ html[dir="rtl"] .tracking-tighter {
 
   .marquee-window {
     mask-image: none;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   *,

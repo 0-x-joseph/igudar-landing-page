@@ -33,7 +33,7 @@ function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
     <ul
       data-marquee-set={id}
       aria-hidden={hidden ? true : undefined}
-      className="marquee-set"
+      className="marquee-set flex flex-row flex-nowrap shrink-0 items-center gap-4 pe-4"
     >
       {partners.map((p) => (
         <li
@@ -56,7 +56,7 @@ function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
 }
 
 /** A gap-free loop of the six real partner logos. Hover or keyboard focus pauses
- * the strip without a separate control; reduced motion shows one static set. */
+ * the strip without a separate control; reduced motion keeps a swipeable row. */
 export default function BackedBySection() {
   const t = useTranslations("home.partners");
 
@@ -77,7 +77,7 @@ export default function BackedBySection() {
         >
           <div
             data-marquee-track=""
-            className="marquee-track"
+            className="marquee-track flex flex-row flex-nowrap w-max"
           >
             <LogoSet id="a" />
             <LogoSet id="b" hidden />

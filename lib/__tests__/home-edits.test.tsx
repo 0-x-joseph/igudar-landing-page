@@ -244,6 +244,8 @@ describe("edit 6: partners marquee", () => {
     expect(screen.getByAltText("Programme partner logo").className).toContain("brightness-0");
     expect(screen.getByAltText("UM6P Launchpad").className).toContain("brightness-0");
     expect(container.querySelector("[data-marquee-track]")!.className).toContain("marquee-track");
+    expect(container.querySelector("[data-marquee-track]")!.className).toContain("flex-nowrap");
+    expect(container.querySelector("[data-marquee-set='a']")!.className).toContain("flex-nowrap");
   });
 
   it("has no pause button and keeps the visual loop LTR in every locale", () => {
@@ -269,6 +271,8 @@ describe("edit 6: partners marquee", () => {
     const reduced = css.slice(css.indexOf("prefers-reduced-motion: reduce"));
     expect(reduced).toContain(".marquee-track");
     expect(reduced).toContain("[data-marquee-set='b']");
+    expect(reduced).toContain("flex-wrap: nowrap");
+    expect(reduced).toContain("overflow-x: auto");
   });
 });
 

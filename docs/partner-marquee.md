@@ -17,8 +17,10 @@ logos twice: one accessible set and an identical decorative copy. The copy is
   leaving a large empty trailing area.
 - Both sets load images eagerly, using the same cached URLs, to avoid empty
   plates when the initially offscreen copies enter view.
-- Reduced-motion users see one static, wrapped list with all six logos and no
-  edge mask; duplicate logos are hidden.
+- Both the track and each logo set explicitly use a non-wrapping horizontal
+  flex row. Reduced-motion users also keep one horizontal row: animation stops,
+  duplicates are hidden, and the original six logos can be swiped/scrolled
+  sideways without an edge mask. The list never turns into a vertical stack.
 
 The change makes the list **continuously looping**, not an outbound-link list.
 Partner names, files and existing image treatments are unchanged; no partner
