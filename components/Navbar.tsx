@@ -1,10 +1,11 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import WaitlistModal from './WaitlistModal';
+import { isReloadNavigation, readScrollPosition } from '@/lib/scroll-position';
 type SectionId = 'how-it-works' | 'ai-powered';
 
 // The closed-beta sign-up (approval is manual).
@@ -31,8 +32,11 @@ const Navbar = () => {
   const navigate = useRouter();
   // Locale-free: "/fr/pricing" reads as "/pricing", so the home check below holds in every language.
   const pathname = usePathname();
+  const firstPathname = useRef(pathname);
+  const hasNavigated = useRef(false);
 
   useEffect(() => {
+    if (pathname !== firstPathname.current) hasNavigated.current = true;
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
@@ -59,14 +63,20 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
-    if (pathname === '/' && window.location.hash) {
+    let anchorTimer: number | undefined;
+    const restoringReload = !hasNavigated.current && isReloadNavigation() &&
+      readScrollPosition(window.location.pathname) !== null;
+    if (pathname === '/' && window.location.hash && !restoringReload) {
       const sectionId = window.location.hash.slice(1);
-      window.setTimeout(() => {
+      anchorTimer = window.setTimeout(() => {
         document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.clearTimeout(anchorTimer);
+    };
   }, [pathname]);
 
   const handleSectionClick = (sectionId: SectionId) => {
