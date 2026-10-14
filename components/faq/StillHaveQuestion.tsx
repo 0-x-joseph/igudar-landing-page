@@ -28,12 +28,14 @@ export default function StillHaveQuestion() {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <a
               href={BETA_URL}
+              data-track="faq_beta_access"
               className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground transition-colors duration-200 ease-out hover:bg-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-auto"
             >
               {t("applyBeta")}
             </a>
             <button
               type="button"
+              data-track="faq_waitlist"
               onClick={() => setWaitlistOpen(true)}
               className="inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-2xl border border-border bg-card px-8 text-base font-semibold text-foreground transition-colors duration-200 ease-out hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-auto"
             >

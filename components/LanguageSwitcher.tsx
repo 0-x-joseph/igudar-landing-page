@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Languages } from "lucide-react";
 import { getPathname, usePathname } from "@/i18n/navigation";
 import { LOCALES, LOCALE_META, isLocale, type Locale } from "@/i18n/routing";
+import { flushAnalytics, track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,6 +25,9 @@ export function LanguageSwitcher({ className, compact = false }: { className?: s
   const change = (next: Locale) => {
     if (next === current) return;
     setPending(true);
+    track("language_change", { from: current, to: next });
+    // Switching is a full navigation: send the event now rather than rely on pagehide alone.
+    flushAnalytics();
     // The proxy honours this cookie over the URL for unprefixed paths, so it must change before the request.
     document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000; SameSite=Lax`;
     const target = getPathname({ href: pathname, locale: next });

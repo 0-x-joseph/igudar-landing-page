@@ -51,9 +51,10 @@ const MAX_AMOUNT_MAD = 10_000_000;
 const CLOCK_SKEW_MS = 5 * 60 * 1000;
 
 /**
- * Returns `value: null` when none of the interest fields are present (a plain
- * waitlist signup). When any is present, amount, scenario, source and a valid
- * consent timestamp are all required.
+ * Returns `value: null` when none of the interest fields (amount, scenario,
+ * source) are present: a plain waitlist signup, whose consent timestamp alone is
+ * validated by parseWaitlistConsent. When any is present, amount, scenario,
+ * source and a valid consent timestamp are all required.
  */
 export function parseInterestPayload(body: unknown, now: Date = new Date()): InterestParse {
   if (typeof body !== "object" || body === null) {
@@ -64,7 +65,7 @@ export function parseInterestPayload(body: unknown, now: Date = new Date()): Int
   // Beta applications carry their own fields and are validated by parseBetaApplication.
   if (source === "beta") return { ok: true, value: null };
 
-  const present = [amountMad, scenario, consentAt, source].some((v) => v !== undefined && v !== null);
+  const present = [amountMad, scenario, source].some((v) => v !== undefined && v !== null);
   if (!present) return { ok: true, value: null };
 
   if (typeof amountMad !== "number" || !Number.isFinite(amountMad) || amountMad <= 0 || amountMad > MAX_AMOUNT_MAD) {
@@ -93,6 +94,25 @@ export function parseInterestPayload(body: unknown, now: Date = new Date()): Int
       source: source as InterestSource,
     },
   };
+}
+
+// ── Plain waitlist sign-up (the modal) ─────────────────────
+
+export type ConsentParse = { ok: true; value: string } | { ok: false; error: WaitlistErrorCode };
+
+/**
+ * A plain waitlist sign-up (no interest fields, not beta) must carry the moment the visitor
+ * ticked the consent box, like the other two forms. Returns the timestamp as ISO.
+ */
+export function parseWaitlistConsent(body: unknown, now: Date = new Date()): ConsentParse {
+  if (typeof body !== "object" || body === null) return { ok: false, error: "invalid_request" };
+  const { consentAt } = body as Record<string, unknown>;
+  if (typeof consentAt !== "string") return { ok: false, error: "consent_required" };
+  const consentDate = new Date(consentAt);
+  if (Number.isNaN(consentDate.getTime()) || consentDate.getTime() > now.getTime() + CLOCK_SKEW_MS) {
+    return { ok: false, error: "consent_invalid" };
+  }
+  return { ok: true, value: consentDate.toISOString() };
 }
 
 // ── Closed-beta application ────────────────────────────────

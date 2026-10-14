@@ -3,7 +3,8 @@
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { CheckCircle2 } from "lucide-react";
-import { track } from "@/lib/analytics";
+import { formAttribution, track } from "@/lib/analytics";
+import { useFormTracking } from "@/components/analytics/useFormTracking";
 import { LIMITS } from "@/lib/finance";
 import { useFormat } from "@/lib/i18n/use-format";
 import {
@@ -55,8 +56,10 @@ export function BetaApplicationForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const { observe: observeForm, onFocus: onFormFocus, submitted: formSubmitted, failed: formFailed } =
+    useFormTracking<HTMLFormElement>("beta_application");
 
-  const fid = (f: Field) => `${id}-${f}`;
+  const fid =(f: Field) => `${id}-${f}`;
   const errId = (f: Field) => `${id}-${f}-error`;
   const fieldErrorText = (f: Field) => t(`form.errors.${f}`);
 
@@ -114,17 +117,21 @@ export function BetaApplicationForm() {
           experience: values.experience,
           consentAt: new Date().toISOString(),
           locale,
+          ...formAttribution(),
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
+        formFailed(data.error);
         setStatus("error");
         setMessage(isWaitlistErrorCode(data.error) ? t(`errors.${data.error}`) : t("form.genericError"));
         return;
       }
+      formSubmitted();
       track("beta_apply", { ticket_bucket: values.ticketBucket, experience: values.experience });
       setStatus("done");
     } catch {
+      formFailed("network");
       setStatus("error");
       setMessage(t("form.networkError"));
     }
@@ -165,7 +172,9 @@ export function BetaApplicationForm() {
 
   return (
     <form
+      ref={observeForm}
       onSubmit={onSubmit}
+      onFocus={onFormFocus}
       noValidate
       aria-label={t("form.ariaLabel")}
       className="relative space-y-8 rounded-3xl border border-border bg-card p-5 shadow-sm sm:p-8"

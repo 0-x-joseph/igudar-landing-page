@@ -313,6 +313,29 @@ describe("InterestCapture", () => {
     fireEvent.click(submit);
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(message("fr", "simulator", "interest.errorGeneric")));
   });
+
+  it("records form_start, form_submit and interest_submit with buckets only, and sends the page", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    const events: Array<{ event: string; props: Record<string, unknown> }> = [];
+    const listener = (e: Event) => events.push((e as CustomEvent).detail);
+    window.addEventListener(TRACK_EVENT_NAME, listener);
+    renderIntl(<InterestCapture amountMad={30_000} scenario="base" />);
+    const email = screen.getByRole("textbox", { name: message("en", "simulator", "interest.email") });
+    fireEvent.focus(email);
+    fireEvent.change(email, { target: { value: "aya@example.com" } });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: message("en", "simulator", "interest.submit") }));
+    await screen.findByText(message("en", "simulator", "interest.doneTitle"));
+    window.removeEventListener(TRACK_EVENT_NAME, listener);
+    expect(events).toEqual([
+      { event: "form_start", props: { form: "simulator_interest" } },
+      { event: "form_submit", props: { form: "simulator_interest" } },
+      { event: "interest_submit", props: { amount_bucket: "25-45k", scenario: "base" } },
+    ]);
+    expect(JSON.stringify(events)).not.toMatch(/aya|30000/);
+    expect(JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string).path).toBe("/");
+  });
 });
 
 describe("pages that show numbers carry the indicative notice", () => {

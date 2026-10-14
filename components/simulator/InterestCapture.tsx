@@ -7,7 +7,8 @@ import { type ScenarioKey } from "@/lib/finance";
 import { useFormat, useScenarioLabel } from "@/lib/i18n/use-format";
 import { ticketBucket } from "@/lib/simulator";
 import { isWaitlistErrorCode } from "@/lib/waitlist-validation";
-import { track } from "@/lib/analytics";
+import { formAttribution, track } from "@/lib/analytics";
+import { useFormTracking } from "@/components/analytics/useFormTracking";
 
 type Status = "idle" | "sending" | "done" | "error";
 
@@ -28,6 +29,8 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
   const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const { observe: observeForm, onFocus: onFormFocus, submitted: formSubmitted, failed: formFailed } =
+    useFormTracking<HTMLFormElement>("simulator_interest");
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -46,18 +49,22 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
           consentAt: new Date().toISOString(),
           source: "simulator",
           locale,
+          ...formAttribution(),
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: unknown };
       if (!res.ok) {
+        formFailed(data.error);
         // The API answers with a code, never a sentence; the words come from the visitor's language.
         setStatus("error");
         setMessage(isWaitlistErrorCode(data.error) ? tErrors(data.error) : t("errorGeneric"));
         return;
       }
+      formSubmitted();
       track("interest_submit", { amount_bucket: ticketBucket(amountMad), scenario });
       setStatus("done");
     } catch {
+      formFailed("network");
       setStatus("error");
       setMessage(t("errorNetwork"));
     }
@@ -87,7 +94,7 @@ export function InterestCapture({ amountMad, scenario }: { amountMad: number; sc
           strong: (chunks) => <span className="financial-number font-semibold text-foreground">{chunks}</span>,
         })}
       </p>
-      <form onSubmit={onSubmit} className="mt-4 space-y-4" noValidate>
+      <form ref={observeForm} onSubmit={onSubmit} onFocus={onFormFocus} className="mt-4 space-y-4" noValidate>
         <div>
           <label htmlFor={`${id}-email`} className="mb-1.5 block text-sm font-semibold text-foreground">
             {t("email")}

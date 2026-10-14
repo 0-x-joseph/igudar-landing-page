@@ -6,6 +6,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import { Providers } from "../providers";
 import ScrollToTop from "@/components/ScrollToTop";
+import { AnalyticsTracker } from "@/components/analytics/AnalyticsTracker";
 import { LIMITS } from "@/lib/finance";
 import { formatMadIn } from "@/lib/i18n/format";
 import { SITE_URL, pageMetadata } from "@/lib/i18n/metadata";
@@ -76,6 +77,7 @@ export default async function LocaleLayout({ children, params }: Readonly<{ chil
         <NextIntlClientProvider>
           <Providers>
             <ScrollToTop />
+            <AnalyticsTracker />
             {children}
           </Providers>
         </NextIntlClientProvider>
