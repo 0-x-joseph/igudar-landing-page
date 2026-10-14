@@ -6,6 +6,7 @@ import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import WaitlistModal from './WaitlistModal';
 import { isReloadNavigation, readScrollPosition } from '@/lib/scroll-position';
+import { readLanguageScrollPosition } from '@/lib/language-scroll-position';
 type SectionId = 'how-it-works' | 'ai-powered';
 
 // The closed-beta sign-up (approval is manual).
@@ -64,9 +65,9 @@ const Navbar = () => {
     handleScroll();
 
     let anchorTimer: number | undefined;
-    const restoringReload = !hasNavigated.current && isReloadNavigation() &&
-      readScrollPosition(window.location.pathname) !== null;
-    if (pathname === '/' && window.location.hash && !restoringReload) {
+    const restoringPosition = !hasNavigated.current && (readLanguageScrollPosition() !== null ||
+      (isReloadNavigation() && readScrollPosition(window.location.pathname) !== null));
+    if (pathname === '/' && window.location.hash && !restoringPosition) {
       const sectionId = window.location.hash.slice(1);
       anchorTimer = window.setTimeout(() => {
         document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
@@ -135,7 +136,7 @@ const Navbar = () => {
         }`}
       >
       <div className="max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div data-scroll-navigation="" className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link
             href="/"

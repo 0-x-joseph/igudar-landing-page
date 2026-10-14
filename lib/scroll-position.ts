@@ -1,3 +1,5 @@
+import { clearLanguageScrollPosition, languageScrollTop, type LanguageScrollPosition } from "./language-scroll-position";
+
 const STORAGE_PREFIX = "igudar:scroll:";
 const RESTORE_WINDOW_MS = 3000;
 
@@ -24,11 +26,15 @@ export function readScrollPosition(pathname: string): number | null {
   }
 }
 
-/** Remember this view and optionally restore its saved position on refresh.
+/** Remember this view and optionally restore a pixel or translated-section position.
  * Restoration is bounded, instantaneous and cancelled by user interaction.
  * Wait for fonts/load and retry while the document is still too short. */
-export function trackScrollPosition(pathname: string, restoreTop: number | null): () => void {
-  let restoring = restoreTop !== null;
+export function trackScrollPosition(
+  pathname: string,
+  restoreTop: number | null,
+  languagePosition: LanguageScrollPosition | null = null,
+): () => void {
+  let restoring = restoreTop !== null || languagePosition !== null;
   let disposed = false;
   let latestTop = restoreTop ?? window.scrollY;
   let saveFrame = 0;
@@ -63,13 +69,16 @@ export function trackScrollPosition(pathname: string, restoreTop: number | null)
     window.clearTimeout(timer);
     latestTop = window.scrollY;
     persist();
+    if (languagePosition) clearLanguageScrollPosition(languagePosition);
   };
 
   const restore = () => {
-    if (disposed || !restoring || restoreTop === null) return;
+    if (disposed || !restoring) return;
     if (window.location.pathname !== pathname) { finish(); return; }
     const maxTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    const top = Math.min(restoreTop, maxTop);
+    // Recalculate translated section geometry as fonts and content settle.
+    const targetTop = languagePosition ? languageScrollTop(languagePosition) : restoreTop!;
+    const top = Math.min(targetTop, maxTop);
     if (Math.abs(window.scrollY - top) > 1) {
       window.scrollTo({ top, left: 0, behavior: "instant" });
       stableFrames = 0;
@@ -77,7 +86,7 @@ export function trackScrollPosition(pathname: string, restoreTop: number | null)
       stableFrames++;
     }
     // A brief settling window also catches framework hydration scroll changes.
-    if (fontsReady && document.readyState === "complete" && maxTop >= restoreTop &&
+    if (fontsReady && document.readyState === "complete" && maxTop >= targetTop &&
         stableFrames >= 3 && performance.now() - started >= 150) {
       finish();
     } else {

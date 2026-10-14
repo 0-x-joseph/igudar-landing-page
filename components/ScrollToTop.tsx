@@ -2,11 +2,12 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { isReloadNavigation, readScrollPosition, trackScrollPosition } from "@/lib/scroll-position";
+import { readLanguageScrollPosition } from "@/lib/language-scroll-position";
 
 /**
  * New pages start at the top; reloads and history visits resume where this tab
- * left off. Leave new anchor navigation alone. Read the raw pathname
- * so English, French, Arabic and Darija have separate saved positions.
+ * left off. Language changes use a section-relative bookmark, while new
+ * anchor navigation stays native. Raw pathnames separate locale-specific views.
  */
 const ScrollToTop = () => {
   const pathname = usePathname();
@@ -33,7 +34,8 @@ const ScrollToTop = () => {
     // position when arriving through a normal client-side link.
     const restoreTop = fromHistory || (!hasNavigated.current && isReloadNavigation())
       ? readScrollPosition(pathname) : null;
-    return trackScrollPosition(pathname, restoreTop);
+    const languagePosition = !hasNavigated.current ? readLanguageScrollPosition() : null;
+    return trackScrollPosition(pathname, restoreTop, languagePosition);
   }, [pathname]);
 
   return null;
