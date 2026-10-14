@@ -83,12 +83,12 @@ describe("the sender: batching and flushing", () => {
     expect((await sentEvents()).map((e) => e.event)).toEqual(["page_view", "cta_click", "sim_view"]);
   });
 
-  it("sends at most 20 events per request, immediately when 20 are waiting", async () => {
+  it("sends at most 10 events per request, immediately when 10 are waiting", async () => {
     await fresh();
     a.startAnalytics();
-    for (let i = 0; i < 25; i++) a.track("sim_amount_change", { bucket: "25-45k" });
+    for (let i = 0; i < 15; i++) a.track("sim_amount_change", { bucket: "25-45k" });
     expect(beacon).toHaveBeenCalledTimes(1);
-    expect((await sent())[0].events).toHaveLength(20);
+    expect((await sent())[0].events).toHaveLength(10);
     vi.advanceTimersByTime(5000);
     expect(beacon).toHaveBeenCalledTimes(2);
     expect((await sent())[1].events).toHaveLength(5);

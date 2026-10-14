@@ -38,9 +38,10 @@ export const ACQ_LIMITS = {
   PATH: 200,
   REFERRER_HOST: 120,
   UTM: 100,
-  PROPS_BYTES: 2000,
-  /** Events per request to /api/events. */
-  BATCH: 20,
+  /** Below the 2000-byte database CHECK: Postgres counts props::text with spaces after ":" and ",". */
+  PROPS_BYTES: 1900,
+  /** Events per request to /api/events (security review: keeps one IP under ~100 rows a minute). */
+  BATCH: 10,
   /** Bytes per request to /api/events. */
   REQUEST_BYTES: 16 * 1024,
   PROP_KEYS: 12,
@@ -80,6 +81,8 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const PROP_KEY_RE = /^[a-z][a-z0-9_]{0,39}$/;
 // Control characters, whitespace runs and anything that could start a query string or fragment.
 const CONTROL_RE = /[\u0000-\u001f\u007f]/;
+// A lone surrogate passes JS checks but Postgres rejects it, which would fail the whole batch.
+const LONE_SURROGATE_RE = /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/;
 const HOST_RE = /^(?=.{1,120}$)[a-z0-9-]+(\.[a-z0-9-]+)*(:\d{1,5})?$/;
 
 const byteLength = (s: string) => new TextEncoder().encode(s).length;
@@ -102,7 +105,7 @@ export function cleanUuid(v: unknown): string | null {
 /** A pathname only: starts with "/", no query string or fragment, no control characters, at most 200 chars. */
 export function cleanPath(v: unknown): string | null {
   if (typeof v !== "string") return null;
-  if (!v.startsWith("/") || v.length > ACQ_LIMITS.PATH || /[?#\s]/.test(v) || CONTROL_RE.test(v)) return null;
+  if (!v.startsWith("/") || v.length > ACQ_LIMITS.PATH || /[?#\s@]/.test(v) || CONTROL_RE.test(v) || LONE_SURROGATE_RE.test(v)) return null;
   return v;
 }
 
@@ -117,7 +120,7 @@ export function cleanHost(v: unknown): string | null {
 export function cleanUtm(v: unknown): string | null {
   if (typeof v !== "string") return null;
   const s = v.trim();
-  if (s === "" || s.length > ACQ_LIMITS.UTM || CONTROL_RE.test(s) || s.includes("@")) return null;
+  if (s === "" || s.length > ACQ_LIMITS.UTM || CONTROL_RE.test(s) || LONE_SURROGATE_RE.test(s) || s.includes("@")) return null;
   return s;
 }
 

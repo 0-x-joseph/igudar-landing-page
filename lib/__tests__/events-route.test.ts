@@ -72,7 +72,10 @@ describe("POST /api/events, the happy path", () => {
 
   it("accepts every event name in the contract", async () => {
     const { POST } = await load();
-    await POST(req({ events: LANDING_EVENTS.slice(0, 20).map((event) => valid({ event })) }));
+    // Batches hold at most 10 events, so the contract's names go in as many requests as needed.
+    for (let i = 0; i < LANDING_EVENTS.length; i += 10) {
+      await POST(req({ events: LANDING_EVENTS.slice(i, i + 10).map((event) => valid({ event })) }));
+    }
     expect(inserted()).toHaveLength(LANDING_EVENTS.length);
   });
 
@@ -155,10 +158,45 @@ describe("POST /api/events, request limits", () => {
     expect(insertMock).not.toHaveBeenCalled();
   });
 
-  it("accepts exactly 20 events", async () => {
+  it("accepts exactly 10 events and refuses 11 whole", async () => {
     const { POST } = await load();
-    await POST(req({ events: Array.from({ length: 20 }, () => valid()) }));
-    expect(inserted()).toHaveLength(20);
+    await POST(req({ events: Array.from({ length: 10 }, () => valid()) }));
+    expect(inserted()).toHaveLength(10);
+    await POST(req({ events: Array.from({ length: 11 }, () => valid()) }));
+    expect(inserted()).toHaveLength(10);
+  });
+
+  it("stops reading a chunked body (no content-length) as soon as it passes 16 KB", async () => {
+    const { POST } = await load();
+    const big = new TextEncoder().encode(JSON.stringify({ events: [valid()], pad: "x".repeat(20 * 1024) }));
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        for (let i = 0; i < big.length; i += 4096) controller.enqueue(big.slice(i, i + 4096));
+        controller.close();
+      },
+    });
+    const request = new NextRequest("http://localhost/api/events", {
+      method: "POST",
+      headers: { "x-forwarded-for": "10.9.9.9", "content-type": "application/json" },
+      body: stream,
+      duplex: "half", // Node's fetch needs duplex for a streamed body
+    });
+    expect((await POST(request)).status).toBe(204);
+    expect(insertMock).not.toHaveBeenCalled();
+  });
+
+  it("refuses beacons sent by another site's pages (Sec-Fetch-Site cross-site), and accepts same-origin", async () => {
+    const { POST } = await load();
+    await POST(req({ events: [valid()] }, { headers: { "sec-fetch-site": "cross-site" } }));
+    expect(insertMock).not.toHaveBeenCalled();
+    await POST(req({ events: [valid()] }, { headers: { "sec-fetch-site": "same-origin" } }));
+    expect(insertMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("drops a path containing '@' and values with a lone surrogate (Postgres would refuse the whole batch)", async () => {
+    const { POST } = await load();
+    await POST(req({ events: [valid({ path: "/x@y.com" }), valid({ utm_source: "a\ud800b" }), valid()] }));
+    expect(inserted()).toHaveLength(1);
   });
 
   it("refuses a body over 16 KB", async () => {
@@ -192,14 +230,14 @@ describe("POST /api/events, request limits", () => {
     expect(insertMock).not.toHaveBeenCalled();
   });
 
-  it("rate-limits an IP after 30 requests per minute, silently, and only that IP", async () => {
+  it("rate-limits an IP after 10 requests per minute, silently, and only that IP", async () => {
     const { POST } = await load();
     const statuses: number[] = [];
-    for (let i = 0; i < 31; i++) statuses.push((await POST(req({ events: [valid()] }, { ip: "9.9.9.9" }))).status);
+    for (let i = 0; i < 11; i++) statuses.push((await POST(req({ events: [valid()] }, { ip: "9.9.9.9" }))).status);
     expect(new Set(statuses)).toEqual(new Set([204]));
-    expect(insertMock).toHaveBeenCalledTimes(30);
+    expect(insertMock).toHaveBeenCalledTimes(10);
     await POST(req({ events: [valid()] }, { ip: "8.8.8.8" }));
-    expect(insertMock).toHaveBeenCalledTimes(31);
+    expect(insertMock).toHaveBeenCalledTimes(11);
   });
 });
 
