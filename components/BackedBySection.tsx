@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Pause, Play } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 
 // Only programmes and partners that are real. Do not add a logo here without written permission to use it.
@@ -35,7 +33,7 @@ function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
     <ul
       data-marquee-set={id}
       aria-hidden={hidden ? true : undefined}
-      className="flex shrink-0 items-center gap-4 pe-4"
+      className="marquee-set"
     >
       {partners.map((p) => (
         <li
@@ -46,7 +44,8 @@ function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
           <img
             src={p.src}
             alt={hidden ? "" : (p.alt ?? t("genericLogoAlt"))}
-            loading="lazy"
+            loading="eager"
+            decoding="async"
             style={p.zoom === 1 ? undefined : { transform: `scale(${p.zoom})` }}
             className={`h-full w-full object-contain ${TONE[p.tone]}`.trim()}
           />
@@ -56,10 +55,10 @@ function LogoSet({ id, hidden }: { id: "a" | "b"; hidden?: boolean }) {
   );
 }
 
-/** A continuous, pausable strip of the programmes IGUDAR is part of. No invented logos. */
+/** A gap-free loop of the six real partner logos. Hover or keyboard focus pauses
+ * the strip without a separate control; reduced motion shows one static set. */
 export default function BackedBySection() {
   const t = useTranslations("home.partners");
-  const [paused, setPaused] = useState(false);
 
   return (
     <section aria-labelledby="partners-title" className="px-5 py-20 sm:px-6 lg:py-24">
@@ -72,26 +71,17 @@ export default function BackedBySection() {
         <div
           role="region"
           aria-label={t("region")}
-          className="relative mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+          tabIndex={0}
+          dir="ltr"
+          className="marquee-window relative mt-10 overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
         >
           <div
             data-marquee-track=""
-            data-paused={paused ? "true" : undefined}
-            className="marquee-track flex w-max"
+            className="marquee-track"
           >
             <LogoSet id="a" />
             <LogoSet id="b" hidden />
           </div>
-        </div>
-        <div className="mt-6 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setPaused((p) => !p)}
-            className="marquee-toggle inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            {paused ? <Play className="size-4" aria-hidden="true" /> : <Pause className="size-4" aria-hidden="true" />}
-            {paused ? t("play") : t("pause")}
-          </button>
         </div>
       </div>
     </section>
