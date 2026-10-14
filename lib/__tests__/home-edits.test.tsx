@@ -237,22 +237,24 @@ describe("edit 6: partners marquee", () => {
     for (const img of Array.from(live)) {
       expect(img.className).toContain("object-contain");
       expect(img.parentElement!.className).toContain("bg-white");
+      expect(img).toHaveAttribute("loading", "eager");
     }
     expect(screen.getByAltText("UM6P").className).toContain("mix-blend-multiply");
     expect(screen.getByAltText("Explorer").className).toContain("mix-blend-multiply");
     expect(screen.getByAltText("Programme partner logo").className).toContain("brightness-0");
     expect(screen.getByAltText("UM6P Launchpad").className).toContain("brightness-0");
     expect(container.querySelector("[data-marquee-track]")!.className).toContain("marquee-track");
+    expect(container.querySelector("[data-marquee-track]")!.className).toContain("flex-nowrap");
+    expect(container.querySelector("[data-marquee-set='a']")!.className).toContain("flex-nowrap");
   });
 
-  it("can be paused with a button", () => {
+  it("has no pause button and keeps the visual loop LTR in every locale", () => {
     const { container } = renderIntl(<BackedBySection />);
     const track = container.querySelector("[data-marquee-track]")!;
     expect(track).not.toHaveAttribute("data-paused");
-    fireEvent.click(screen.getByRole("button", { name: /pause/i }));
-    expect(track).toHaveAttribute("data-paused", "true");
-    fireEvent.click(screen.getByRole("button", { name: /play/i }));
-    expect(track).not.toHaveAttribute("data-paused");
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: /partner logos/i })).toHaveAttribute("dir", "ltr");
+    expect(screen.getByRole("region", { name: /partner logos/i })).toHaveAttribute("tabindex", "0");
   });
 
   it("adds no logo beyond the six real ones", () => {
@@ -264,10 +266,13 @@ describe("edit 6: partners marquee", () => {
   it("css: keyframes, pause on hover, static and single-set under reduced motion", () => {
     const css = read("app/globals.css");
     expect(css).toContain("@keyframes marquee");
-    expect(css).toMatch(/\.marquee-track:hover[^{]*\{[^}]*animation-play-state:\s*paused/);
+    expect(css).toMatch(/\.marquee-window:hover \.marquee-track[^{]*\{[^}]*animation-play-state:\s*paused/);
+    expect(css).toMatch(/\.marquee-track\s*\{[^}]*min-width:\s*200%/);
     const reduced = css.slice(css.indexOf("prefers-reduced-motion: reduce"));
     expect(reduced).toContain(".marquee-track");
     expect(reduced).toContain("[data-marquee-set='b']");
+    expect(reduced).toContain("flex-wrap: nowrap");
+    expect(reduced).toContain("overflow-x: auto");
   });
 });
 

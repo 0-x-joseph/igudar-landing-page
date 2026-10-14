@@ -104,8 +104,8 @@ export default function FaqPageContent() {
                 {t("hero.back")}
               </Link>
 
-              <h1 className="text-4xl lg:text-5xl font-extrabold text-foreground leading-tight mb-6">
-                {t.rich("hero.title", { brand: (chunks) => <GradientText>{chunks}</GradientText> })}
+              <h1 className="font-display text-4xl lg:text-5xl font-semibold tracking-tight text-foreground leading-tight mb-6">
+                {t.rich("hero.title", { brand: (chunks) => <span className="italic text-primary">{chunks}</span> })}
               </h1>
 
               <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">{t("hero.lead")}</p>
@@ -139,7 +139,7 @@ export default function FaqPageContent() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="text-center mb-14">
-              <h2 className="text-3xl lg:text-[2.75rem] font-extrabold text-foreground mb-4">
+              <h2 className="font-display text-3xl lg:text-[2.75rem] font-semibold leading-tight tracking-tight text-foreground mb-4">
                 {t.rich("section.title", { accent: (chunks) => <GradientText>{chunks}</GradientText> })}
               </h2>
               <p className="text-lg text-muted-foreground">{t("section.lead")}</p>
