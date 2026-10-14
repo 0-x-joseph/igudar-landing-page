@@ -5,6 +5,11 @@ import path from "node:path";
 import { WAITLIST_ERROR_CODES } from "@/lib/waitlist-validation";
 
 const sendMock = vi.hoisted(() => vi.fn());
+const saveBetaMock = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/supabase/beta-applications", () => ({
+  saveBetaApplication: saveBetaMock,
+  BetaStorageNotConfiguredError: class extends Error {},
+}));
 vi.mock("resend", () => ({
   Resend: class {
     emails = { send: sendMock };
@@ -46,6 +51,7 @@ function req(body: unknown, ip = `10.0.0.${++ipCounter}`) {
 beforeEach(() => {
   calls = [];
   sendMock.mockReset().mockResolvedValue({ data: { id: "e1" }, error: null });
+  saveBetaMock.mockReset().mockResolvedValue(true);
   fetchImpl = async () => json({ id: "c1" });
   vi.stubGlobal("fetch", (url: string, init: RequestInit) => {
     calls.push({ url, init });
@@ -67,11 +73,76 @@ describe("POST /api/waitlist, configuration", () => {
   it("returns 503 with the not_configured code when RESEND_API_KEY is unset", async () => {
     vi.stubEnv("RESEND_API_KEY", "");
     const { POST } = await load();
+    const res = await POST(req({ email: "a@example.com" }));
+    expect(res.status).toBe(503);
+    expect(await res.json()).toEqual({ error: "not_configured" });
+    expect(calls).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("POST /api/waitlist, beta storage", () => {
+  it("saves normalized email, validated answers, consent and locale before any mail", async () => {
+    saveBetaMock.mockImplementation(async () => {
+      expect(calls).toHaveLength(0);
+      expect(sendMock).not.toHaveBeenCalled();
+      return true;
+    });
+    const { POST } = await load();
+    const res = await POST(req({ ...BETA, firstName: "  Salma  ", location: " Paris,   France ", locale: "ary" }));
+    expect(res.status).toBe(200);
+    expect(saveBetaMock).toHaveBeenCalledWith("salma@example.com", {
+      firstName: "Salma", location: "Paris, France", ticketBucket: "25-50k",
+      experience: "some", consentAt: new Date(BETA.consentAt).toISOString(), source: "beta",
+    }, "ary");
+  });
+
+  it("saves beta applications without a Resend key", async () => {
+    vi.stubEnv("RESEND_API_KEY", "");
+    const { POST } = await load();
+    const res = await POST(req(BETA));
+    expect(await res.json()).toEqual({ success: true, kind: "beta" });
+    expect(saveBetaMock).toHaveBeenCalledTimes(1);
+    expect(calls).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("fails closed with 503 when beta storage is unconfigured", async () => {
+    const { POST } = await load();
+    const { BetaStorageNotConfiguredError } = await import("@/lib/supabase/beta-applications");
+    saveBetaMock.mockRejectedValue(new BetaStorageNotConfiguredError());
     const res = await POST(req(BETA));
     expect(res.status).toBe(503);
     expect(await res.json()).toEqual({ error: "not_configured" });
     expect(calls).toHaveLength(0);
     expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("fails with a localized code and sends no email on a database failure", async () => {
+    saveBetaMock.mockRejectedValue(new Error("salma@example.com secret database detail"));
+    const { POST } = await load();
+    const res = await POST(req(BETA));
+    expect(res.status).toBe(502);
+    expect(await res.json()).toEqual({ error: "application_failed" });
+    expect(calls).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
+    expect(JSON.stringify(vi.mocked(console.error).mock.calls)).not.toContain("salma@example.com");
+  });
+
+  it("accepts duplicates without updating answers or resending email", async () => {
+    saveBetaMock.mockResolvedValue(false);
+    const { POST } = await load();
+    const res = await POST(req(BETA));
+    expect(await res.json()).toEqual({ success: true, kind: "beta" });
+    expect(calls).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("does not write plain waitlist or simulator interest into Supabase", async () => {
+    const { POST } = await load();
+    await POST(req({ email: "a@example.com" }));
+    await POST(req({ email: "b@example.com", amountMad: 25000, scenario: "base", source: "simulator", consentAt: BETA.consentAt }));
+    expect(saveBetaMock).not.toHaveBeenCalled();
   });
 });
 
@@ -136,7 +207,7 @@ describe("POST /api/waitlist, contact upsert", () => {
   it("answers 502 and sends no email when the contact cannot be saved", async () => {
     fetchImpl = async () => json({ message: "boom" }, 500);
     const { POST } = await load();
-    const res = await POST(req(BETA));
+    const res = await POST(req({ email: "a@example.com" }));
     expect(res.status).toBe(502);
     expect((await res.json()).error).toBe("save_failed");
     expect(sendMock).not.toHaveBeenCalled();
@@ -170,11 +241,28 @@ describe("POST /api/waitlist, emails", () => {
     expect(sendMock.mock.calls.every((c) => c[0].from === "Team <team@example.org>")).toBe(true);
   });
 
-  it("fails with 502 if the team notification of a beta application cannot be sent", async () => {
+  it("still succeeds after storage if the team notification cannot be sent", async () => {
     sendMock.mockResolvedValueOnce({ data: null, error: { message: "nope" } });
     const { POST } = await load();
     const res = await POST(req(BETA));
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(200);
+    expect(sendMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps a saved beta application successful when the audience is unavailable", async () => {
+    fetchImpl = async () => json({ message: "down" }, 500);
+    const { POST } = await load();
+    const res = await POST(req(BETA));
+    expect(await res.json()).toEqual({ success: true, kind: "beta" });
+    expect(sendMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("catches thrown mail transport errors after saving", async () => {
+    sendMock.mockRejectedValue(new Error("transport down"));
+    const { POST } = await load();
+    expect((await POST(req(BETA))).status).toBe(200);
+    expect(saveBetaMock).toHaveBeenCalledTimes(1);
+    expect(sendMock).toHaveBeenCalledTimes(2);
   });
 
   it("still succeeds when only the applicant confirmation fails", async () => {
@@ -229,6 +317,7 @@ describe("POST /api/waitlist, validation and abuse", () => {
     expect(WAITLIST_ERROR_CODES).toContain((await res.json()).error);
     expect(calls).toHaveLength(0);
     expect(sendMock).not.toHaveBeenCalled();
+    expect(saveBetaMock).not.toHaveBeenCalled();
   });
 
   it("rejects a body that is not JSON with 400", async () => {
@@ -242,6 +331,7 @@ describe("POST /api/waitlist, validation and abuse", () => {
     expect(res.status).toBe(200);
     expect(calls).toHaveLength(0);
     expect(sendMock).not.toHaveBeenCalled();
+    expect(saveBetaMock).not.toHaveBeenCalled();
   });
 
   it("rate-limits an IP after 5 requests per minute, and only that IP", async () => {
