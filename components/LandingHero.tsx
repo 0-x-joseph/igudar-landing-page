@@ -60,10 +60,10 @@ export default function LandingHero() {
             transition={{ duration: 0.3, delay: 0.2, ease: "easeOut" }}
           >
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
-              <a href={BETA_URL} className={ctaPrimary}>
+              <a href={BETA_URL} data-track="hero_beta_access" className={ctaPrimary}>
                 {tc("betaAccess")}
               </a>
-              <a href="#waitlist-cta" className={ctaSecondary}>
+              <a href="#waitlist-cta" data-track="hero_waitlist" className={ctaSecondary}>
                 {tc("joinWaitlist")}
               </a>
             </div>

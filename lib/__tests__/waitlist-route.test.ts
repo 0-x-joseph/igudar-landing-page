@@ -6,10 +6,20 @@ import { WAITLIST_ERROR_CODES } from "@/lib/waitlist-validation";
 
 const sendMock = vi.hoisted(() => vi.fn());
 const saveBetaMock = vi.hoisted(() => vi.fn());
+const saveLeadMock = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/supabase/beta-applications", () => ({
   saveBetaApplication: saveBetaMock,
   BetaStorageNotConfiguredError: class extends Error {},
 }));
+vi.mock("@/lib/supabase/landing-leads", () => ({
+  saveLandingLead: saveLeadMock,
+  LeadStorageNotConfiguredError: class extends Error {},
+}));
+
+/** The plain waitlist (the modal) now requires the consent timestamp too. */
+const CONSENT = new Date().toISOString();
+const NO_ATTRIBUTION = { visitorId: null, path: null, utmSource: null, utmMedium: null, utmCampaign: null };
+const VISITOR = "5f0c7a52-3c1e-4b8e-9d55-0a4c1e2f7b10";
 vi.mock("resend", () => ({
   Resend: class {
     emails = { send: sendMock };
@@ -52,6 +62,7 @@ beforeEach(() => {
   calls = [];
   sendMock.mockReset().mockResolvedValue({ data: { id: "e1" }, error: null });
   saveBetaMock.mockReset().mockResolvedValue(true);
+  saveLeadMock.mockReset().mockResolvedValue(true);
   fetchImpl = async () => json({ id: "c1" });
   vi.stubGlobal("fetch", (url: string, init: RequestInit) => {
     calls.push({ url, init });
@@ -70,14 +81,137 @@ afterEach(() => {
 });
 
 describe("POST /api/waitlist, configuration", () => {
-  it("returns 503 with the not_configured code when RESEND_API_KEY is unset", async () => {
+  it("saves a waitlist lead and succeeds without RESEND_API_KEY (no email is sent)", async () => {
     vi.stubEnv("RESEND_API_KEY", "");
     const { POST } = await load();
-    const res = await POST(req({ email: "a@example.com" }));
+    const res = await POST(req({ email: "a@example.com", consentAt: CONSENT }));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ success: true, kind: "waitlist" });
+    expect(saveLeadMock).toHaveBeenCalledTimes(1);
+    expect(calls).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("POST /api/waitlist, lead storage (waitlist modal and simulator interest)", () => {
+  it("stores the waitlist modal in landing_leads before any mail, with consent, locale and attribution", async () => {
+    saveLeadMock.mockImplementation(async () => {
+      expect(calls).toHaveLength(0);
+      expect(sendMock).not.toHaveBeenCalled();
+      return true;
+    });
+    const { POST } = await load();
+    const res = await POST(
+      req({
+        email: " A@Example.com ",
+        consentAt: CONSENT,
+        locale: "fr",
+        visitorId: VISITOR.toUpperCase(),
+        path: "/fr/faq",
+        utmSource: "newsletter",
+        utmMedium: "email",
+        utmCampaign: "beta-oct",
+      }),
+    );
+    expect(res.status).toBe(200);
+    expect(saveLeadMock).toHaveBeenCalledWith("a@example.com", {
+      form: "waitlist_modal",
+      locale: "fr",
+      consentAt: new Date(CONSENT).toISOString(),
+      attribution: { visitorId: VISITOR, path: "/fr/faq", utmSource: "newsletter", utmMedium: "email", utmCampaign: "beta-oct" },
+      props: {},
+    });
+    expect(saveBetaMock).not.toHaveBeenCalled();
+  });
+
+  it("stores simulator interest with the amount as a bucket and the scenario, never the exact amount", async () => {
+    const { POST } = await load();
+    const res = await POST(
+      req({ email: "b@example.com", amountMad: 30_000, scenario: "base", source: "simulator", consentAt: CONSENT }),
+    );
+    expect(await res.json()).toEqual({ success: true, kind: "interest" });
+    const [, lead] = saveLeadMock.mock.calls[0];
+    expect(lead).toMatchObject({ form: "simulator_interest", locale: "en", props: { amount_bucket: "25-45k", scenario: "base" } });
+    expect(JSON.stringify(lead)).not.toContain("30000");
+  });
+
+  it("drops malformed attribution silently instead of failing the sign-up", async () => {
+    const { POST } = await load();
+    const res = await POST(
+      req({
+        email: "a@example.com",
+        consentAt: CONSENT,
+        visitorId: "not-a-uuid",
+        path: "/faq?email=a@example.com",
+        utmSource: "x".repeat(101),
+        utmCampaign: "a@example.com",
+      }),
+    );
+    expect(res.status).toBe(200);
+    expect(saveLeadMock.mock.calls[0][1].attribution).toEqual(NO_ATTRIBUTION);
+  });
+
+  it.each([
+    ["waitlist", { email: "a@example.com", consentAt: CONSENT }],
+    ["simulator interest", { email: "a@example.com", amountMad: 25000, scenario: "base", source: "simulator", consentAt: CONSENT }],
+  ])("treats a duplicate %s (same email and form) as success, without overwriting or mailing", async (_n, body) => {
+    saveLeadMock.mockResolvedValue(false);
+    const { POST } = await load();
+    const res = await POST(req(body));
+    expect(res.status).toBe(200);
+    expect((await res.json()).success).toBe(true);
+    expect(calls).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("answers the beta form's not_configured code when storage is not configured, and sends nothing", async () => {
+    const { POST } = await load();
+    const { LeadStorageNotConfiguredError } = await import("@/lib/supabase/landing-leads");
+    saveLeadMock.mockRejectedValue(new LeadStorageNotConfiguredError());
+    const res = await POST(req({ email: "a@example.com", consentAt: CONSENT }));
     expect(res.status).toBe(503);
     expect(await res.json()).toEqual({ error: "not_configured" });
     expect(calls).toHaveLength(0);
     expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("answers the beta form's application_failed code on a database failure, never losing the lead silently", async () => {
+    saveLeadMock.mockRejectedValue(new Error("a@example.com secret database detail"));
+    const { POST } = await load();
+    const res = await POST(req({ email: "a@example.com", amountMad: 25000, scenario: "base", source: "simulator", consentAt: CONSENT }));
+    expect(res.status).toBe(502);
+    expect(await res.json()).toEqual({ error: "application_failed" });
+    expect(calls).toHaveLength(0);
+    expect(sendMock).not.toHaveBeenCalled();
+    expect(JSON.stringify(vi.mocked(console.error).mock.calls)).not.toContain("a@example.com");
+  });
+
+  it.each([
+    ["missing", {}, "consent_required"],
+    ["not a string", { consentAt: 12345 }, "consent_required"],
+    ["garbage", { consentAt: "yesterday" }, "consent_invalid"],
+    ["in the future", { consentAt: "2999-01-01T00:00:00Z" }, "consent_invalid"],
+  ])("requires consent for the waitlist modal (%s)", async (_n, patch, code) => {
+    const { POST } = await load();
+    const res = await POST(req({ email: "a@example.com", ...patch }));
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: code });
+    expect(saveLeadMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("still requires consent for simulator interest", async () => {
+    const { POST } = await load();
+    const res = await POST(req({ email: "a@example.com", amountMad: 25000, scenario: "base", source: "simulator" }));
+    expect(await res.json()).toEqual({ error: "consent_required" });
+    expect(saveLeadMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects an email longer than 254 characters for every form", async () => {
+    const { POST } = await load();
+    const res = await POST(req({ email: `${"a".repeat(250)}@example.com`, consentAt: CONSENT }));
+    expect(await res.json()).toEqual({ error: "invalid_email" });
+    expect(saveLeadMock).not.toHaveBeenCalled();
   });
 });
 
@@ -94,7 +228,15 @@ describe("POST /api/waitlist, beta storage", () => {
     expect(saveBetaMock).toHaveBeenCalledWith("salma@example.com", {
       firstName: "Salma", location: "Paris, France", ticketBucket: "25-50k",
       experience: "some", consentAt: new Date(BETA.consentAt).toISOString(), source: "beta",
-    }, "ary");
+    }, "ary", NO_ATTRIBUTION);
+  });
+
+  it("passes the visit's attribution with a beta application", async () => {
+    const { POST } = await load();
+    await POST(req({ ...BETA, visitorId: VISITOR, path: "/beta", utmSource: "linkedin" }));
+    expect(saveBetaMock.mock.calls[0][3]).toEqual({
+      visitorId: VISITOR, path: "/beta", utmSource: "linkedin", utmMedium: null, utmCampaign: null,
+    });
   });
 
   it("saves beta applications without a Resend key", async () => {
@@ -138,11 +280,18 @@ describe("POST /api/waitlist, beta storage", () => {
     expect(sendMock).not.toHaveBeenCalled();
   });
 
-  it("does not write plain waitlist or simulator interest into Supabase", async () => {
+  it("does not write plain waitlist or simulator interest into the beta table", async () => {
     const { POST } = await load();
-    await POST(req({ email: "a@example.com" }));
+    await POST(req({ email: "a@example.com", consentAt: CONSENT }));
     await POST(req({ email: "b@example.com", amountMad: 25000, scenario: "base", source: "simulator", consentAt: BETA.consentAt }));
     expect(saveBetaMock).not.toHaveBeenCalled();
+    expect(saveLeadMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("never writes a beta application into landing_leads", async () => {
+    const { POST } = await load();
+    await POST(req(BETA));
+    expect(saveLeadMock).not.toHaveBeenCalled();
   });
 });
 
@@ -164,7 +313,7 @@ describe("POST /api/waitlist, contact upsert", () => {
 
   it("omits first_name for a plain waitlist signup", async () => {
     const { POST } = await load();
-    const res = await POST(req({ email: "a@example.com", honeypot: "" }));
+    const res = await POST(req({ email: "a@example.com", consentAt: CONSENT, honeypot: "" }));
     expect(res.status).toBe(200);
     expect(JSON.parse(calls[0].init.body as string)).toEqual({ email: "a@example.com", unsubscribed: false });
   });
@@ -178,8 +327,8 @@ describe("POST /api/waitlist, contact upsert", () => {
       return json({ id: "c1" });
     };
     const { POST } = await load();
-    await POST(req({ email: "a@example.com" }));
-    await POST(req({ email: "b@example.com" }));
+    await POST(req({ email: "a@example.com", consentAt: CONSENT }));
+    await POST(req({ email: "b@example.com", consentAt: CONSENT }));
     const lists = calls.filter((c) => c.url.endsWith("/audiences"));
     expect(lists).toHaveLength(1);
     const contacts = calls.filter((c) => c.url.includes("/contacts"));
@@ -197,20 +346,20 @@ describe("POST /api/waitlist, contact upsert", () => {
       return json({ id: "c1" });
     };
     const { POST } = await load();
-    const res = await POST(req({ email: "a@example.com" }));
+    const res = await POST(req({ email: "a@example.com", consentAt: CONSENT }));
     expect(res.status).toBe(200);
     const create = calls.find((c) => c.url.endsWith("/audiences") && c.init.method === "POST")!;
     expect(JSON.parse(create.init.body as string)).toEqual({ name: "IGUDAR waitlist" });
     expect(calls.at(-1)!.url).toBe("https://api.resend.com/audiences/new_1/contacts");
   });
 
-  it("answers 502 and sends no email when the contact cannot be saved", async () => {
+  it("keeps a stored waitlist lead successful when the audience contact cannot be saved", async () => {
     fetchImpl = async () => json({ message: "boom" }, 500);
     const { POST } = await load();
-    const res = await POST(req({ email: "a@example.com" }));
-    expect(res.status).toBe(502);
-    expect((await res.json()).error).toBe("save_failed");
-    expect(sendMock).not.toHaveBeenCalled();
+    const res = await POST(req({ email: "a@example.com", consentAt: CONSENT }));
+    expect(res.status).toBe(200);
+    expect(saveLeadMock).toHaveBeenCalledTimes(1);
+    expect(sendMock).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -275,7 +424,7 @@ describe("POST /api/waitlist, emails", () => {
 
   it("sends only a confirmation for a plain waitlist signup", async () => {
     const { POST } = await load();
-    await POST(req({ email: "a@example.com" }));
+    await POST(req({ email: "a@example.com", consentAt: CONSENT }));
     expect(sendMock).toHaveBeenCalledTimes(1);
     expect(sendMock.mock.calls[0][0].to).toEqual(["a@example.com"]);
   });
@@ -301,8 +450,8 @@ describe("POST /api/waitlist, emails", () => {
 describe("POST /api/waitlist, validation and abuse", () => {
   it.each([
     ["missing email", { honeypot: "" }],
-    ["malformed email", { email: "not-an-email" }],
-    ["disposable email", { email: "x@mailinator.com" }],
+    ["malformed email", { email: "not-an-email", consentAt: new Date().toISOString() }],
+    ["disposable email", { email: "x@mailinator.com", consentAt: new Date().toISOString() }],
     ["beta without a first name", { ...BETA, firstName: "  " }],
     ["beta with an unknown bucket", { ...BETA, ticketBucket: "1m" }],
     ["beta with a future consent", { ...BETA, consentAt: "2999-01-01T00:00:00Z" }],
@@ -337,9 +486,9 @@ describe("POST /api/waitlist, validation and abuse", () => {
   it("rate-limits an IP after 5 requests per minute, and only that IP", async () => {
     const { POST } = await load();
     const statuses: number[] = [];
-    for (let i = 0; i < 6; i++) statuses.push((await POST(req({ email: `u${i}@example.com` }, "9.9.9.9"))).status);
+    for (let i = 0; i < 6; i++) statuses.push((await POST(req({ email: `u${i}@example.com`, consentAt: CONSENT }, "9.9.9.9"))).status);
     expect(statuses).toEqual([200, 200, 200, 200, 200, 429]);
-    expect((await POST(req({ email: "z@example.com" }, "8.8.8.8"))).status).toBe(200);
+    expect((await POST(req({ email: "z@example.com", consentAt: CONSENT }, "8.8.8.8"))).status).toBe(200);
   });
 
   it("never writes the IP or the email to the logs", async () => {
@@ -362,7 +511,7 @@ describe("POST /api/waitlist, the visitor's language", () => {
 
   it("sends the confirmation in French with lang=\"fr\" when the body says so", async () => {
     const { POST } = await load();
-    const res = await POST(req({ email: "a@example.com", locale: "fr" }));
+    const res = await POST(req({ email: "a@example.com", consentAt: CONSENT, locale: "fr" }));
     expect(res.status).toBe(200);
     const confirm = sendMock.mock.calls[0][0];
     expect(confirm.subject).toBe(emails("fr").confirmation.subject);
@@ -388,9 +537,9 @@ describe("POST /api/waitlist, the visitor's language", () => {
 
   it("falls back to English for a missing or unknown locale", async () => {
     const { POST } = await load();
-    await POST(req({ email: "a@example.com" }));
-    await POST(req({ email: "b@example.com", locale: "de" }));
-    await POST(req({ email: "c@example.com", locale: 42 }));
+    await POST(req({ email: "a@example.com", consentAt: CONSENT }));
+    await POST(req({ email: "b@example.com", consentAt: CONSENT, locale: "de" }));
+    await POST(req({ email: "c@example.com", consentAt: CONSENT, locale: 42 }));
     for (const call of sendMock.mock.calls) {
       expect(call[0].subject).toBe(emails("en").confirmation.subject);
       expect(call[0].html).toContain('<html lang="en" dir="ltr">');
@@ -399,7 +548,7 @@ describe("POST /api/waitlist, the visitor's language", () => {
 
   it("answers with the kind of sign-up and no English sentence", async () => {
     const { POST } = await load();
-    expect(await (await POST(req({ email: "a@example.com" }))).json()).toEqual({ success: true, kind: "waitlist" });
+    expect(await (await POST(req({ email: "a@example.com", consentAt: CONSENT }))).json()).toEqual({ success: true, kind: "waitlist" });
     expect(await (await POST(req(BETA))).json()).toEqual({ success: true, kind: "beta" });
   });
 });

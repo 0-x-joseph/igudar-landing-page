@@ -2,8 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { formatMad } from "@/lib/finance";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/routing";
-import { parseBetaApplication, parseInterestPayload, type WaitlistErrorCode } from "@/lib/waitlist-validation";
+import {
+  parseBetaApplication,
+  parseInterestPayload,
+  parseWaitlistConsent,
+  type WaitlistErrorCode,
+} from "@/lib/waitlist-validation";
+import { parseAttribution, type EventProps, type LeadForm } from "@/lib/acquisition";
+import { ticketBucket } from "@/lib/simulator";
 import { BetaStorageNotConfiguredError, saveBetaApplication } from "@/lib/supabase/beta-applications";
+import { LeadStorageNotConfiguredError, saveLandingLead } from "@/lib/supabase/landing-leads";
 import {
   buildBetaEmail,
   buildBetaNotification,
@@ -13,9 +21,11 @@ import {
 } from "@/lib/waitlist-emails";
 
 /**
- * Beta answers are saved in Supabase before any optional email work. Other
- * sign-ups retain the Resend Audience flow. Stable error codes and localized
- * confirmations are shared by all four languages; no PII is logged.
+ * Every validated submission is saved in Supabase before any optional email work: beta answers
+ * in beta_applications, waitlist-modal and simulator-interest emails in landing_leads. Resend
+ * (audience contact, team notification, confirmation) is best effort afterwards. A duplicate
+ * (same email, same form) is a success that changes nothing and sends nothing. Stable error
+ * codes and localized confirmations are shared by all four languages; no PII is logged.
  */
 const RESEND_API = "https://api.resend.com";
 const AUDIENCE_NAME = "IGUDAR waitlist";
@@ -120,35 +130,57 @@ export async function POST(request: NextRequest) {
   const interest = interestResult.value;
   const beta = betaResult.value;
 
-  if (!body.email || typeof body.email !== "string") return fail("invalid_email", 400);
-  const email = body.email.trim().toLowerCase();
-  if (!isValidEmail(email) || (beta && email.length > 254)) return fail("invalid_email", 400);
-
-  const locale: Locale = isLocale(body.locale) ? body.locale : DEFAULT_LOCALE;
-  const success = () => json({ success: true, kind: beta ? "beta" : interest ? "interest" : "waitlist" });
-
-  if (beta) {
-    try {
-      const inserted = await saveBetaApplication(email, beta, locale);
-      // A retry is a no-op: retain the original answers and do not resend mail.
-      if (!inserted) return success();
-    } catch (error) {
-      if (error instanceof BetaStorageNotConfiguredError) return fail("not_configured", 503);
-      console.error("Beta application storage failed.");
-      return fail("application_failed", 502);
-    }
+  // The plain waitlist (the modal) now has the same consent box as the other two forms.
+  let waitlistConsentAt: string | null = null;
+  if (!beta && !interest) {
+    const consent = parseWaitlistConsent(body);
+    if (!consent.ok) return fail(consent.error, 400);
+    waitlistConsentAt = consent.value;
   }
 
+  if (!body.email || typeof body.email !== "string") return fail("invalid_email", 400);
+  const email = body.email.trim().toLowerCase();
+  if (!isValidEmail(email) || email.length > 254) return fail("invalid_email", 400);
+
+  const locale: Locale = isLocale(body.locale) ? body.locale : DEFAULT_LOCALE;
+  // Visitor id, page and campaign: optional, each dropped silently when malformed.
+  const attribution = parseAttribution(body);
+  const success = () => json({ success: true, kind: beta ? "beta" : interest ? "interest" : "waitlist" });
+
+  // Storage first. A retry (inserted === false) is a no-op: keep the first answers, send no mail.
+  try {
+    let inserted: boolean;
+    if (beta) {
+      inserted = await saveBetaApplication(email, beta, locale, attribution);
+    } else {
+      const form: LeadForm = interest ? "simulator_interest" : "waitlist_modal";
+      // Buckets only: the exact amount stays out of the props, as in the analytics events.
+      const props: EventProps = interest ? { amount_bucket: ticketBucket(interest.amountMad), scenario: interest.scenario } : {};
+      inserted = await saveLandingLead(email, {
+        form,
+        locale,
+        consentAt: interest ? interest.consentAt : waitlistConsentAt!,
+        attribution,
+        props,
+      });
+    }
+    if (!inserted) return success();
+  } catch (error) {
+    if (error instanceof BetaStorageNotConfiguredError || error instanceof LeadStorageNotConfiguredError) {
+      return fail("not_configured", 503);
+    }
+    console.error(beta ? "Beta application storage failed." : "Lead storage failed.");
+    return fail("application_failed", 502);
+  }
+
+  // Email is optional now that every submission is durably saved.
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  // Email is optional for a durably saved beta application, but remains the
-  // storage mechanism for a plain waitlist signup or simulator interest.
-  if (!apiKey) return beta ? success() : fail("not_configured", 503);
+  if (!apiKey) return success();
 
   try {
     await upsertContact(apiKey, email, beta?.firstName);
   } catch {
     console.error("Waitlist contact upsert failed.");
-    if (!beta) return fail("save_failed", 502);
   }
 
   const resend = new Resend(apiKey);

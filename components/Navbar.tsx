@@ -101,7 +101,7 @@ const Navbar = () => {
             <p className="text-muted-foreground text-[13px] font-medium text-center">
               {t('banner.text')}
             </p>
-            <Link href="/beta" className="text-primary text-[13px] font-semibold hover:text-primary/80 transition-colors whitespace-nowrap">
+            <Link href="/beta" data-track="nav_banner_beta" className="text-primary text-[13px] font-semibold hover:text-primary/80 transition-colors whitespace-nowrap">
               {t('banner.cta')}
             </Link>
             <button
@@ -189,6 +189,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-2">
             <LanguageSwitcher compact className="me-1" />
             <button type="button"
+              data-track="nav_waitlist"
               onClick={() => setIsWaitlistOpen(true)}
               className="hidden 2xl:flex px-4 text-[13px] font-medium text-foreground border border-border bg-card hover:bg-muted transition-colors h-9 rounded-full items-center justify-center cursor-pointer whitespace-nowrap"
             >
@@ -196,6 +197,7 @@ const Navbar = () => {
             </button>
             <a
               href={BETA_URL}
+              data-track="nav_beta_access"
               className="px-5 text-[13px] font-medium text-primary-foreground bg-primary hover:bg-accent-foreground transition-colors h-9 rounded-full flex items-center justify-center whitespace-nowrap"
             >
               {t('cta.betaAccess')}
@@ -268,12 +270,14 @@ const Navbar = () => {
                 <div className="pt-3 mt-2 border-t border-border space-y-2">
                   <a
                     href={BETA_URL}
+                    data-track="nav_mobile_beta_access"
                     onClick={() => setIsMenuOpen(false)}
                     className="w-full px-4 py-2.5 text-[14px] font-medium text-primary-foreground bg-primary rounded-lg hover:bg-accent-foreground transition-colors flex items-center justify-center"
                   >
                     {t('cta.betaAccess')}
                   </a>
                   <button
+                    data-track="nav_mobile_waitlist"
                     onClick={() => {
                       setIsWaitlistOpen(true);
                       setIsMenuOpen(false);

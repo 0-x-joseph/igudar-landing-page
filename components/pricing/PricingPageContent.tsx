@@ -99,11 +99,11 @@ export default function PricingPageContent() {
             {t("cta.title")}
           </h2>
           <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-8">
-            <Link href="/calculator" className={linkClass}>
+            <Link href="/calculator" data-track="pricing_calculator" className={linkClass}>
               {t("cta.calculator")}
               <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden="true" />
             </Link>
-            <Link href="/faq" className={linkClass}>
+            <Link href="/faq" data-track="pricing_faq" className={linkClass}>
               {t("cta.faq")}
               <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden="true" />
             </Link>

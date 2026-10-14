@@ -142,7 +142,14 @@ describe("BetaApplicationForm", () => {
     expect(Number.isNaN(new Date(body.consentAt).getTime())).toBe(false);
     // Analytics never carry the email or the name.
     expect(JSON.stringify(events)).not.toContain("salma");
-    expect(events).toEqual([{ event: "beta_apply", props: { ticket_bucket: "25-50k", experience: "some" } }]);
+    // form_view also fires when the observer reports the form on screen.
+    expect(events.filter((e) => (e as { event: string }).event !== "form_view")).toEqual([
+      { event: "form_submit", props: { form: "beta_application" } },
+      { event: "beta_apply", props: { ticket_bucket: "25-50k", experience: "some" } },
+    ]);
+    // The visit's page travels with the application so it can be matched to the funnel.
+    expect(body.path).toBe("/");
+    expect(body.visitorId).toMatch(/^[0-9a-f-]{36}$/);
     window.removeEventListener(TRACK_EVENT_NAME, listener);
   });
 

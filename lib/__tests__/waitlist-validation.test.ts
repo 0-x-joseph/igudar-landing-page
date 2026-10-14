@@ -7,6 +7,7 @@ import {
   isWaitlistErrorCode,
   parseBetaApplication,
   parseInterestPayload,
+  parseWaitlistConsent,
 } from "@/lib/waitlist-validation";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
@@ -79,6 +80,25 @@ const betaValid = {
   experience: "some",
   consentAt: "2026-10-09T11:59:00.000Z",
 };
+
+describe("parseWaitlistConsent (the waitlist modal)", () => {
+  it("accepts a past timestamp and normalises it to ISO", () => {
+    expect(parseWaitlistConsent({ consentAt: "2026-10-09T11:59:00Z" }, NOW)).toEqual({ ok: true, value: "2026-10-09T11:59:00.000Z" });
+  });
+
+  it.each([
+    ["missing", {}, "consent_required"],
+    ["not a string", { consentAt: 1 }, "consent_required"],
+    ["garbage", { consentAt: "soon" }, "consent_invalid"],
+    ["far in the future", { consentAt: "2027-01-01T00:00:00.000Z" }, "consent_invalid"],
+  ])("rejects %s", (_n, body, code) => {
+    expect(parseWaitlistConsent(body, NOW)).toEqual({ ok: false, error: code });
+  });
+
+  it("a consent timestamp alone is a plain waitlist sign-up, not a simulator interest", () => {
+    expect(parseInterestPayload({ email: "a@b.co", consentAt: "2026-10-09T11:59:00Z" }, NOW)).toEqual({ ok: true, value: null });
+  });
+});
 
 describe("parseInterestPayload with the beta source", () => {
   it("leaves beta payloads to parseBetaApplication", () => {

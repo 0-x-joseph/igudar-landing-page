@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { isWaitlistErrorCode } from '@/lib/waitlist-validation';
+import { formAttribution } from '@/lib/analytics';
+import { useFormTracking } from '@/components/analytics/useFormTracking';
 
 interface WaitlistModalProps {
   isOpen: boolean;
@@ -12,15 +14,26 @@ interface WaitlistModalProps {
 const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
   const t = useTranslations('beta.waitlist');
   const tErrors = useTranslations('beta.errors');
+  // The consent wording is the beta form's (beta.form.consent), reused as is in every language.
+  const tForm = useTranslations('beta.form');
   const locale = useLocale();
   const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
   const [honeypot, setHoneypot] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const tracking = useFormTracking('waitlist_modal', isOpen);
+
+  const reset = () => {
+    setStatus('idle');
+    setMessage('');
+    setEmail('');
+    setConsent(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || status === 'loading') return;
+    if (!email || !consent || status === 'loading') return;
 
     setStatus('loading');
     setMessage('');
@@ -29,17 +42,26 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), honeypot, locale }),
+        body: JSON.stringify({
+          email: email.trim(),
+          honeypot,
+          locale,
+          // Taken when the visitor submits; the box is never pre-checked.
+          consentAt: new Date().toISOString(),
+          ...formAttribution(),
+        }),
       });
 
       const data = (await res.json().catch(() => ({}))) as { error?: string };
 
       if (!res.ok) {
+        tracking.failed(data.error);
         setStatus('error');
         setMessage(isWaitlistErrorCode(data.error) ? tErrors(data.error) : t('genericError'));
         return;
       }
 
+      tracking.submitted();
       setStatus('success');
       setMessage(t('success'));
 
@@ -47,13 +69,10 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
       setTimeout(() => {
         onClose();
         // Reset after close animation
-        setTimeout(() => {
-          setStatus('idle');
-          setMessage('');
-          setEmail('');
-        }, 300);
+        setTimeout(reset, 300);
       }, 4000);
     } catch {
+      tracking.failed('network');
       setStatus('error');
       setMessage(t('networkError'));
     }
@@ -61,11 +80,7 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
 
   const handleClose = () => {
     onClose();
-    setTimeout(() => {
-      setStatus('idle');
-      setMessage('');
-      setEmail('');
-    }, 300);
+    setTimeout(reset, 300);
   };
 
   return (
@@ -131,7 +146,7 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                       <p className="text-muted-foreground text-[15px]">{t('modal.lede')}</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} onFocus={tracking.onFocus} className="space-y-4">
                       {/* Honeypot — hidden from real users */}
                       <input
                         type="text"
@@ -159,9 +174,20 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                           className="w-full px-4 py-3 rounded-xl bg-card border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-foreground placeholder:text-muted-foreground disabled:opacity-50"
                         />
                       </div>
+                      <label className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-muted-foreground text-start">
+                        <input
+                          type="checkbox"
+                          name="consent"
+                          checked={consent}
+                          onChange={(e) => setConsent(e.target.checked)}
+                          disabled={status === 'loading'}
+                          className="mt-1 size-5 shrink-0 accent-primary"
+                        />
+                        <span>{tForm('consent')}</span>
+                      </label>
                       <button
                         type="submit"
-                        disabled={status === 'loading'}
+                        disabled={status === 'loading' || !consent || email.trim() === ''}
                         className="w-full py-3.5 px-4 bg-primary hover:bg-accent-foreground text-white font-semibold rounded-xl transition-colors shadow-lg shadow-primary/20 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
                       >
                         {status === 'loading' ? (
