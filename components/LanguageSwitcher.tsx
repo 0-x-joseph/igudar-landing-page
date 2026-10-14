@@ -7,6 +7,7 @@ import { getPathname, usePathname } from "@/i18n/navigation";
 import { LOCALES, LOCALE_META, isLocale, type Locale } from "@/i18n/routing";
 import { flushAnalytics, track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
+import { prepareLanguageScrollPosition } from "@/lib/language-scroll-position";
 
 /**
  * Language choice: the same page in English, French, Arabic or Darija. A plain select so it works with
@@ -24,14 +25,16 @@ export function LanguageSwitcher({ className, compact = false }: { className?: s
 
   const change = (next: Locale) => {
     if (next === current) return;
+    const target = getPathname({ href: pathname, locale: next });
+    const destination = `${target}${window.location.search}${window.location.hash}`;
+    prepareLanguageScrollPosition(destination);
     setPending(true);
     track("language_change", { from: current, to: next });
     // Switching is a full navigation: send the event now rather than rely on pagehide alone.
     flushAnalytics();
     // The proxy honours this cookie over the URL for unprefixed paths, so it must change before the request.
     document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000; SameSite=Lax`;
-    const target = getPathname({ href: pathname, locale: next });
-    window.location.assign(`${target}${window.location.search}${window.location.hash}`);
+    window.location.assign(destination);
   };
 
   return (
