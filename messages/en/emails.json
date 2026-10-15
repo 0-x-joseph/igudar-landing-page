@@ -25,7 +25,7 @@
   "beta": {
     "subject": "We received your IGUDAR beta application",
     "title": "Thanks, {name}. We received your application.",
-    "intro": "A founder reviews every application by hand. When you are approved, you'll get an email with your access. Once approved, create your account here:",
+    "intro": "A founder reviews every application by hand. Create your account now, with this same email address, so we can approve it. You'll get an email as soon as your access is open. Create your account here:",
     "whatTitle": "What the beta is",
     "facts": {
       "closed": "A closed test with about 50 people, using demo money only",
