@@ -25,7 +25,7 @@
   "beta": {
     "subject": "Nous avons bien reçu votre candidature à la bêta IGUDAR",
     "title": "Merci, {name}. Nous avons bien reçu votre candidature.",
-    "intro": "Un fondateur examine chaque candidature à la main. Une fois validé, vous recevrez un e-mail avec votre accès. Vous pourrez alors créer votre compte ici :",
+    "intro": "Un fondateur examine chaque candidature à la main. Créez dès maintenant votre compte, avec cette même adresse e-mail, pour que nous puissions l'approuver. Vous recevrez un e-mail dès que votre accès sera ouvert. Créez votre compte ici :",
     "whatTitle": "Ce qu'est la bêta",
     "facts": {
       "closed": "Un test fermé avec une cinquantaine de personnes, uniquement avec de l'argent fictif",
