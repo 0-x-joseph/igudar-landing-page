@@ -25,7 +25,7 @@ export function investorFeeSummary(result: SimulationResult): InvestorFeeSummary
   return {
     entryMad: amount("D1"),
     outlayMad: result.outlayMad,
-    entryRate: FEE_GRID.D1_ENTRY,
+    entryRate: FEE_GRID.D1_STRUCTURING_HT,
     platformPerYearHtMad: platformHt,
     platformPerYearTtcMad: platformHt * (1 + TAX.TVA_ON_FEES),
     exitFeeShareMad: result.share * result.exit.saleMad * FEE_GRID.D3_EXIT_HT * (1 + TAX.TVA_ON_FEES),

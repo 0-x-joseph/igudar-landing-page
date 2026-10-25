@@ -64,7 +64,7 @@ export function calculatorFeeRows(input: { ticketMad: number; projectMad: number
       case "S1":
         return { ...base, lineTotalMad: projectMad * FEE_GRID.S1_SYNDICATION, yourShareMad: 0, paidByYou: false };
       case "D1":
-        return { ...base, lineTotalMad: projectMad * FEE_GRID.D1_ENTRY * tva, yourShareMad: ticketMad * FEE_GRID.D1_ENTRY * tva, paidByYou: true, noteKey: "atSubscription" };
+        return { ...base, lineTotalMad: projectMad * FEE_GRID.D1_STRUCTURING_HT * tva, yourShareMad: ticketMad * FEE_GRID.D1_STRUCTURING_HT * tva, paidByYou: true, noteKey: "atSubscription" };
       case "D2":
         return {
           ...base,

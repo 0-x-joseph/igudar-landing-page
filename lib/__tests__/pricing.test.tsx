@@ -13,7 +13,8 @@ describe("PricingTable", () => {
     expect(FEE_LINES).toHaveLength(7);
     expect(container.querySelectorAll("tbody tr")).toHaveLength(7);
     for (const line of FEE_LINES) {
-      expect(screen.getAllByText(line.label).length).toBeGreaterThan(0);
+      const lines = (messagesFor("en").pricing as unknown as { table: { lines: Record<string, { label: string }> } }).table.lines;
+      expect(screen.getAllByText(lines[line.code].label).length).toBeGreaterThan(0);
     }
   });
 

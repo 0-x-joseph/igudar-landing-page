@@ -9,22 +9,24 @@ import {
 	PROMOTIONS,
 	TAX,
 	checkCaps,
+	entryFeeCents,
+	entryFeeMad,
 	isValidTicket,
 } from '../fee-grid';
 
 describe('constants', () => {
-	it('matches spec section 2', () => {
+	it('is the v6 grid (founder decision, 22 Oct 2026)', () => {
 		expect(FEE_GRID.S1_SYNDICATION).toBe(0.03);
-		expect(FEE_GRID.D1_ENTRY).toBe(0.015);
+		expect(FEE_GRID.D1_STRUCTURING_HT).toBe(0.015);
 		expect(FEE_GRID.D2_PLATFORM_HT).toBe(0.0075);
 		expect(FEE_GRID.D3_EXIT_HT).toBe(0.015);
 		expect(FEE_GRID.D4_TRANSFER_HT).toBe(0.01);
 		expect(FEE_GRID.D5_PERFORMANCE).toBe(0.15);
-		expect(FEE_GRID.D6_DOSSIER).toBe(0);
-		expect(LIMITS.BANK_DEPOSIT_RATE).toBe(0.0182);
-		expect('S2_STRUCTURING' in FEE_GRID).toBe(false);
-		expect('D6_ANALYTICS_MAD' in FEE_GRID).toBe(false);
+		expect(FEE_GRID.D5_HURDLE).toBe(0.06);
+		expect(FEE_GRID.D6_DOSSIER_MAD).toBe(0);
 		expect(TAX.TVA_ON_FEES).toBe(0.2);
+		expect(TAX.WITHHOLDING_INDIVIDUAL).toBe(0.1);
+		expect(LIMITS.BANK_DEPOSIT_RATE).toBe(0.0182);
 		expect(LIMITS.MIN_TICKET_MAD).toBe(25_000);
 		expect(MIN_TICKET_MAD).toBe(25_000);
 		expect(MIN_TICKET_CENTS).toBe(2_500_000);
@@ -34,10 +36,44 @@ describe('constants', () => {
 		expect(Object.values(PROMOTIONS).every((v) => v === false)).toBe(true);
 	});
 
-	it('lists the seven fee lines in order', () => {
+	it('lists the seven v6 fee lines in order: S2 removed, no analytics plan', () => {
 		expect(FEE_LINES.map((l) => l.code)).toEqual(['S1', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']);
+		expect(FEE_LINES.find((l) => l.code === 'D1')?.rate).toBe(0.015);
 		expect(FEE_LINES.find((l) => l.code === 'D2')?.rate).toBe(0.0075);
+		expect(FEE_LINES.find((l) => l.code === 'D4')?.rate).toBe(0.01);
+		expect(FEE_LINES.find((l) => l.code === 'D6')?.label).toBe('Dossier fee');
 		expect(FEE_LINES.find((l) => l.code === 'D6')?.rate).toBe(0);
+		expect(FEE_LINES.some((l) => /analytics/i.test(l.label))).toBe(false);
+	});
+});
+
+describe('entry fee (D1 + VAT, paid on top of the ticket)', () => {
+	it('is 450 MAD on the 25,000 MAD minimum: 1.5 % + 20 % VAT = 1.8 %', () => {
+		expect(entryFeeMad(25_000)).toBeCloseTo(450, 10);
+		expect(entryFeeCents(2_500_000)).toBe(45_000);
+	});
+
+	it('scales with the ticket and is an exact number of cents on every 5,000 MAD step', () => {
+		for (let mad = 25_000; mad <= 500_000; mad += 5_000) {
+			const cents = entryFeeCents(mad * 100);
+			expect(Number.isInteger(cents)).toBe(true);
+			expect(cents).toBe((mad * 100 * 18) / 1000);
+			expect(cents / 100).toBeCloseTo(entryFeeMad(mad), 6);
+		}
+		expect(entryFeeCents(50_000_000)).toBe(900_000);
+	});
+
+	it('rounds to the nearest centime and rejects invalid amounts', () => {
+		expect(entryFeeCents(1)).toBe(0);
+		expect(entryFeeCents(100)).toBe(2);
+		expect(entryFeeCents(0)).toBe(0);
+		expect(() => entryFeeCents(-1)).toThrow(RangeError);
+		expect(() => entryFeeMad(Number.NaN)).toThrow(RangeError);
+	});
+
+	it('never counts toward the caps: 500,000 MAD is still exactly the per-project cap', () => {
+		expect(isValidTicket(500_000).ok).toBe(true);
+		expect(checkCaps({ ticketMad: 500_000 }).ok).toBe(true);
 	});
 });
 
@@ -131,14 +167,15 @@ describe('test-vectors.json defaults stay in sync with the grid', () => {
 	const d = vectors.defaults;
 
 	it('matches the fee grid', () => {
-		expect(d.fees.D1_entry).toBe(FEE_GRID.D1_ENTRY);
+		expect(d.fees.D1_structuring_HT).toBe(FEE_GRID.D1_STRUCTURING_HT);
+		expect(d.fees.D6_dossier_mad).toBe(FEE_GRID.D6_DOSSIER_MAD);
 		expect(d.fees.D2_platform_per_year_HT).toBe(FEE_GRID.D2_PLATFORM_HT);
 		expect(d.fees.D3_exit_HT).toBe(FEE_GRID.D3_EXIT_HT);
 		expect(d.fees.D4_transfer_HT).toBe(FEE_GRID.D4_TRANSFER_HT);
 		expect(d.fees.D5_performance).toBe(FEE_GRID.D5_PERFORMANCE);
 		expect(d.fees.D5_hurdle).toBe(FEE_GRID.D5_HURDLE);
 		expect(d.fees.S1_syndication_seller).toBe(FEE_GRID.S1_SYNDICATION);
-		expect(d.fees.D6_dossier).toBe(FEE_GRID.D6_DOSSIER);
+		expect('S2_structuring_operator' in d.fees).toBe(false);
 	});
 
 	it('matches tax and limits', () => {

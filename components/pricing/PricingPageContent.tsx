@@ -17,7 +17,7 @@ const linkClass =
 
 /** Who bears each fee. Rates read from the grid; D1 is the only fee the investor pays directly. */
 const NOT_PAID = [
-  { id: "entry", rate: FEE_GRID.D1_ENTRY, decimals: 1 },
+  { id: "entry", rate: FEE_GRID.D1_STRUCTURING_HT, decimals: 1 },
   { id: "company", rate: FEE_GRID.D2_PLATFORM_HT, decimals: 2 },
   { id: "syndication", rate: FEE_GRID.S1_SYNDICATION, decimals: 1 },
 ] as const;
@@ -38,7 +38,7 @@ export default function PricingPageContent() {
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
               {t("hero.lead", {
-                rate: f.percent(FEE_GRID.D1_ENTRY, 1),
+                rate: f.percent(FEE_GRID.D1_STRUCTURING_HT, 1),
                 fee: f.mad(entryFee.entryFeeMad, { decimals: 0 }),
                 ticket: f.mad(EXAMPLE_TICKET_MAD, { decimals: 0 }),
               })}

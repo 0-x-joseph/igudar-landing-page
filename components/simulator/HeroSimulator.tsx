@@ -107,7 +107,7 @@ export function HeroSimulator() {
                     <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                       {t("entryFee", {
                         ticket: formatMad(base.input.ticketMad, { decimals: 0 }),
-                        rate: percent(FEE_GRID.D1_ENTRY, 1),
+                        rate: percent(FEE_GRID.D1_STRUCTURING_HT, 1),
                         fee: formatMad(base.entryFeeMad, { decimals: 0 }),
                       })}
                     </p>

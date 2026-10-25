@@ -28,7 +28,7 @@ export default function FactsSection() {
       note: t("items.ticket.note", { step: mad(LIMITS.TICKET_STEP_MAD, { decimals: 0 }) }),
     },
     entry: {
-      figure: percent(FEE_GRID.D1_ENTRY, 1),
+      figure: percent(FEE_GRID.D1_STRUCTURING_HT, 1),
       note: t("items.entry.note"),
     },
     exit: {

@@ -22,7 +22,7 @@ function gridFees(t: T, f: F, base: SimulationResult): Row[] {
     {
       id: "entry",
       label: t("fees.entry"),
-      value: t("fees.entryValue", { rate: f.percent(FEE_GRID.D1_ENTRY, 1), amount: f.mad(base.entryFeeMad, { decimals: 0 }) }),
+      value: t("fees.entryValue", { rate: f.percent(FEE_GRID.D1_STRUCTURING_HT, 1), amount: f.mad(base.entryFeeMad, { decimals: 0 }) }),
     },
     { id: "outlay", label: t("fees.outlay"), value: f.mad(base.outlayMad, { decimals: 0 }) },
     { id: "platform", label: t("fees.platform"), value: t("fees.platformValue", { rate: f.percent(FEE_GRID.D2_PLATFORM_HT, 2) }) },
