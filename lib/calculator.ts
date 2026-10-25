@@ -34,7 +34,7 @@ export function calculateOwnership(input: { ticketMad: number; projectMad: numbe
 }
 
 /** Key under `calculator.feeNotes` in the messages: the words that qualify a row live there, not here. */
-export type CalculatorFeeNote = "perYearHt" | "baseSaleTtc" | "earlyExitOnly" | "aboveHurdle" | "optional";
+export type CalculatorFeeNote = "perYearHt" | "baseSaleTtc" | "earlyExitOnly" | "aboveHurdle" | "atSubscription" | "optional";
 
 /** One fee line for the calculator. Its name, payer and timing come from `FEE_LINES` by code. */
 export interface CalculatorFeeRow {
@@ -63,10 +63,8 @@ export function calculatorFeeRows(input: { ticketMad: number; projectMad: number
     switch (line.code) {
       case "S1":
         return { ...base, lineTotalMad: projectMad * FEE_GRID.S1_SYNDICATION, yourShareMad: 0, paidByYou: false };
-      case "S2":
-        return { ...base, lineTotalMad: projectMad * FEE_GRID.S2_STRUCTURING, yourShareMad: 0, paidByYou: false };
       case "D1":
-        return { ...base, lineTotalMad: 0, yourShareMad: ticketMad * FEE_GRID.D1_ENTRY, paidByYou: true };
+        return { ...base, lineTotalMad: projectMad * FEE_GRID.D1_STRUCTURING_HT * tva, yourShareMad: ticketMad * FEE_GRID.D1_STRUCTURING_HT * tva, paidByYou: true, noteKey: "atSubscription" };
       case "D2":
         return {
           ...base,
@@ -94,7 +92,8 @@ export function calculatorFeeRows(input: { ticketMad: number; projectMad: number
           noteKey: "aboveHurdle",
         };
       default:
-        return { ...base, lineTotalMad: null, yourShareMad: null, paidByYou: false, noteKey: "optional" };
+        // D6 dossier fee: 0 for everyone.
+        return { ...base, lineTotalMad: 0, yourShareMad: 0, paidByYou: false };
     }
   });
 }

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { ArrowRight, Check } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { FEE_GRID, TAX } from "@/lib/finance";
+import { FEE_GRID, TAX, simulate } from "@/lib/finance";
 import { useFormat } from "@/lib/i18n/use-format";
 import { ReactiveGlow, ZelligeBand } from "@/components/brand";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -15,16 +15,17 @@ import PricingTable, { EXAMPLE_TICKET_MAD } from "@/components/pricing/PricingTa
 const linkClass =
   "inline-flex min-h-12 items-center gap-2 text-base font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
-/** What the investor never pays: supply-side fees (S1, S2) and the entry fee (D1). Rates read from the grid. */
+/** Who bears each fee. Rates read from the grid; D1 is the only fee the investor pays directly. */
 const NOT_PAID = [
+  { id: "entry", rate: FEE_GRID.D1_STRUCTURING_HT, decimals: 1 },
+  { id: "company", rate: FEE_GRID.D2_PLATFORM_HT, decimals: 2 },
   { id: "syndication", rate: FEE_GRID.S1_SYNDICATION, decimals: 1 },
-  { id: "structuring", rate: FEE_GRID.S2_STRUCTURING, decimals: 1 },
-  { id: "entry", rate: FEE_GRID.D1_ENTRY, decimals: 0 },
 ] as const;
 
 export default function PricingPageContent() {
   const t = useTranslations("pricing");
   const f = useFormat();
+  const entryFee = simulate({ ticketMad: EXAMPLE_TICKET_MAD, scenario: "base" });
   return (
     <>
       <section className="group relative isolate overflow-hidden px-5 pb-12 pt-36 sm:px-6 lg:pb-16 lg:pt-44">
@@ -35,7 +36,13 @@ export default function PricingPageContent() {
             <h1 className="mt-3 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
               {t("hero.title")}
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">{t("hero.lead")}</p>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              {t("hero.lead", {
+                rate: f.percent(FEE_GRID.D1_STRUCTURING_HT, 1),
+                fee: f.mad(entryFee.entryFeeMad, { decimals: 0 }),
+                ticket: f.mad(EXAMPLE_TICKET_MAD, { decimals: 0 }),
+              })}
+            </p>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">{t("hero.beta")}</p>
           </Reveal>
         </div>
@@ -84,12 +91,22 @@ export default function PricingPageContent() {
                 </span>
                 <h3 className="mt-5 text-lg font-semibold text-foreground">{t(`notPaid.items.${item.id}.title`)}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {t(`notPaid.items.${item.id}.text`, { rate: f.percent(item.rate, item.decimals) })}
+                  {t(`notPaid.items.${item.id}.text`, {
+                    rate: f.percent(item.rate, item.decimals),
+                    fee: f.mad(entryFee.entryFeeMad, { decimals: 0 }),
+                    ticket: f.mad(EXAMPLE_TICKET_MAD, { decimals: 0 }),
+                    exit: f.percent(FEE_GRID.D3_EXIT_HT, 1),
+                    performance: f.percent(FEE_GRID.D5_PERFORMANCE, 0),
+                    hurdle: f.percent(FEE_GRID.D5_HURDLE, 0),
+                    tva: f.percent(TAX.TVA_ON_FEES, 0),
+                  })}
                 </p>
               </li>
             ))}
           </ul>
-          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">{t("notPaid.footnote")}</p>
+          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+            {t("notPaid.footnote", { transfer: f.percent(FEE_GRID.D4_TRANSFER_HT, 0) })}
+          </p>
         </div>
       </section>
 

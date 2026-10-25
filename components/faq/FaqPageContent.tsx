@@ -66,8 +66,13 @@ export default function FaqPageContent() {
       acquisition: f.percent(LIMITS.ACQUISITION_COSTS),
       irr: MODEL.base.netIrr === null ? t("items.irrVsYield.notAvailable") : f.percent(MODEL.base.netIrr),
     },
-    howItWorks: { min: minTicket, platformFee: f.percent(FEE_GRID.D2_PLATFORM_HT) },
-    sellers: { syndication: f.percent(FEE_GRID.S1_SYNDICATION), structuring: f.percent(FEE_GRID.S2_STRUCTURING) },
+    howItWorks: {
+      min: minTicket,
+      platformFee: f.percent(FEE_GRID.D2_PLATFORM_HT, 2),
+      entryFee: f.percent(FEE_GRID.D1_STRUCTURING_HT, 1),
+      entryAmount: f.mad(MODEL.base.entryFeeMad, { decimals: 0 }),
+    },
+    sellers: { syndication: f.percent(FEE_GRID.S1_SYNDICATION) },
     audience: { min: minTicket },
   };
 

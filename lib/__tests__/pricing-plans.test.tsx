@@ -3,7 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { screen, within } from "@testing-library/react";
 import { LIMITS, formatMad, formatPercent, simulate } from "@/lib/finance";
-import { PLANS, PROFESSIONAL_MIN_TICKET_MAD, planFigures } from "@/lib/plans";
+import { PLANS, planFigures } from "@/lib/plans";
 import PlanCards from "@/components/pricing/PlanCards";
 import PricingPageContent from "@/components/pricing/PricingPageContent";
 import { messagesFor, renderIntl } from "@/lib/__tests__/helpers/intl";
@@ -14,9 +14,9 @@ type PricingMessages = { hero: { title: string }; plans: { minimumTicket: string
 const pricingMessages = (locale: "fr" | "ar") => messagesFor(locale).pricing as PricingMessages;
 
 describe("plan figures come from the engine", () => {
-  it("uses 25,000 / 25,000 / 250,000 MAD tickets, the first two from LIMITS", () => {
-    expect(PLANS.map((p) => p.ticketMad)).toEqual([LIMITS.MIN_TICKET_MAD, LIMITS.MIN_TICKET_MAD, PROFESSIONAL_MIN_TICKET_MAD]);
-    expect(PROFESSIONAL_MIN_TICKET_MAD).toBe(250_000);
+  it("shows only the Individual plan at the 25,000 MAD minimum; Family Circle, institutional and analytics are out of scope", () => {
+    expect(PLANS.map((p) => p.id)).toEqual(["individual"]);
+    expect(PLANS.map((p) => p.ticketMad)).toEqual([LIMITS.MIN_TICKET_MAD]);
   });
 
   it.each(PLANS)("$id card shows simulate() IRR and total gain, Base big and Pessimistic beside", (plan) => {
@@ -33,6 +33,16 @@ describe("plan figures come from the engine", () => {
     expect(planFigures(plan).base.netProfitMad).toBe(base.netProfitMad);
   });
 
+  it("shows the v6 check figures at 25,000 MAD: IRR 3.07 %, +3,796 MAD; Pessimistic 1.40 %, +1,697 MAD", () => {
+    const { container } = renderIntl(<PlanCards />);
+    const card = within(container.querySelector('[data-plan="individual"]') as HTMLElement);
+    expect(nbsp(container.querySelector('[data-figure="irr"]')!.textContent ?? "")).toBe("3.1 %");
+    expect(nbsp(container.querySelector('[data-figure="gain"]')!.textContent ?? "")).toBe("3,796 MAD");
+    expect(nbsp(container.querySelector('[data-figure="irr-pessimistic"]')!.textContent ?? "")).toContain("1.4 %");
+    expect(nbsp(container.querySelector('[data-figure="gain-pessimistic"]')!.textContent ?? "")).toContain("1,697 MAD");
+    expect(card.getByText("25,450 MAD")).toBeInTheDocument();
+  });
+
   it("types no figure by hand: no quoted literal with a digit in the card source", () => {
     const src = readFileSync(path.resolve(import.meta.dirname, "../../components/pricing/PlanCards.tsx"), "utf8");
     const literals = src.match(/(["'`])(?:(?!\1)[^\n])*\1/g) ?? [];
@@ -42,64 +52,49 @@ describe("plan figures come from the engine", () => {
   });
 });
 
-describe("the three plan cards", () => {
-  it("render in order with the family card highlighted in the middle", () => {
+describe("the plan card", () => {
+  it("renders the Individual card only, with no Family Circle, professional or analytics wording", () => {
     const { container } = renderIntl(<PlanCards />);
     const cards = Array.from(container.querySelectorAll("[data-plan]"));
-    expect(cards.map((c) => c.getAttribute("data-plan"))).toEqual(["individual", "family", "institutional"]);
-    expect(cards[1]).toHaveAttribute("data-highlight", "true");
-    expect(cards[0]).not.toHaveAttribute("data-highlight");
-    for (const eyebrow of ["RETAIL", "FAMILY CIRCLE", "PROFESSIONAL"]) expect(screen.getByText(eyebrow)).toBeInTheDocument();
+    expect(cards.map((c) => c.getAttribute("data-plan"))).toEqual(["individual"]);
+    expect(screen.getByText("RETAIL")).toBeInTheDocument();
+    const text = container.textContent ?? "";
+    expect(text).not.toMatch(/family|professional|institutional|analytics|planned/i);
   });
 
-  it("states tickets and caps from LIMITS", () => {
+  it("states the ticket and cap from LIMITS", () => {
     const { container } = renderIntl(<PlanCards />);
     const ind = within(container.querySelector('[data-plan="individual"]') as HTMLElement);
     expect(ind.getByText(nbsp(formatMad(LIMITS.MIN_TICKET_MAD, { decimals: 0 })))).toBeInTheDocument();
     expect(ind.getByText(`cap ${nbsp(formatMad(LIMITS.MAX_PER_PROJECT_MAD, { decimals: 0 }))} per project`)).toBeInTheDocument();
-    const fam = within(container.querySelector('[data-plan="family"]') as HTMLElement);
-    expect(fam.getByText("per member")).toBeInTheDocument();
-    expect(fam.getByText("family tickets add up")).toBeInTheDocument();
-    const inst = within(container.querySelector('[data-plan="institutional"]') as HTMLElement);
-    expect(inst.getByText(nbsp(formatMad(PROFESSIONAL_MIN_TICKET_MAD, { decimals: 0 })))).toBeInTheDocument();
-    expect(inst.getByText("business angels exempt from caps (art. 44)")).toBeInTheDocument();
   });
 
-  it("marks every line that is not in the fee grid as Planned and gives it no amount", () => {
+  it("shows D1 as 1.5 % + VAT (450 MAD, never rounded to 2 %), the total at subscription, D2 and D4", () => {
     const { container } = renderIntl(<PlanCards />);
-    const planned = Array.from(container.querySelectorAll("[data-planned]"));
-    expect(planned.length).toBeGreaterThanOrEqual(5);
-    for (const row of planned) {
-      expect(row).toHaveTextContent(/planned/i);
-      expect(row.textContent).not.toMatch(/\d/);
-    }
-  });
-
-  it("shows the grid fees D1, D2 and D4 on every card", () => {
-    const { container } = renderIntl(<PlanCards />);
-    for (const card of Array.from(container.querySelectorAll("[data-plan]"))) {
-      expect(nbsp(card.textContent ?? "")).toContain(nbsp(formatPercent(0, 0)));
-      expect(nbsp(card.textContent ?? "")).toContain(nbsp(formatPercent(0.0075, 2)));
-      expect(nbsp(card.textContent ?? "")).toContain(nbsp(formatPercent(0.015)));
-    }
+    const card = nbsp(container.querySelector("[data-plan]")!.textContent ?? "");
+    expect(card).toContain(nbsp("1.5 % + VAT (450 MAD)"));
+    expect(card).not.toMatch(/(^|[^d.])2 ?%/);
+    expect(card).toContain(nbsp(formatMad(25_450, { decimals: 0 })));
+    expect(card).toContain(nbsp(formatPercent(0.0075, 2)));
+    expect(card).toContain(nbsp(formatPercent(0.01)));
   });
 
   it("carries the engine-true footnote", () => {
     renderIntl(<PlanCards />);
     expect(
       screen.getByText(
-        `Simulation net of fees and taxes, not guaranteed: Base scenario of the IGUDAR financial model, sold after ${LIMITS.HOLD_YEARS} years; the IRR includes the sale; total gain = net rent + sale proceeds − amount invested. Pessimistic shown beside Base.`,
+        `Simulation net of fees and taxes, not guaranteed: Base scenario of the IGUDAR financial model, sold after ${LIMITS.HOLD_YEARS} years; the IRR includes the sale; total gain = net rent + sale proceeds − everything you paid in (amount invested + structuring fee). Pessimistic shown beside Base.`,
       ),
     ).toBeInTheDocument();
   });
 });
 
 describe("pricing page", () => {
-  it("leads with the three ways to invest and keeps the detailed grid below", () => {
+  it("leads with the one-fee story and keeps the detailed grid below", () => {
     const { container } = renderIntl(<PricingPageContent />);
-    expect(screen.getByRole("heading", { level: 1, name: "One property, three ways to invest" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "One fee for you, the rest inside the company" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Who pays what, when" })).toBeInTheDocument();
-    expect(container.querySelectorAll('[data-testid="fee-row"]').length).toBeGreaterThanOrEqual(8);
+    expect(container.querySelectorAll('[data-testid="fee-row"]').length).toBeGreaterThanOrEqual(7);
     const cards = container.querySelector("[data-plan]")!;
     const table = container.querySelector("table")!;
     expect(cards.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -109,7 +104,7 @@ describe("pricing page", () => {
     const fr = pricingMessages("fr");
     const { container } = renderIntl(<PricingPageContent />, { locale: "fr" });
     expect(screen.getByRole("heading", { level: 1, name: fr.hero.title })).toBeInTheDocument();
-    expect(screen.getAllByText(fr.plans.minimumTicket).length).toBe(3);
+    expect(screen.getAllByText(fr.plans.minimumTicket).length).toBe(1);
     expect(nbsp(container.textContent ?? "")).toMatch(/25[ .]000 MAD/);
   });
 
@@ -117,7 +112,7 @@ describe("pricing page", () => {
     const ar = pricingMessages("ar");
     const { container } = renderIntl(<PricingPageContent />, { locale: "ar" });
     expect(screen.getByRole("heading", { level: 1, name: ar.hero.title })).toBeInTheDocument();
-    expect(screen.getAllByText(ar.plans.minimumTicket).length).toBe(3);
+    expect(screen.getAllByText(ar.plans.minimumTicket).length).toBe(1);
     expect(nbsp(container.textContent ?? "")).toMatch(/25[ ,.]000 درهم/);
     expect(container.textContent).not.toMatch(/\bMAD\b/);
   });

@@ -28,6 +28,6 @@
     "baseSaleTtc": "Vente du scénario Base, TVA incluse, supportée par la SAS",
     "earlyExitOnly": "uniquement si vous vendez de façon anticipée",
     "aboveHurdle": "Scénario Base, uniquement au-delà du seuil",
-    "optional": "optionnel"
+    "atSubscription": "une fois, à la souscription, TVA incluse"
   }
 }

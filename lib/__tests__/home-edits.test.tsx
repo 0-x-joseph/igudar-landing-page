@@ -138,7 +138,7 @@ describe("edit 4: simulator card", () => {
     expect(screen.getByText("Net cash per year")).toBeInTheDocument();
     expect(screen.getByText(/Net profit over 5 years/)).toBeInTheDocument();
     expect(screen.getByText("Net IRR")).toBeInTheDocument();
-    expect(screen.getByText("Platform fee per year")).toBeInTheDocument();
+    expect(screen.getByText("You pay at subscription")).toBeInTheDocument();
     expect(container.querySelectorAll("[data-pessimistic]").length).toBeGreaterThanOrEqual(3);
     expect(screen.getAllByText(/net · indicative · not guaranteed/).length).toBeGreaterThan(0);
   });

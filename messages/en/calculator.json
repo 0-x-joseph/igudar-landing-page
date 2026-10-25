@@ -25,9 +25,9 @@
   },
   "feeNotes": {
     "perYearHt": "per year, HT",
-    "baseSaleTtc": "Base scenario sale, incl. TVA, borne by the SAS",
+    "baseSaleTtc": "Base scenario sale, incl. VAT, borne by the SAS",
     "earlyExitOnly": "only if you sell early",
     "aboveHurdle": "Base scenario, only above the hurdle",
-    "optional": "optional"
+    "atSubscription": "once, at subscription, incl. VAT"
   }
 }

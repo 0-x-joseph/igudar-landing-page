@@ -52,8 +52,8 @@ English at `/`, French at `/fr`, Arabic at `/ar`, Moroccan Darija at `/ary` (bot
 
 ## Fees & numbers to use (from the latest model)
 
-Minimum ticket **25,000 MAD** (decided). No entry fee · 0.75 %/yr platform fee (via the property company, covers its running costs) · 1.5 % exit fee · 1.5 % transfer fee only if selling early · 15 % performance fee above 6 %/yr · sellers pay 3.5 % and operators 1.5 % — not the investor.
-At 25,000 MAD, 5 years, Base: ~1,120 MAD/yr net (4.5 % cash yield), net IRR ~3.5 %, ~4,250 MAD profit; bank deposit ~3,420 MAD. Pessimistic loses to the deposit — show it.
+Fee grid v6 (final 22 Oct 2026). Minimum ticket **25,000 MAD** (decided). The investor pays ONE fee directly: a structuring fee D1 of 1.5 % + 20 % VAT when subscribing (450 MAD on 25,000, shown before payment; outlay 25,450). Everything else is inside the property company before payouts: 0.75 %/yr platform fee (0.90 % with VAT), 1.5 % exit fee, 15 % performance fee above 6 %/yr. 1 % transfer fee only if selling early (paid by the seller). Sellers pay 3 % syndication, only if the raise closes. No operator structuring fee (S2 removed), no dossier fee, no agency referral fees. Analytics plans and Family Circle are out of scope until Gate 3: do not advertise them. `lib/finance` must be re-synced byte-for-byte from the app repo.
+At 25,000 MAD, 5 years, Base: ~1,123 MAD/yr net (4.49 % cash yield), net IRR 3.07 %, +3,796 MAD profit; bank deposit (1.82 %) ~2,359 MAD. Pessimistic IRR 1.40 %, +1,697 MAD: it loses to the deposit — show it.
 Headline message (Entry Ticket Decision): *"Own real, rented property alongside professionals, from 25,000 MAD."*
 
 ## Copy & compliance — current site needs fixing

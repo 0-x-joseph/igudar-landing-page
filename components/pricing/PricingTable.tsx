@@ -14,10 +14,9 @@ type T = ReturnType<typeof useTranslations<"pricing.table">>;
 export function rateText(line: FeeLine, t: T, f: Formatters): string {
   switch (line.code) {
     case "S1":
-    case "S2":
-      return t(`rate.${line.code}`, { rate: f.percent(line.rate) });
+      return t("rate.S1", { rate: f.percent(line.rate) });
     case "D1":
-      return t("rate.D1", { rate: f.percent(line.rate, 0) });
+      return t("rate.D1", { rate: f.percent(line.rate, 1), tva: f.percent(TAX.TVA_ON_FEES, 0) });
     case "D2":
       return t("rate.D2", { rate: f.percent(line.rate, 2), ttc: f.percent(line.rate * (1 + TAX.TVA_ON_FEES), 2) });
     case "D3":
@@ -26,14 +25,8 @@ export function rateText(line: FeeLine, t: T, f: Formatters): string {
       return t("rate.D4", { rate: f.percent(line.rate) });
     case "D5":
       return t("rate.D5", { rate: f.percent(line.rate, 0), hurdle: f.percent(FEE_GRID.D5_HURDLE, 0) });
-    default: {
-      const d = FEE_GRID.D6_ANALYTICS_MAD;
-      return t("rate.D6", {
-        individual: f.mad(d.individual, { decimals: 0 }),
-        premium: f.mad(d.premium, { decimals: 0 }),
-        b2b: f.mad(d.b2b, { decimals: 0 }),
-      });
-    }
+    default:
+      return t("rate.D6");
   }
 }
 
@@ -43,10 +36,9 @@ export function ticketMeaning(line: FeeLine, t: T, f: Formatters, ticketMad: num
   const amount = withAmount?.amountMad ?? null;
   switch (line.code) {
     case "S1":
-    case "S2":
       return t("meaning.notCharged");
     case "D1":
-      return f.mad(amount ?? 0, { decimals: 0 });
+      return t("meaning.D1", { amount: f.mad(amount ?? 0, { decimals: 0 }) });
     case "D2": {
       const ht = amount ?? 0;
       return t("meaning.D2", { ht: f.mad(ht), ttc: f.mad(ht * (1 + TAX.TVA_ON_FEES)) });

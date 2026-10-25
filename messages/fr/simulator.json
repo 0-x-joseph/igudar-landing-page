@@ -26,10 +26,10 @@
       "netCash": "Cash net par an",
       "netProfit": "Bénéfice net sur {years} ans",
       "netIrr": "TRI net",
-      "platformFee": "Frais de plateforme par an"
+      "outlay": "Vous payez à la souscription"
     },
     "pessimistic": "Pessimiste",
-    "entryFee": "Frais d'entrée : {rate}. Identiques dans chaque scénario.",
+    "entryFee": "{ticket} investis + {fee} de frais de structuration ({rate} + TVA). Identiques dans chaque scénario.",
     "bankDeposit": "La même somme en dépôt bancaire",
     "badCaseLead": "Le cas défavorable aussi.",
     "badCaseBeats": "Dans le scénario Pessimiste, la même somme rapporte <strong>{profit}</strong> sur {years} ans.",
@@ -69,8 +69,8 @@
     },
     "netProfit": {
       "label": "Bénéfice net sur {years} ans",
-      "caption": "Cash perçu plus votre part de la vente, moins votre mise ({suffix}).",
-      "explainer": "Tout ce que vous recevez sur {years} ans (cash annuel plus votre part de la vente à la fin) moins le montant investi, après tous frais et impôts. Le bien peut se vendre plus ou moins cher que prévu."
+      "caption": "Cash perçu plus votre part de la vente, moins ce que vous avez versé, frais de structuration inclus ({suffix}).",
+      "explainer": "Tout ce que vous recevez sur {years} ans (cash annuel plus votre part de la vente à la fin) moins tout ce que vous avez versé (le montant investi plus les frais de structuration), après tous frais et impôts. Le bien peut se vendre plus ou moins cher que prévu."
     },
     "netIrr": {
       "label": "TRI net",
@@ -87,6 +87,7 @@
   "compare": {
     "title": "La même somme dans chaque scénario",
     "intro": "Nous montrons toujours le cas pessimiste en premier. La réalité peut se situer n'importe où dans cette fourchette, ou en dehors.",
+    "outlay": "Vous payez {total} à la souscription : {ticket} investis + {fee} de frais de structuration TVA incluse, affichés avant le paiement.",
     "chosen": "Choisi",
     "netCash": "Cash net par an",
     "netProfit": "Bénéfice net sur {years} ans",
@@ -116,12 +117,13 @@
   },
   "fees": {
     "title": "Ce que vous payez à IGUDAR",
-    "intro": "Pour {amount}. Les vendeurs et les gestionnaires paient leurs propres frais ; pas vous.",
-    "entry": { "name": "Frais d'entrée", "detail": "Rien à payer pour souscrire." },
+    "intro": "Pour {amount}. Vous ne payez qu'un seul frais vous-même, à la souscription. Tout le reste est prélevé au sein de la société propriétaire avant que vous soyez payé.",
+    "entry": { "name": "Frais de structuration, une fois", "detail": "{rate} + TVA de {tva} sur {amount}. Payés à la souscription et affichés avant que vous payiez. C'est le seul frais que vous payez directement." },
+    "outlay": { "name": "Total à payer à la souscription", "detail": "{amount} investis + {fee} de frais de structuration TVA incluse." },
     "platform": {
-      "name": "Frais de plateforme, par an",
+      "name": "Frais de plateforme, par an (dans la société)",
       "amount": "{amount} TTC",
-      "detail": "{amount} HT. Payés via la société propriétaire du bien, ils couvrent ses frais de fonctionnement."
+      "detail": "{amount} HT. Payés par la société propriétaire du bien sur le loyer, avant vos versements ; ils couvrent ses frais de fonctionnement."
     },
     "exit": {
       "name": "Frais de sortie, votre part",

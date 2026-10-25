@@ -54,7 +54,7 @@
     },
     "raiseFails": {
       "q": "Que se passe-t-il si la levée échoue ?",
-      "a": "Votre argent attend sur un compte séquestre dans une banque régulée, un compte par projet, et n'est versé à la société propriétaire du bien que si la levée atteint son objectif. Si elle échoue, ou si le délai expire, la banque vous rembourse intégralement et IGUDAR ne prélève aucuns frais sur vous."
+      "a": "Votre argent attend sur un compte séquestre dans une banque régulée, un compte par projet, et n'est versé à la société propriétaire du bien que si la levée atteint son objectif. Si elle échoue, ou si le délai expire, la banque vous rembourse intégralement, frais de structuration compris, et IGUDAR ne prélève aucuns frais sur vous. Il en va de même si vous annulez pendant le délai de rétractation."
     },
     "irrVsYield": {
       "q": "Pourquoi le TRI est-il inférieur au rendement en cash ?",
@@ -63,7 +63,7 @@
     },
     "howItWorks": {
       "q": "Comment fonctionne la plateforme IGUDAR ?",
-      "a": "Plusieurs personnes achètent chacune une part d'une même société propriétaire, qui détient un seul immeuble loué. La société loue l'immeuble à un gestionnaire professionnel, et le loyer qui reste après les charges, les frais et les impôts est partagé entre les associés. Le minimum est de {min} par projet. Vous ne payez aucuns frais d'entrée et des frais de plateforme de {platformFee} par an, prélevés via la société propriétaire du bien. Les vendeurs et les gestionnaires paient leurs propres frais."
+      "a": "Plusieurs personnes achètent chacune une part d'une même société propriétaire, qui détient un seul immeuble loué. La société loue l'immeuble à un gestionnaire professionnel, et le loyer qui reste après les charges, les frais et les impôts est partagé entre les associés. Le minimum est de {min} par projet. Vous payez un seul frais vous-même : des frais de structuration de {entryFee} + TVA à la souscription ({entryAmount} pour {min}). Les frais de plateforme de {platformFee} par an sont prélevés au sein de la société propriétaire avant que vous soyez payé. Les vendeurs paient leurs propres frais."
     },
     "ownership": {
       "q": "Qu'est-ce que je possède concrètement ?",
@@ -75,7 +75,7 @@
     },
     "sellers": {
       "q": "Quel intérêt pour les vendeurs et les promoteurs ?",
-      "a": "Un vendeur peut lever une partie du financement auprès d'un groupe d'associés au lieu de dépendre uniquement d'un prêt bancaire. Le vendeur paie des frais de syndication de {syndication} du montant levé, seulement si la levée aboutit, et le gestionnaire paie {structuring} pour la structuration du bail. Ni l'un ni l'autre ne vous est facturé."
+      "a": "Un vendeur peut lever une partie du financement auprès d'un groupe d'associés au lieu de dépendre uniquement d'un prêt bancaire. Le vendeur paie des frais de syndication de {syndication} du montant levé, seulement si la levée aboutit. Ils ne vous sont pas facturés."
     },
     "audience": {
       "q": "À qui s'adresse IGUDAR ?",

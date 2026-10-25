@@ -56,6 +56,24 @@ export function formatPercent(rate: number, decimals = 1): string {
 	return `${text}${NBSP}%`;
 }
 
+/**
+ * Decimals needed to write a fee or benchmark rate exactly, at most `max`: 0.01 -> 0 ("1 %"), 0.015 -> 1 ("1.5 %"),
+ * 0.0075 and 0.0182 -> 2 ("0.75 %", "1.82 %"). Use it wherever a grid rate is shown, so 1.5 % never rounds to "2 %".
+ */
+export function rateDecimals(rate: number, max = 2): number {
+	if (!Number.isFinite(rate)) return 0;
+	for (let decimals = 0; decimals < max; decimals++) {
+		const scaled = rate * 100 * 10 ** decimals;
+		if (Math.abs(scaled - Math.round(scaled)) < 1e-9) return decimals;
+	}
+	return max;
+}
+
+/** A grid rate written exactly: "1.5 %", "1 %", "1.82 %". */
+export function formatRate(rate: number): string {
+	return formatPercent(rate, rateDecimals(rate));
+}
+
 export function scenarioLabel(key: ScenarioKey): string {
 	return SCENARIO_LABELS[key];
 }

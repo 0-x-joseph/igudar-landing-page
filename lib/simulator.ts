@@ -2,7 +2,7 @@
  * Small, pure helpers for the simulator UI (input clamping, parsing, analytics buckets).
  * No financial maths here: every figure comes from lib/finance.
  */
-import { FEE_GRID, LIMITS, TAX, formatMad, formatPercent, type FeeLine } from "@/lib/finance";
+import { FEE_GRID, LIMITS, TAX, formatPercent, type FeeLine } from "@/lib/finance";
 
 /** Ticket the slider and input start on. */
 export const DEFAULT_TICKET_MAD: number = LIMITS.MIN_TICKET_MAD;
@@ -69,10 +69,9 @@ export function parseAmount(text: string): number {
 export function feeRateText(line: FeeLine): string {
   switch (line.code) {
     case "S1":
-    case "S2":
       return `${formatPercent(line.rate)} of capital raised`;
     case "D1":
-      return formatPercent(line.rate, 0);
+      return `${formatPercent(line.rate, 1)} + TVA on the amount invested`;
     case "D2":
       return `${formatPercent(line.rate, 2)}/yr of capital, HT (${formatPercent(
         line.rate * (1 + TAX.TVA_ON_FEES),
@@ -84,9 +83,7 @@ export function feeRateText(line: FeeLine): string {
       return `${formatPercent(line.rate)} of the amount traded`;
     case "D5":
       return `${formatPercent(line.rate, 0)} of the gain above a ${formatPercent(FEE_GRID.D5_HURDLE, 0)}/yr hurdle`;
-    default: {
-      const d = FEE_GRID.D6_ANALYTICS_MAD;
-      return `${formatMad(d.individual, { decimals: 0 })} or ${formatMad(d.premium, { decimals: 0 })}/yr (business ${formatMad(d.b2b, { decimals: 0 })})`;
-    }
+    default:
+      return "No dossier fee";
   }
 }

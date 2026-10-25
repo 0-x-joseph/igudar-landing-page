@@ -37,18 +37,19 @@ describe("calculatorFeeRows", () => {
   const row = (code: string) => rows.find((r) => r.code === code)!;
 
   it("covers every fee line of the grid", () => {
-    expect(rows.map((r) => r.code)).toEqual(["S1", "S2", "D1", "D2", "D3", "D4", "D5", "D6"]);
+    expect(rows.map((r) => r.code)).toEqual(["S1", "D1", "D2", "D3", "D4", "D5", "D6"]);
   });
 
-  it("charges the investor nothing for the seller and operator fees", () => {
+  it("charges the investor nothing for the seller fee, and S2 no longer exists", () => {
     expect(row("S1").yourShareMad).toBe(0);
-    expect(row("S1").lineTotalMad).toBeCloseTo(175_000, 6);
-    expect(row("S2").yourShareMad).toBe(0);
-    expect(row("S2").lineTotalMad).toBeCloseTo(75_000, 6);
+    expect(row("S1").lineTotalMad).toBeCloseTo(150_000, 6);
+    expect(rows.find((r) => (r.code as string) === "S2")).toBeUndefined();
   });
 
-  it("has no entry fee and a 0.75 %/yr platform fee on the ticket", () => {
-    expect(row("D1").yourShareMad).toBe(0);
+  it("charges D1 1.5 % + VAT (450 MAD) and a 0.75 %/yr platform fee on the ticket", () => {
+    expect(row("D1").yourShareMad).toBeCloseTo(450, 6);
+    expect(row("D1").paidByYou).toBe(true);
+    expect(row("D6").yourShareMad).toBe(0);
     expect(row("D2").yourShareMad).toBeCloseTo(187.5, 6);
   });
 
@@ -65,8 +66,8 @@ describe("calculatorFeeRows", () => {
 });
 
 describe("earlyExitFor", () => {
-  it("charges 1.5 % of the traded value", () => {
-    expect(earlyExitFor({ tradedMad: 25_000, year: 2 }).feeMad).toBeCloseTo(375, 6);
+  it("charges 1 % of the traded value", () => {
+    expect(earlyExitFor({ tradedMad: 25_000, year: 2 }).feeMad).toBeCloseTo(250, 6);
   });
 
   it("flags a window before the first year as closed", () => {

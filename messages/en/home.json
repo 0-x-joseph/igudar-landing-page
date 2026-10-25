@@ -44,8 +44,8 @@
         "note": "Per project, in steps of {step}."
       },
       "entry": {
-        "label": "Entry fee",
-        "note": "Subscribing costs nothing. The full fee grid is published."
+        "label": "Structuring fee",
+        "note": "Plus VAT, paid once when you subscribe. Everything else is taken inside the property company before you are paid."
       },
       "exit": {
         "figure": "Every {months, plural, =1 {# month} other {# months}}",

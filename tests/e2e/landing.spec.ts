@@ -10,7 +10,7 @@ const pages = [
   { path: "/beta", slug: "beta" },
 ];
 const NOTICE = "Indicative simulation based on the IGUDAR financial model";
-const FEE_ROWS = 8;
+const FEE_ROWS = 7;
 
 /** Visible elements whose right edge sits past the viewport: content that body overflow-x: hidden would hide. */
 async function offscreenOffenders(page: Page) {
@@ -202,8 +202,8 @@ for (const { path, slug } of pages) {
     }
     if (path === "/pricing") {
       const plans = page.locator("[data-plan]");
-      await expect(plans).toHaveCount(3);
-      for (const [id, ticket] of [["individual", LIMITS.MIN_TICKET_MAD], ["family", LIMITS.MIN_TICKET_MAD], ["institutional", 250_000]] as const) {
+      await expect(plans).toHaveCount(1);
+      for (const [id, ticket] of [["individual", LIMITS.MIN_TICKET_MAD]] as const) {
         const base = simulate({ ticketMad: ticket, scenario: "base" });
         const pess = simulate({ ticketMad: ticket, scenario: "pessimistic" });
         const card = page.locator(`[data-plan="${id}"]`);
@@ -213,14 +213,13 @@ for (const { path, slug } of pages) {
         await expect.poll(async () => norm((await card.locator("[data-figure=gain]").textContent()) ?? "")).toBe(norm(formatMad(base.netProfitMad, { decimals: 0 })));
         expect(norm((await card.locator("[data-figure=irr-pessimistic]").textContent()) ?? "")).toContain(norm(formatPercent(pess.netIrr!)));
       }
-      await expect(page.locator("[data-planned]").first()).toContainText("Planned");
-      await expect(page.getByRole("heading", { level: 1 })).toHaveText("One property, three ways to invest");
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("One fee for you, the rest inside the company");
       await expect(page.locator('[data-testid="fee-row"]:visible')).toHaveCount(FEE_ROWS);
       await expect(page.getByText("187.50 MAD").filter({ visible: true }).first()).toBeVisible();
       await expect(
-        page.locator('[data-testid="fee-row"]:visible').filter({ hasText: "Entry fee" }),
-      ).toContainText("0 MAD");
-      await expect(page.getByRole("heading", { name: /What you don.t pay/ })).toBeVisible();
+        page.locator('[data-testid="fee-row"]:visible').filter({ hasText: "Structuring fee" }),
+      ).toContainText("450 MAD");
+      await expect(page.getByRole("heading", { name: /What you pay, and what you don.t/ })).toBeVisible();
       await expect(page.getByRole("link", { name: /calculator/i }).first()).toHaveAttribute("href", "/calculator");
       await expect(page.getByText("1,000 MAD")).toHaveCount(0);
       expect(await page.locator("[data-zellige-band]").count(), "ZelligeBand dividers").toBeGreaterThanOrEqual(2);

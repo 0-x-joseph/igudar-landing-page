@@ -39,7 +39,6 @@ export function HeroSimulator() {
   const years = LIMITS.HOLD_YEARS;
   const mad = (n: number) => formatMad(n);
   const irr = (n: number | null) => (n === null ? ts("na") : percent(n, 2));
-  const platformFee = base.feeLines.find((l) => l.code === "D2")?.amountMad ?? 0;
 
   const tiles: Array<{
     id: string;
@@ -52,7 +51,7 @@ export function HeroSimulator() {
     { id: "netCash", label: t("tiles.netCash"), icon: Coins, value: base.netCashYear1Mad, format: mad, worse: mad(pessimistic.netCashYear1Mad) },
     { id: "netProfit", label: t("tiles.netProfit", { years }), icon: TrendingUp, value: base.netProfitMad, format: mad, worse: mad(pessimistic.netProfitMad) },
     { id: "netIrr", label: t("tiles.netIrr"), icon: Percent, value: base.netIrr, format: (n) => percent(n, 2), worse: irr(pessimistic.netIrr) },
-    { id: "platformFee", label: t("tiles.platformFee"), icon: Receipt, value: platformFee, format: mad },
+    { id: "outlay", label: t("tiles.outlay"), icon: Receipt, value: base.outlayMad, format: mad },
   ];
 
   return (
@@ -106,7 +105,11 @@ export function HeroSimulator() {
                     </p>
                   ) : (
                     <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                      {t("entryFee", { rate: percent(FEE_GRID.D1_ENTRY, 0) })}
+                      {t("entryFee", {
+                        ticket: formatMad(base.input.ticketMad, { decimals: 0 }),
+                        rate: percent(FEE_GRID.D1_STRUCTURING_HT, 1),
+                        fee: formatMad(base.entryFeeMad, { decimals: 0 }),
+                      })}
                     </p>
                   )}
                 </dd>

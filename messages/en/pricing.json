@@ -5,58 +5,35 @@
   },
   "hero": {
     "eyebrow": "Pricing",
-    "title": "One property, three ways to invest",
-    "lead": "One published fee grid, the same for every investor. What changes from one card to the next is the ticket.",
+    "title": "One fee for you, the rest inside the company",
+    "lead": "You pay one fee yourself: a structuring fee of {rate} + VAT when you subscribe ({fee} on {ticket}). Everything else is taken inside the property company before you are paid.",
     "beta": "Closed beta, approved by hand. A prototype with demo money only: nothing is invested."
   },
   "plans": {
-    "sectionLabel": "The three plans",
-    "ariaLabel": "Plans",
+    "sectionLabel": "The plan",
+    "ariaLabel": "Plan",
     "items": {
       "individual": {
         "eyebrow": "RETAIL",
         "title": "Individual",
         "audience": "For one person investing on their own."
-      },
-      "family": {
-        "eyebrow": "FAMILY CIRCLE",
-        "title": "Family",
-        "audience": "For a family putting its tickets into the same property."
-      },
-      "institutional": {
-        "eyebrow": "PROFESSIONAL",
-        "title": "Institutional",
-        "audience": "For companies, funds and business angels."
       }
     },
     "minimumTicket": "Minimum ticket",
-    "personalFees": "Personal fees",
-    "service": "Service",
-    "planned": "Planned",
+    "personalFees": "Fees on this ticket",
+    "insideCompany": "The platform fee is paid by the property company out of the rent, before your payouts. You do not pay it separately.",
     "notes": {
       "individual": {
         "cap": "cap {amount} per project"
-      },
-      "family": {
-        "prefix": "per member",
-        "addUp": "family tickets add up"
-      },
-      "institutional": {
-        "angels": "business angels exempt from caps (art. 44)"
       }
     },
     "fees": {
-      "entry": "Entry fee",
-      "platform": "Platform fee",
+      "entry": "Structuring fee, at subscription",
+      "entryValue": "{rate} + VAT ({amount})",
+      "outlay": "You pay at subscription",
+      "platform": "Platform fee, inside the company",
       "platformValue": "{rate} / yr HT",
-      "transfer": "Transfer, only if you sell early",
-      "fileFee": "File fee",
-      "lowerTransfer": "Lower transfer fee",
-      "memberTransfers": "Transfers between members",
-      "volumeDiscount": "Volume discount on combined tickets",
-      "analytics": "Analytics, optional (D6)",
-      "analyticsValue": "{amount} / yr",
-      "anchorDiscount": "Anchor-investor discount"
+      "transfer": "Transfer, only if you sell early"
     },
     "figures": {
       "netIrr": "Net IRR per year",
@@ -64,7 +41,7 @@
       "pessimistic": "{scenario} {value}",
       "notAvailable": "n/a"
     },
-    "footnote": "Simulation net of fees and taxes, not guaranteed: Base scenario of the IGUDAR financial model, sold after {years} years; the IRR includes the sale; total gain = net rent + sale proceeds − amount invested. Pessimistic shown beside Base."
+    "footnote": "Simulation net of fees and taxes, not guaranteed: Base scenario of the IGUDAR financial model, sold after {years} years; the IRR includes the sale; total gain = net rent + sale proceeds − everything you paid in (amount invested + structuring fee). Pessimistic shown beside Base."
   },
   "table": {
     "title": "Who pays what, when",
@@ -83,51 +60,50 @@
     },
     "lines": {
       "S1": { "label": "Syndication", "paidBy": "Seller / developer, only if the raise closes", "when": "Closing" },
-      "S2": { "label": "Master-lease structuring", "paidBy": "Operator (master-lessee)", "when": "Lease signature" },
-      "D1": { "label": "Entry fee", "paidBy": "Investor", "when": "Subscription" },
-      "D2": { "label": "Platform fee (all-in)", "paidBy": "Investor, via the SAS", "when": "Quarterly" },
+      "D1": { "label": "Structuring fee", "paidBy": "Investor, at subscription", "when": "Subscription" },
+      "D2": { "label": "Platform fee (all-in)", "paidBy": "SAS, from the rent, before payouts", "when": "Quarterly" },
       "D3": { "label": "Exit fee", "paidBy": "SAS, deductible", "when": "Asset sale / block sale" },
       "D4": { "label": "Secondary transfer", "paidBy": "Selling associate", "when": "Each transfer window" },
       "D5": { "label": "Performance fee", "paidBy": "SAS at exit", "when": "Exit" },
-      "D6": { "label": "Analytics (optional)", "paidBy": "User", "when": "Annual" }
+      "D6": { "label": "Dossier fee", "paidBy": "Nobody", "when": "None" }
     },
     "rate": {
       "S1": "{rate} of capital raised",
-      "S2": "{rate} of capital raised",
-      "D1": "{rate}",
-      "D2": "{rate}/yr of capital, HT ({ttc} incl. TVA)",
+      "D1": "{rate} + {tva} VAT on the amount invested",
+      "D2": "{rate}/yr of capital, HT ({ttc} incl. VAT)",
       "D3": "{rate} of sale value, HT",
       "D4": "{rate} of the amount traded",
       "D5": "{rate} of the gain above a {hurdle}/yr hurdle",
-      "D6": "{individual} or {premium}/yr (business {b2b})"
+      "D6": "None"
     },
     "meaning": {
       "notCharged": "Not charged to you",
+      "D1": "{amount} incl. VAT, shown before you pay",
       "D2": "{ht} per year HT ({ttc} TTC)",
       "D3": "Paid by the property company when the building is sold. Depends on the sale price",
       "D4": "{amount}, only if you sell early",
       "D5": "Only if the gain beats the hurdle. Depends on the sale price",
-      "D6": "Optional, never priority access to assets"
+      "D6": "Nothing to pay"
     },
-    "note": "The last column is worked out for {ticket}, the minimum ticket. HT means before TVA; TTC includes the {tva} TVA that the property company cannot recover."
+    "note": "The last column is worked out for {ticket}, the minimum ticket. HT means before VAT; TTC includes the {tva} VAT that the property company cannot recover."
   },
   "notPaid": {
-    "title": "What you don't pay",
+    "title": "What you pay, and what you don't",
     "items": {
       "syndication": {
         "title": "Sellers pay the syndication fee",
         "text": "{rate} of the capital raised, charged to the seller or developer, and only if the raise closes."
       },
-      "structuring": {
-        "title": "Operators pay the structuring fee",
-        "text": "{rate} of the capital raised, charged to the operator at lease signature."
+      "company": {
+        "title": "Everything else is inside the property company",
+        "text": "The platform fee ({rate} a year), the exit fee ({exit}) and the performance fee ({performance} above {hurdle} a year) are taken inside the property company before you are paid."
       },
       "entry": {
-        "title": "No entry fee for you",
-        "text": "Subscribing costs {rate}. If a raise fails, the escrow bank returns your money in full."
+        "title": "One fee, paid by you",
+        "text": "A structuring fee of {rate} + VAT when you subscribe: {fee} on {ticket}. It is shown before you pay."
       }
     },
-    "footnote": "Seller and operator fees never reduce your return. Fees are a disclosed service charge, never netted against a promised yield."
+    "footnote": "A transfer fee of {transfer} applies only if you sell your share early, and the seller pays it. Seller fees never reduce your return. Fees are a disclosed service charge, never netted against a promised yield."
   },
   "cta": {
     "title": "See it on your own amount",

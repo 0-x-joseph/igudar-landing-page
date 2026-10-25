@@ -65,6 +65,16 @@ Already clean before this PR (grep confirmed): "Invest now", "Start investing", 
 
 Compliance fixes: S 9 (rows 1-9), M 3 (10, 14, 15; row 10 also counts as S), C 6, R 5, L 4, N 1, O 6 (some rows carry two categories). 34 compliance rows plus 8 beta rows = 42 rows.
 
+## Fee grid v6 (25 Oct 2026, wording to be approved by the founder)
+
+- Pricing hero: "One property, three ways to invest" → "One fee for you, the rest inside the company"; lead: "You pay one fee yourself: a structuring fee of 1.5 % + VAT when you subscribe (450 MAD on 25,000 MAD). Everything else is taken inside the property company before you are paid."
+- Pricing: Family and Institutional plans, the "Planned" rows and the analytics (D6) service rows removed; one Individual card. Operator structuring (S2) card and row removed. "No entry fee for you" → "One fee, paid by you" (1.5 % + VAT, 450 MAD on 25,000).
+- Home facts: "Entry fee / Subscribing costs nothing" → "Structuring fee / Plus VAT, paid once when you subscribe…".
+- Simulator: fourth hero tile "Platform fee per year" → "You pay at subscription" (25,450 MAD); fees table gains the structuring fee and the total at subscription; the compare section states the outlay before the scenarios.
+- FAQ: "You pay no entry fee…" → one fee yourself (structuring); "the operator pays 1.5 %…" removed.
+- Bank deposit benchmark 2.6 % → 1.82 %. Transfer fee 1.5 % → 1 %. Syndication 3.5 % → 3 %.
+- English copy now says VAT instead of TVA (HT/TTC kept).
+
 ## Not changed, flagged
 
 - `components/FeaturesSection.tsx` "Personalized Matching: Tailored recommendations based on your profile, goals, and risk tolerance." may read as investment advice. Left for a founder decision.

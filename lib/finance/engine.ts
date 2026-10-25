@@ -3,7 +3,7 @@
  * Implements FINANCE_ENGINE_SPEC.md section 4 verbatim. Full floating point
  * throughout; rounding happens only in format.ts.
  */
-import { FEE_GRID, FEE_LINES, LIMITS, TAX, type FeeLine } from './fee-grid';
+import { FEE_GRID, FEE_LINES, LIMITS, TAX, entryFeeMad, type FeeLine } from './fee-grid';
 import { formatMad } from './format';
 import { irr } from './irr';
 import { MODEL_SCENARIOS, SCENARIO_KEYS, type ScenarioAssumptions, type ScenarioKey } from './scenarios';
@@ -64,7 +64,11 @@ export interface SimulationResult {
 	readonly share: number;
 	readonly perYear: readonly YearRow[];
 	readonly exit: ExitBlock;
-	/** Index 0 is the outlay (negative); index t is year t. */
+	/** D1 structuring fee + D6 dossier fee, VAT included, paid on top of the ticket at subscription. */
+	readonly entryFeeMad: number;
+	/** Everything paid in at year 0: ticket + entry fee. */
+	readonly outlayMad: number;
+	/** Index 0 is the outlay (negative, ticket + entry fee); index t is year t. */
 	readonly cashFlows: readonly number[];
 	readonly netIrr: number | null;
 	readonly netCashYear1Mad: number;
@@ -160,9 +164,7 @@ function run(input: SimulationInput, keyOverride?: ScenarioKey): SimulationResul
 	const price = raise / (1 + LIMITS.ACQUISITION_COSTS);
 	const share = ticket / raise;
 	const platformFeeYear = raise * FEE_GRID.D2_PLATFORM_HT * TVA_FACTOR;
-	const depreciationYear = a.useDepreciation
-		? price * TAX.DEPRECIATION_BUILDING_SHARE * TAX.DEPRECIATION_RATE
-		: 0;
+	const depreciationYear = a.useDepreciation ? price * TAX.DEPRECIATION_BUILDING_SHARE * TAX.DEPRECIATION_RATE : 0;
 
 	const perYear: YearRow[] = [];
 	let sumDep = 0;
@@ -198,15 +200,17 @@ function run(input: SimulationInput, keyOverride?: ScenarioKey): SimulationResul
 	const surplus = Math.max(0, proceeds - performanceFee - raise);
 	const exitInvestorNet = share * (proceeds - performanceFee - surplus * TAX.WITHHOLDING_INDIVIDUAL);
 
-	// D1 and any dossier/onboarding fee are 0 today, so upfront = ticket.
-	const cashFlows: number[] = [-ticket * (1 + FEE_GRID.D1_ENTRY * TVA_FACTOR)];
+	// The investor pays the D1 structuring fee (+ D6 dossier fee, 0 today) with VAT on top of the ticket.
+	const entryFee = entryFeeMad(ticket);
+	const outlay = ticket + entryFee;
+	const cashFlows: number[] = [-outlay];
 	for (const row of perYear) {
 		cashFlows.push(row.investorNetMad + (row.year === holdYears ? exitInvestorNet : 0));
 	}
 
-	// Profit and multiple are measured against the ticket, which equals the upfront
-	// outlay while D1 = 0. If an entry fee is introduced, switch these to -cashFlows[0].
-	const netProfit = cashFlows.slice(1).reduce((sum, cf) => sum + cf, 0) - ticket;
+	// Profit and multiple are measured against everything paid in (ticket + entry fee), like the model's
+	// "total received / total paid". The bank comparison and the cash yield stay on the ticket.
+	const netProfit = cashFlows.slice(1).reduce((sum, cf) => sum + cf, 0) - outlay;
 	const bankProfit = ticket * (Math.pow(1 + LIMITS.BANK_DEPOSIT_RATE, holdYears) - 1);
 	const year1 = perYear[0];
 
@@ -230,6 +234,8 @@ function run(input: SimulationInput, keyOverride?: ScenarioKey): SimulationResul
 			surplusMad: surplus,
 			investorNetMad: exitInvestorNet,
 		},
+		entryFeeMad: entryFee,
+		outlayMad: outlay,
 		cashFlows,
 		netIrr: irr(cashFlows),
 		// From the year row, not cashFlows[1]: with a 1-year hold that entry includes the exit.
@@ -237,7 +243,7 @@ function run(input: SimulationInput, keyOverride?: ScenarioKey): SimulationResul
 		netCashYieldYear1: year1.investorNetMad / ticket,
 		netExitProceedsMad: exitInvestorNet,
 		netProfitMad: netProfit,
-		moneyMultiple: (ticket + netProfit) / ticket,
+		moneyMultiple: (outlay + netProfit) / outlay,
 		bankDepositProfitMad: bankProfit,
 		beatsBankDeposit: netProfit > bankProfit,
 		rentBridge: rentBridge(a, year1, raise),
@@ -268,7 +274,7 @@ function rentBridge(a: ScenarioAssumptions, year1: YearRow, raise: number): Rent
 export function simulateAll(
 	ticketMad: number,
 	scenarios: Readonly<Record<ScenarioKey, ScenarioAssumptions>> = MODEL_SCENARIOS,
-	opts: { holdYears?: number; raiseMad?: number } = {},
+	opts: { holdYears?: number; raiseMad?: number } = {}
 ): Record<ScenarioKey, SimulationResult> {
 	const out = {} as Record<ScenarioKey, SimulationResult>;
 	for (const key of SCENARIO_KEYS) {
@@ -278,7 +284,7 @@ export function simulateAll(
 }
 
 /**
- * D4 secondary-transfer fee paid by the selling associate: 1.5 % of the amount traded.
+ * D4 share-transfer fee paid by the selling investor: 1 % of the amount traded (grid v6).
  * Spec section 2 / 4. Computed HT: the vectors' definition applies no TVA, so TVA is
  * not added here. Registration duty and tax on gain are "to confirm with counsel" and excluded.
  */
@@ -290,17 +296,26 @@ export function earlyExitFeeMad(amountMad: number): number {
 }
 
 /**
- * Fee table for one ticket (spec section 2). D2 is the yearly amount on the ticket,
- * HT, with the TTC figure in the label. D3 and D5 depend on the sale, S1 and S2 are
- * not paid by the investor, so their amounts are null.
+ * Fee table for one ticket (spec section 2). D1 is what the investor pays at subscription,
+ * VAT included (450 MAD on 25,000). D2 is the yearly amount on the ticket, HT, with the TTC
+ * figure in the label. D3 and D5 depend on the sale and S1 is paid by the seller, so their
+ * amounts are null. D6 (dossier fee) is 0.
  */
 export function feeLinesForTicket(ticketMad: number, holdYears: number = LIMITS.HOLD_YEARS): FeeLineWithAmount[] {
 	assertPositiveFinite(ticketMad, 'ticketMad');
 	assertHoldYears(holdYears);
 	return FEE_LINES.map((line): FeeLineWithAmount => {
 		switch (line.code) {
-			case 'D1':
-				return { ...line, amountMad: ticketMad * FEE_GRID.D1_ENTRY };
+			case 'D1': {
+				const ht = ticketMad * FEE_GRID.D1_STRUCTURING_HT;
+				return {
+					...line,
+					label: `${line.label}: ${formatMad(ht)} + VAT = ${formatMad(ht * TVA_FACTOR)}`,
+					amountMad: ht * TVA_FACTOR,
+				};
+			}
+			case 'D6':
+				return { ...line, amountMad: FEE_GRID.D6_DOSSIER_MAD * TVA_FACTOR };
 			case 'D2': {
 				const ht = ticketMad * FEE_GRID.D2_PLATFORM_HT;
 				const ttc = ht * TVA_FACTOR;

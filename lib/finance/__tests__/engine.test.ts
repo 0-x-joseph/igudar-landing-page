@@ -27,8 +27,9 @@ function expectMatchesVector(result: SimulationResult, c: VectorCase): void {
 }
 
 describe('test vectors', () => {
-	it('has the 15 expected cases', () => {
+	it('has the 15 expected cases, generated from the v6 workbook', () => {
 		expect(vectors.cases).toHaveLength(15);
+		expect(vectors.source).toBe('IGUDAR_Financial_Model_Gate2_v6.xlsx');
 	});
 
 	for (const c of vectors.cases) {
@@ -74,7 +75,7 @@ describe('Base 25,000 MAD hand check', () => {
 		expect(r.input.holdYears).toBe(5);
 		expect(r.input.raiseMad).toBe(5_000_000);
 		expect(r.cashFlows).toHaveLength(6);
-		expect(r.cashFlows[0]).toBe(-25_000);
+		expect(r.cashFlows[0]).toBeCloseTo(-25_450, 10);
 		expect(r.exit.surplusMad).toBe(0);
 	});
 
@@ -82,6 +83,47 @@ describe('Base 25,000 MAD hand check', () => {
 		expect(r.perYear[2].cotisationMinimaleMad).toBe(0);
 		expect(r.perYear[3].cotisationMinimaleMad).toBeCloseTo(3000, 6);
 		expect(r.perYear[3].isMad).toBeGreaterThan(r.perYear[3].cotisationMinimaleMad);
+	});
+});
+
+describe('v6 check figures (workbook IGUDAR_Financial_Model_Gate2_v6.xlsx, 25,000 MAD, 5 years)', () => {
+	const all = simulateAll(25_000);
+
+	it('base: 1,122.51 MAD a year, 4.49 % cash yield, +3,796.26 MAD, net IRR 3.07 %, exit 23,633.73 MAD', () => {
+		const b = all.base;
+		expect(b.entryFeeMad).toBeCloseTo(450, 10);
+		expect(b.outlayMad).toBeCloseTo(25_450, 10);
+		expect(b.netCashYear1Mad).toBeCloseTo(1_122.51, 2);
+		expect(b.netCashYieldYear1).toBeCloseTo(0.0449, 4);
+		expect(b.netProfitMad).toBeCloseTo(3_796.26, 2);
+		expect(b.netIrr as number).toBeCloseTo(0.030683, 6);
+		expect(b.netExitProceedsMad).toBeCloseTo(23_633.73, 2);
+		expect(b.moneyMultiple).toBeCloseTo(1.149165, 6);
+	});
+
+	it('pessimistic: 912.88 MAD a year, +1,696.55 MAD, net IRR 1.395 %', () => {
+		const p = all.pessimistic;
+		expect(p.netCashYear1Mad).toBeCloseTo(912.88, 2);
+		expect(p.netProfitMad).toBeCloseTo(1_696.55, 2);
+		expect(p.netIrr as number).toBeCloseTo(0.013953, 6);
+	});
+
+	it('optimistic has no purchase discount: only the D1 fee moves it from the previous grid', () => {
+		const o = all.optimistic;
+		expect(o.netCashYear1Mad).toBeCloseTo(1_369.27, 2);
+		expect(o.netProfitMad).toBeCloseTo(6_198.31 - 450, 2);
+		expect(o.netIrr as number).toBeLessThan(0.050134);
+		expect(o.netIrr as number).toBeCloseTo(0.045979, 6);
+	});
+
+	it('bank deposit at 1.82 %: 2,359.33 MAD over 5 years on the ticket (the fee is not deposited)', () => {
+		expect(all.base.bankDepositProfitMad).toBeCloseTo(2_359.33, 2);
+	});
+
+	it('the fee only touches year 0: dividends and exit are the same as without it', () => {
+		const b = all.base;
+		expect(b.cashFlows.slice(1).reduce((s, x) => s + x, 0) - b.outlayMad).toBeCloseTo(b.netProfitMad, 8);
+		expect(b.cashFlows[1]).toBeCloseTo(1_122.51, 2);
 	});
 });
 
@@ -166,8 +208,8 @@ describe('input validation', () => {
 });
 
 describe('earlyExitFeeMad', () => {
-	it('is 1.5 % of the amount traded, HT', () => {
-		expect(earlyExitFeeMad(100_000)).toBeCloseTo(1_500, 10);
+	it('is 1 % of the amount traded, HT (D4, grid v6)', () => {
+		expect(earlyExitFeeMad(100_000)).toBeCloseTo(1_000, 10);
 		expect(earlyExitFeeMad(0)).toBe(0);
 	});
 
@@ -181,8 +223,8 @@ describe('feeLinesForTicket', () => {
 	const lines = feeLinesForTicket(25_000);
 	const byCode = (code: string) => lines.find((l) => l.code === code);
 
-	it('returns all eight lines', () => {
-		expect(lines.map((l) => l.code)).toEqual(['S1', 'S2', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']);
+	it('returns the seven v6 lines', () => {
+		expect(lines.map((l) => l.code)).toEqual(['S1', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']);
 	});
 
 	it('computes D2 per year on the ticket and shows the TTC figure', () => {
@@ -190,10 +232,13 @@ describe('feeLinesForTicket', () => {
 		expect(byCode('D2')?.label).toContain('225.00');
 	});
 
-	it('has zero entry fee, null supply-side fees and exit-dependent D3 / D5', () => {
-		expect(byCode('D1')?.amountMad).toBe(0);
+	it('has a 450 MAD structuring fee (VAT incl.), no dossier fee, null S1 and exit-dependent D3 / D5', () => {
+		expect(byCode('D1')?.amountMad).toBeCloseTo(450, 10);
+		expect(byCode('D1')?.label).toContain('375.00');
+		expect(byCode('D1')?.label).toContain('450.00');
+		expect(byCode('D6')?.amountMad).toBe(0);
 		expect(byCode('S1')?.amountMad).toBeNull();
-		expect(byCode('S2')?.amountMad).toBeNull();
+		expect(byCode('S2')).toBeUndefined();
 		expect(byCode('D3')?.amountMad).toBeNull();
 		expect(byCode('D5')?.amountMad).toBeNull();
 		expect(byCode('D3')?.when.toLowerCase()).toContain('exit');

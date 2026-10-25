@@ -26,10 +26,10 @@
       "netCash": "Net cash per year",
       "netProfit": "Net profit over {years} years",
       "netIrr": "Net IRR",
-      "platformFee": "Platform fee per year"
+      "outlay": "You pay at subscription"
     },
     "pessimistic": "Pessimistic",
-    "entryFee": "Entry fee {rate}. Same in every scenario.",
+    "entryFee": "{ticket} invested + {fee} structuring fee ({rate} + VAT). Same in every scenario.",
     "bankDeposit": "Same money in a bank deposit",
     "badCaseLead": "The bad case, too.",
     "badCaseBeats": "In the Pessimistic scenario the same amount makes <strong>{profit}</strong> over {years} years.",
@@ -65,12 +65,12 @@
     "netCash": {
       "label": "Net cash per year",
       "caption": "{rate} indicative net cash yield ({scenario}) · not guaranteed",
-      "explainer": "The rent your share earns in year 1, after the property reserve, IGUDAR's platform fee (incl. TVA), corporate tax and the {withholding} withholding on dividends. It is a projection, not a promise."
+      "explainer": "The rent your share earns in year 1, after the property reserve, IGUDAR's platform fee (incl. VAT), corporate tax and the {withholding} withholding on dividends. It is a projection, not a promise."
     },
     "netProfit": {
       "label": "Net profit over {years} years",
-      "caption": "Cash received plus your share of the sale, minus what you put in ({suffix}).",
-      "explainer": "Everything you receive over {years} years (yearly cash plus your share of the sale at the end) minus the amount you invested, after all fees and taxes. The property could sell for more or less than assumed."
+      "caption": "Cash received plus your share of the sale, minus what you paid in, structuring fee included ({suffix}).",
+      "explainer": "Everything you receive over {years} years (yearly cash plus your share of the sale at the end) minus everything you paid in (the amount invested plus the structuring fee), after all fees and taxes. The property could sell for more or less than assumed."
     },
     "netIrr": {
       "label": "Net IRR",
@@ -87,6 +87,7 @@
   "compare": {
     "title": "The same amount in each scenario",
     "intro": "We always show the pessimistic case first. Real life can land anywhere in this range, or outside it.",
+    "outlay": "You pay {total} at subscription: {ticket} invested + {fee} structuring fee incl. VAT, shown before you pay.",
     "chosen": "Chosen",
     "netCash": "Net cash per year",
     "netProfit": "Net profit over {years} years",
@@ -108,7 +109,7 @@
     "keep": "You keep <share></share> of every {hundred}.",
     "segments": {
       "reserveVacancy": { "name": "Reserve and vacancy", "note": "Kept aside for repairs and empty months" },
-      "platformFee": { "name": "IGUDAR platform fee", "note": "Covers running costs, incl. TVA" },
+      "platformFee": { "name": "IGUDAR platform fee", "note": "Covers running costs, incl. VAT" },
       "is": { "name": "Corporate tax", "note": "Paid by the property company" },
       "withholding": { "name": "Withholding tax", "note": "{rate} on the dividend you receive" },
       "investor": { "name": "You", "note": "Lands in your bank account" }
@@ -116,16 +117,17 @@
   },
   "fees": {
     "title": "What you pay IGUDAR",
-    "intro": "For {amount}. Sellers and operators pay their own fees; you do not.",
-    "entry": { "name": "Entry fee", "detail": "Nothing to pay to subscribe." },
+    "intro": "For {amount}. You pay one fee yourself, at subscription. Everything else is taken inside the property company before you are paid.",
+    "entry": { "name": "Structuring fee, once", "detail": "{rate} + {tva} VAT on {amount}. Paid when you subscribe and shown before you pay. It is the only fee you pay directly." },
+    "outlay": { "name": "Total you pay at subscription", "detail": "{amount} invested + {fee} structuring fee incl. VAT." },
     "platform": {
-      "name": "Platform fee, per year",
-      "amount": "{amount} incl. TVA",
-      "detail": "{amount} before TVA. Paid through the property company, it covers its running costs."
+      "name": "Platform fee, per year (inside the company)",
+      "amount": "{amount} incl. VAT",
+      "detail": "{amount} before VAT. Paid by the property company out of the rent, before your payouts; it covers its running costs."
     },
     "exit": {
       "name": "Exit fee, your share",
-      "detail": "Charged to the property company when the building is sold ({scenario} scenario sale price, incl. TVA)."
+      "detail": "Charged to the property company when the building is sold ({scenario} scenario sale price, incl. VAT)."
     },
     "transfer": {
       "name": "Transfer fee",
