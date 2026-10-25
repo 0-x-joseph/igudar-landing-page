@@ -37,7 +37,7 @@ test("reduced motion: nothing is hidden waiting for an animation", async ({ page
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/pricing");
   await page.waitForLoadState("networkidle");
-  const card = page.locator('[data-plan="family"]');
+  const card = page.locator('[data-plan="individual"]');
   await expect(card).toBeVisible();
   await expect(card).toHaveCSS("opacity", "1");
   await expect(card.locator("[data-figure=irr]")).toContainText("%");

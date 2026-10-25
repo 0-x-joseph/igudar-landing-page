@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type SimulationResult } from "@/lib/finance";
+import { TAX, type SimulationResult } from "@/lib/finance";
 import { useFormat, useScenarioLabel } from "@/lib/i18n/use-format";
 import { investorFeeSummary } from "@/lib/simulator-fees";
 
@@ -18,7 +18,17 @@ export function FeesTable({ result }: { result: SimulationResult }) {
       id: "entry",
       name: t("entry.name"),
       amount: mad(fees.entryMad),
-      detail: t("entry.detail"),
+      detail: t("entry.detail", {
+        rate: percent(fees.entryRate, 1),
+        amount: mad(result.input.ticketMad, { decimals: 0 }),
+        tva: percent(TAX.TVA_ON_FEES, 0),
+      }),
+    },
+    {
+      id: "outlay",
+      name: t("outlay.name"),
+      amount: mad(fees.outlayMad),
+      detail: t("outlay.detail", { amount: mad(result.input.ticketMad, { decimals: 0 }), fee: mad(fees.entryMad) }),
     },
     {
       id: "platform",

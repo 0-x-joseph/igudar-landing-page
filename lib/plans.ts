@@ -1,27 +1,19 @@
 import { LIMITS, simulate, type SimulationResult } from "@/lib/finance";
 
 /**
- * The three ways to invest in one property. Only the ticket differs between them (the fee grid is the
- * same for everyone). 250,000 MAD is the professional minimum from the founder's pricing mock-up; the
- * individual and family tickets are the platform minimum from the fee grid.
+ * The ticket the pricing card is worked out for. Only the Individual plan is shown: Family Circle,
+ * institutional and analytics plans are out of scope until Gate 3, so the landing does not advertise them.
  *
- * Labels and one-liners live in `messages/<locale>/pricing.json` under `plans.items.<id>`; the
- * components read them by plan id.
+ * Labels and one-liners live in `messages/<locale>/pricing.json` under `plans.items.<id>`.
  */
-export const PROFESSIONAL_MIN_TICKET_MAD = 250_000;
-
-export type PlanId = "individual" | "family" | "institutional";
+export type PlanId = "individual";
 
 export interface Plan {
   id: PlanId;
   ticketMad: number;
 }
 
-export const PLANS: readonly Plan[] = [
-  { id: "individual", ticketMad: LIMITS.MIN_TICKET_MAD },
-  { id: "family", ticketMad: LIMITS.MIN_TICKET_MAD },
-  { id: "institutional", ticketMad: PROFESSIONAL_MIN_TICKET_MAD },
-];
+export const PLANS: readonly Plan[] = [{ id: "individual", ticketMad: LIMITS.MIN_TICKET_MAD }];
 
 export interface PlanFigures {
   base: SimulationResult;

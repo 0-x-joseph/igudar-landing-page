@@ -23,7 +23,7 @@ Controls:
 
 Results:
 - Big numbers: **net cash per year**, **net profit over 5 years**, **net IRR**, **money multiple**. Each with a "?" explainer.
-- **Bank-deposit comparison** bar (same amount, 2.6 %/yr, 5 years). If the scenario loses to the deposit, say it: "In this scenario a bank deposit would have earned more."
+- **Bank-deposit comparison** bar (same outlay, 1.82 %/yr, 5 years). If the scenario loses to the deposit, say it: "In this scenario a bank deposit would have earned more."
 - **Year-by-year chart:** cumulative cash (year 0 = −ticket, distributions each year, exit in year 5). Neutral colours; received money in zellige green.
 - **"Where your rent goes"** — horizontal stacked bar per 100 MAD of rent: reserve · IGUDAR fee · corporate tax · withholding · **you**. This is the most educational element; make it beautiful.
 - **"What you pay IGUDAR"** mini-table for the chosen amount: entry 0 MAD · platform fee per year (your share, incl. TVA) · exit fee (your share) · transfer fee only if you sell early.
@@ -36,7 +36,7 @@ Capture (optional, below results): "Interested at this amount? Leave your email 
 For people who want the mechanics:
 - Input: amount and project size (default 5,000,000 MAD).
 - Output: your ownership % of the property company, number of investors needed to fill the project at the minimum ticket, your share of each fee line (from the grid), and what the seller and operator pay (S1/S2) **that you don't**.
-- **Early exit calculator:** "Sell in a window in year N" → transfer fee 1.5 % of the traded value, plus "registration duty and tax on gain — to confirm with counsel".
+- **Early exit calculator:** "Sell in a window in year N" → transfer fee 1 % of the traded value, plus "registration duty and tax on gain — to confirm with counsel".
 - **Caps checker:** 500,000 per project / 1,000,000 across platforms.
 
 ### D. Explanation — "How it works" + "How your money moves"

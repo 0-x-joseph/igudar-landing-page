@@ -40,8 +40,10 @@ describe("HeroSimulator", () => {
   it("shows the Base numbers for 25,000 MAD", () => {
     renderIntl(<HeroSimulator />);
     expect(screen.getByText(nbsp("1,122.51 MAD"))).toBeInTheDocument();
-    expect(screen.getByText(nbsp("4,246.26 MAD"))).toBeInTheDocument();
-    expect(screen.getByText(nbsp("3,423.45 MAD"))).toBeInTheDocument();
+    expect(screen.getByText(nbsp("3,796.26 MAD"))).toBeInTheDocument();
+    expect(screen.getByText(nbsp("2,401.80 MAD"))).toBeInTheDocument();
+    expect(screen.getByText(nbsp("25,450.00 MAD"))).toBeInTheDocument();
+    expect(screen.getByText(nbsp("25,000 MAD invested + 450 MAD structuring fee (1.5 % + VAT). Same in every scenario."))).toBeInTheDocument();
   });
 
   it("carries the entry-ticket headline, the full-simulator link and the notice", () => {
@@ -113,11 +115,23 @@ describe("TicketField", () => {
 });
 
 describe("Simulator", () => {
+  it("shows the structuring fee before payment: 450 MAD on top of 25,000 MAD, outlay 25,450 MAD", () => {
+    renderIntl(<Simulator />);
+    const fees = screen.getByRole("region", { name: "What you pay IGUDAR" });
+    expect(fees).toHaveTextContent(nbsp("450.00 MAD"));
+    expect(fees).toHaveTextContent(nbsp("25,450.00 MAD"));
+    expect(fees).toHaveTextContent("the only fee you pay directly");
+    expect(fees).toHaveTextContent("Paid by the property company out of the rent, before your payouts");
+    expect(screen.getByTestId("compare-outlay")).toHaveTextContent(
+      nbsp("You pay 25,450 MAD at subscription: 25,000 MAD invested + 450 MAD structuring fee incl. VAT, shown before you pay."),
+    );
+  });
+
   it("shows the big numbers for 25,000 MAD Base, each with an explainer", () => {
     renderIntl(<Simulator />);
     expect(screen.getAllByText(nbsp("1,122.51 MAD")).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(nbsp("4,246.26 MAD")).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(nbsp("3.47 %")).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(nbsp("3,796.26 MAD")).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(nbsp("3.07 %")).length).toBeGreaterThan(0);
     expect(screen.getAllByRole("button", { name: /What does .* mean\?/ })).toHaveLength(4);
   });
 
@@ -158,7 +172,7 @@ describe("Simulator", () => {
     const compare = screen.getByRole("region", { name: "The same amount in each scenario" });
     const cards = within(compare).getAllByRole("listitem");
     expect(cards[0]).toHaveTextContent("Pessimistic");
-    expect(cards[0]).toHaveTextContent(nbsp("2,146.55 MAD"));
+    expect(cards[0]).toHaveTextContent(nbsp("1,696.55 MAD"));
     expect(cards[0]).toHaveTextContent("Loses to a bank deposit");
     expect(cards[1]).toHaveAttribute("aria-current", "true");
   });

@@ -74,7 +74,8 @@ describe('Base 25,000 MAD hand check', () => {
 		expect(r.input.holdYears).toBe(5);
 		expect(r.input.raiseMad).toBe(5_000_000);
 		expect(r.cashFlows).toHaveLength(6);
-		expect(r.cashFlows[0]).toBe(-25_000);
+		// D1 is charged on top of the ticket: 25,000 + 1.5 % x 1.2 = 25,450.
+		expect(r.cashFlows[0]).toBeCloseTo(-25_450, 8);
 		expect(r.exit.surplusMad).toBe(0);
 	});
 
@@ -82,6 +83,35 @@ describe('Base 25,000 MAD hand check', () => {
 		expect(r.perYear[2].cotisationMinimaleMad).toBe(0);
 		expect(r.perYear[3].cotisationMinimaleMad).toBeCloseTo(3000, 6);
 		expect(r.perYear[3].isMad).toBeGreaterThan(r.perYear[3].cotisationMinimaleMad);
+	});
+});
+
+describe('fee grid v6 check figures at 25,000 MAD, 5 years', () => {
+	const base = simulate({ ticketMad: 25_000, scenario: 'base' });
+	const pess = simulate({ ticketMad: 25_000, scenario: 'pessimistic' });
+
+	it('charges D1 on top of the ticket and shows the outlay before payment', () => {
+		expect(base.entryFeeMad).toBeCloseTo(450, 8);
+		expect(base.outlayMad).toBeCloseTo(25_450, 8);
+		expect(-base.cashFlows[0]).toBeCloseTo(base.outlayMad, 8);
+	});
+
+	it('Base: 1,122.51 MAD a year, 4.49 % cash yield, +3,796.26 MAD, net IRR 3.0683 %', () => {
+		expect(base.netCashYear1Mad).toBeCloseTo(1_122.51, 2);
+		expect(base.netCashYieldYear1).toBeCloseTo(0.0449, 4);
+		expect(base.netProfitMad).toBeCloseTo(3_796.26, 2);
+		expect(Math.abs((base.netIrr as number) - 0.030683)).toBeLessThan(0.000001);
+	});
+
+	it('Pessimistic: IRR 1.395 %, profit 1,696.55 MAD, below the 1.82 % bank deposit', () => {
+		expect(Math.abs((pess.netIrr as number) - 0.01395)).toBeLessThan(0.00001);
+		expect(pess.netProfitMad).toBeCloseTo(1_696.55, 2);
+		expect(pess.beatsBankDeposit).toBe(false);
+		expect(base.beatsBankDeposit).toBe(true);
+	});
+
+	it('measures the bank deposit on the same outlay at 1.82 %', () => {
+		expect(base.bankDepositProfitMad).toBeCloseTo(25_450 * (1.0182 ** 5 - 1), 8);
 	});
 });
 
@@ -166,8 +196,8 @@ describe('input validation', () => {
 });
 
 describe('earlyExitFeeMad', () => {
-	it('is 1.5 % of the amount traded, HT', () => {
-		expect(earlyExitFeeMad(100_000)).toBeCloseTo(1_500, 10);
+	it('is 1 % of the amount traded, HT', () => {
+		expect(earlyExitFeeMad(100_000)).toBeCloseTo(1_000, 10);
 		expect(earlyExitFeeMad(0)).toBe(0);
 	});
 
@@ -181,8 +211,8 @@ describe('feeLinesForTicket', () => {
 	const lines = feeLinesForTicket(25_000);
 	const byCode = (code: string) => lines.find((l) => l.code === code);
 
-	it('returns all eight lines', () => {
-		expect(lines.map((l) => l.code)).toEqual(['S1', 'S2', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']);
+	it('returns all seven lines', () => {
+		expect(lines.map((l) => l.code)).toEqual(['S1', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']);
 	});
 
 	it('computes D2 per year on the ticket and shows the TTC figure', () => {
@@ -190,10 +220,11 @@ describe('feeLinesForTicket', () => {
 		expect(byCode('D2')?.label).toContain('225.00');
 	});
 
-	it('has zero entry fee, null supply-side fees and exit-dependent D3 / D5', () => {
-		expect(byCode('D1')?.amountMad).toBe(0);
+	it('charges D1 1.5 % + VAT (450 on 25,000), D6 is 0, and D3 / D5 depend on the exit', () => {
+		expect(byCode('D1')?.amountMad).toBeCloseTo(450, 8);
+		expect(byCode('D6')?.rate).toBe(0);
 		expect(byCode('S1')?.amountMad).toBeNull();
-		expect(byCode('S2')?.amountMad).toBeNull();
+		expect(byCode('S2')).toBeUndefined();
 		expect(byCode('D3')?.amountMad).toBeNull();
 		expect(byCode('D5')?.amountMad).toBeNull();
 		expect(byCode('D3')?.when.toLowerCase()).toContain('exit');

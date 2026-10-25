@@ -3,17 +3,21 @@
  * Implements FINANCE_ENGINE_SPEC.md section 2. Pure module, no imports.
  */
 
-/** Active fee grid (rates are fractions; D6 amounts are MAD per year). */
+/**
+ * Active fee grid, v6 (final 22 Oct 2026). Rates are fractions.
+ * S1 is paid by the seller. D1 is the only fee the investor pays directly (HT, VAT on top).
+ * D2, D3 and D5 are paid by the SAS before payouts; D4 only by a selling investor.
+ * S2 (operator structuring) is removed. Analytics plans are out of scope until Gate 3.
+ */
 export const FEE_GRID = {
-	S1_SYNDICATION: 0.035,
-	S2_STRUCTURING: 0.015,
-	D1_ENTRY: 0,
+	S1_SYNDICATION: 0.03,
+	D1_ENTRY: 0.015,
 	D2_PLATFORM_HT: 0.0075,
 	D3_EXIT_HT: 0.015,
-	D4_TRANSFER_HT: 0.015,
+	D4_TRANSFER_HT: 0.01,
 	D5_PERFORMANCE: 0.15,
 	D5_HURDLE: 0.06,
-	D6_ANALYTICS_MAD: { individual: 240, premium: 1800, b2b: 6000 },
+	D6_DOSSIER: 0,
 } as const;
 
 /** Tax constants applied by the engine (spec section 2, legal table). */
@@ -41,7 +45,7 @@ export const LIMITS = {
 	EXIT_WINDOW_MONTHS: 6,
 	COOLING_OFF_DAYS: 14,
 	ACQUISITION_COSTS: 0.065,
-	BANK_DEPOSIT_RATE: 0.026,
+	BANK_DEPOSIT_RATE: 0.0182,
 } as const;
 
 export const MIN_TICKET_MAD = LIMITS.MIN_TICKET_MAD;
@@ -59,7 +63,7 @@ export const PROMOTIONS = {
 	allocationPriority: false,
 } as const;
 
-export type FeeCode = 'S1' | 'S2' | 'D1' | 'D2' | 'D3' | 'D4' | 'D5' | 'D6';
+export type FeeCode = 'S1' | 'D1' | 'D2' | 'D3' | 'D4' | 'D5' | 'D6';
 
 export type FeeLine = {
 	code: FeeCode;
@@ -69,16 +73,15 @@ export type FeeLine = {
 	when: string;
 };
 
-/** The eight rows of the spec section 2 table. D6 has no rate: amounts are fixed. */
+/** The seven rows of the v6 fee grid. D6 (dossier fee) is 0. */
 export const FEE_LINES: readonly FeeLine[] = [
 	{ code: 'S1', label: 'Syndication', paidBy: 'Seller / developer, only if the raise closes', rate: FEE_GRID.S1_SYNDICATION, when: 'Closing' },
-	{ code: 'S2', label: 'Master-lease structuring', paidBy: 'Operator (master-lessee)', rate: FEE_GRID.S2_STRUCTURING, when: 'Lease signature' },
-	{ code: 'D1', label: 'Entry fee', paidBy: 'Investor', rate: FEE_GRID.D1_ENTRY, when: 'Subscription' },
-	{ code: 'D2', label: 'Platform fee (all-in)', paidBy: 'Investor, via the SAS', rate: FEE_GRID.D2_PLATFORM_HT, when: 'Quarterly' },
+	{ code: 'D1', label: 'Structuring fee', paidBy: 'Investor, at subscription', rate: FEE_GRID.D1_ENTRY, when: 'Subscription' },
+	{ code: 'D2', label: 'Platform fee (all-in)', paidBy: 'SAS, from rent, before payouts', rate: FEE_GRID.D2_PLATFORM_HT, when: 'Quarterly' },
 	{ code: 'D3', label: 'Exit fee', paidBy: 'SAS, deductible', rate: FEE_GRID.D3_EXIT_HT, when: 'Asset sale / block sale' },
 	{ code: 'D4', label: 'Secondary transfer', paidBy: 'Selling associate', rate: FEE_GRID.D4_TRANSFER_HT, when: 'Each transfer window' },
 	{ code: 'D5', label: 'Performance fee', paidBy: 'SAS at exit', rate: FEE_GRID.D5_PERFORMANCE, when: 'Exit' },
-	{ code: 'D6', label: 'Analytics (optional)', paidBy: 'User', rate: 0, when: 'Annual' },
+	{ code: 'D6', label: 'Dossier fee', paidBy: 'Nobody', rate: FEE_GRID.D6_DOSSIER, when: 'None' },
 ];
 
 export type TicketRejection = 'below_minimum' | 'above_maximum' | 'not_a_step' | 'not_finite';

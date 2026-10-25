@@ -63,7 +63,7 @@
     },
     "howItWorks": {
       "q": "How does the IGUDAR platform work?",
-      "a": "Several people each buy a share of one property company, which owns one rented building. The company rents the building to a professional operator, and the rent left after costs, fees and taxes is shared between the shareholders. The minimum is {min} per project. You pay no entry fee and a platform fee of {platformFee} a year, taken through the property company. Sellers and operators pay their own fees."
+      "a": "Several people each buy a share of one property company, which owns one rented building. The company rents the building to a professional operator, and the rent left after costs, fees and taxes is shared between the shareholders. The minimum is {min} per project. You pay one fee yourself: a structuring fee of {entryFee} + VAT when you subscribe ({entryAmount} on {min}). The platform fee of {platformFee} a year is taken inside the property company before you are paid. Sellers pay their own fee."
     },
     "ownership": {
       "q": "What do I actually own?",
@@ -75,7 +75,7 @@
     },
     "sellers": {
       "q": "How do sellers and developers benefit?",
-      "a": "A seller can raise part of the funding from a group of shareholders instead of relying only on a bank loan. The seller pays a syndication fee of {syndication} of the amount raised, only if the raise closes, and the operator pays {structuring} to structure the lease. Neither is charged to you."
+      "a": "A seller can raise part of the funding from a group of shareholders instead of relying only on a bank loan. The seller pays a syndication fee of {syndication} of the amount raised, only if the raise closes. It is not charged to you."
     },
     "audience": {
       "q": "Who is IGUDAR for?",

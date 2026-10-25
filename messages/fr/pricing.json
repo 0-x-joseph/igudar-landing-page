@@ -5,58 +5,35 @@
   },
   "hero": {
     "eyebrow": "Tarifs",
-    "title": "Un bien, trois façons d'investir",
-    "lead": "Une seule grille tarifaire publiée, la même pour tous les investisseurs. Ce qui change d'une carte à l'autre, c'est le ticket.",
+    "title": "Un seul frais pour vous, le reste dans la société",
+    "lead": "Vous ne payez qu'un seul frais vous-même : des frais de structuration de {rate} + TVA à la souscription ({fee} pour {ticket}). Tout le reste est prélevé au sein de la société propriétaire avant que vous soyez payé.",
     "beta": "Bêta fermée, validée à la main. Un prototype avec de l'argent fictif uniquement : rien n'est investi."
   },
   "plans": {
-    "sectionLabel": "Les trois formules",
-    "ariaLabel": "Formules",
+    "sectionLabel": "La formule",
+    "ariaLabel": "Formule",
     "items": {
       "individual": {
         "eyebrow": "PARTICULIER",
         "title": "Individuel",
         "audience": "Pour une personne qui investit seule."
-      },
-      "family": {
-        "eyebrow": "CERCLE FAMILIAL",
-        "title": "Famille",
-        "audience": "Pour une famille qui place ses tickets dans le même bien."
-      },
-      "institutional": {
-        "eyebrow": "PROFESSIONNEL",
-        "title": "Institutionnel",
-        "audience": "Pour les sociétés, les fonds et les business angels."
       }
     },
     "minimumTicket": "Ticket minimum",
-    "personalFees": "Vos frais",
-    "service": "Service",
-    "planned": "Prévu",
+    "personalFees": "Frais sur ce ticket",
+    "insideCompany": "Les frais de plateforme sont payés par la société propriétaire, sur le loyer, avant vos versements. Vous ne les réglez pas séparément.",
     "notes": {
       "individual": {
         "cap": "plafond de {amount} par projet"
-      },
-      "family": {
-        "prefix": "par membre",
-        "addUp": "les tickets de la famille s'additionnent"
-      },
-      "institutional": {
-        "angels": "business angels exemptés des plafonds (art. 44)"
       }
     },
     "fees": {
-      "entry": "Frais d'entrée",
-      "platform": "Frais de plateforme",
+      "entry": "Frais de structuration, à la souscription",
+      "entryValue": "{rate} + TVA ({amount})",
+      "outlay": "Vous payez à la souscription",
+      "platform": "Frais de plateforme, dans la société",
       "platformValue": "{rate} / an HT",
-      "transfer": "Cession, uniquement si vous vendez avant terme",
-      "fileFee": "Frais de dossier",
-      "lowerTransfer": "Frais de cession réduits",
-      "memberTransfers": "Cessions entre membres",
-      "volumeDiscount": "Remise de volume sur les tickets cumulés",
-      "analytics": "Analytique, en option (D6)",
-      "analyticsValue": "{amount} / an",
-      "anchorDiscount": "Remise investisseur de référence"
+      "transfer": "Cession, uniquement si vous vendez avant terme"
     },
     "figures": {
       "netIrr": "TRI net par an",
@@ -64,7 +41,7 @@
       "pessimistic": "{scenario} {value}",
       "notAvailable": "n.d."
     },
-    "footnote": "Simulation nette de frais et d'impôts, non garantie : scénario Base du modèle financier IGUDAR, vente après {years} ans ; le TRI inclut la vente ; gain total = loyers nets + produit de la vente − montant investi. Le scénario Pessimiste est affiché à côté du scénario Base."
+    "footnote": "Simulation nette de frais et d'impôts, non garantie : scénario Base du modèle financier IGUDAR, vente après {years} ans ; le TRI inclut la vente ; gain total = loyers nets + produit de la vente − tout ce que vous avez versé (montant investi + frais de structuration). Le scénario Pessimiste est affiché à côté du scénario Base."
   },
   "table": {
     "title": "Qui paie quoi, et quand",
@@ -83,51 +60,50 @@
     },
     "lines": {
       "S1": { "label": "Syndication", "paidBy": "Vendeur / promoteur, seulement si la levée aboutit", "when": "Clôture" },
-      "S2": { "label": "Structuration du bail principal", "paidBy": "Gestionnaire (preneur principal)", "when": "Signature du bail" },
-      "D1": { "label": "Frais d'entrée", "paidBy": "Investisseur", "when": "Souscription" },
-      "D2": { "label": "Frais de plateforme (tout compris)", "paidBy": "Investisseur, via la SAS", "when": "Trimestriel" },
+      "D1": { "label": "Frais de structuration", "paidBy": "Investisseur, à la souscription", "when": "Souscription" },
+      "D2": { "label": "Frais de plateforme (tout compris)", "paidBy": "SAS, sur le loyer, avant les versements", "when": "Trimestriel" },
       "D3": { "label": "Frais de sortie", "paidBy": "SAS, déductibles", "when": "Vente de l'immeuble / vente en bloc" },
       "D4": { "label": "Cession secondaire", "paidBy": "Associé cédant", "when": "À chaque fenêtre de cession" },
       "D5": { "label": "Commission de performance", "paidBy": "SAS à la sortie", "when": "Sortie" },
-      "D6": { "label": "Analytique (en option)", "paidBy": "Utilisateur", "when": "Annuel" }
+      "D6": { "label": "Frais de dossier", "paidBy": "Personne", "when": "Aucun" }
     },
     "rate": {
       "S1": "{rate} du capital levé",
-      "S2": "{rate} du capital levé",
-      "D1": "{rate}",
+      "D1": "{rate} + TVA de {tva} sur le montant investi",
       "D2": "{rate}/an du capital, HT ({ttc} TVA incluse)",
       "D3": "{rate} de la valeur de vente, HT",
       "D4": "{rate} du montant cédé",
       "D5": "{rate} du gain au-delà d'un seuil de {hurdle}/an",
-      "D6": "{individual} ou {premium}/an (entreprises : {b2b})"
+      "D6": "Aucun"
     },
     "meaning": {
       "notCharged": "Rien ne vous est facturé",
+      "D1": "{amount} TVA incluse, affichés avant que vous payiez",
       "D2": "{ht} par an HT ({ttc} TTC)",
       "D3": "Payés par la société propriétaire du bien lors de la vente de l'immeuble. Dépend du prix de vente",
       "D4": "{amount}, uniquement si vous vendez avant terme",
       "D5": "Uniquement si le gain dépasse le seuil. Dépend du prix de vente",
-      "D6": "En option, jamais un accès prioritaire aux actifs"
+      "D6": "Rien à payer"
     },
     "note": "La dernière colonne est calculée pour {ticket}, le ticket minimum. HT signifie hors TVA ; TTC inclut la TVA de {tva} que la société propriétaire du bien ne peut pas récupérer."
   },
   "notPaid": {
-    "title": "Ce que vous ne payez pas",
+    "title": "Ce que vous payez, et ce que vous ne payez pas",
     "items": {
       "syndication": {
         "title": "Les vendeurs paient les frais de syndication",
         "text": "{rate} du capital levé, facturés au vendeur ou au promoteur, et seulement si la levée aboutit."
       },
-      "structuring": {
-        "title": "Les gestionnaires paient les frais de structuration",
-        "text": "{rate} du capital levé, facturés au gestionnaire à la signature du bail."
+      "company": {
+        "title": "Tout le reste est dans la société propriétaire",
+        "text": "Les frais de plateforme ({rate} par an), les frais de sortie ({exit}) et la commission de performance ({performance} au-delà de {hurdle} par an) sont prélevés au sein de la société propriétaire avant que vous soyez payé."
       },
       "entry": {
-        "title": "Aucuns frais d'entrée pour vous",
-        "text": "Souscrire coûte {rate}. Si une levée échoue, la banque séquestre vous rend votre argent dans son intégralité."
+        "title": "Un seul frais, payé par vous",
+        "text": "Des frais de structuration de {rate} + TVA à la souscription : {fee} pour {ticket}. Ils sont affichés avant que vous payiez."
       }
     },
-    "footnote": "Les frais des vendeurs et des gestionnaires ne réduisent jamais votre rendement. Les frais sont une prestation de service affichée, jamais déduite d'un rendement promis."
+    "footnote": "Des frais de cession de {transfer} ne s'appliquent que si vous vendez vos parts avant terme, et c'est le vendeur qui les paie. Les frais des vendeurs ne réduisent jamais votre rendement. Les frais sont une prestation de service affichée, jamais déduite d'un rendement promis."
   },
   "cta": {
     "title": "Voyez-le sur votre propre montant",

@@ -87,7 +87,7 @@
     },
     "fees": {
       "title": "La grille tarifaire : qui paie quoi, et quand",
-      "body": "La même pour chaque investisseur, publiée dans son intégralité. Les vendeurs et les gestionnaires paient leurs propres frais ; ils ne réduisent jamais votre rendement.",
+      "body": "La même pour chaque investisseur, publiée dans son intégralité. Vous ne payez qu'un seul frais vous-même, à la souscription ; tout le reste est prélevé au sein de la société propriétaire avant que vous soyez payé.",
       "grid": "Voir la grille tarifaire complète",
       "calculator": "Calculez votre propre part dans le calculateur",
       "simulator": "Ouvrir le simulateur"

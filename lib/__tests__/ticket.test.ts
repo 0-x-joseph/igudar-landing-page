@@ -96,8 +96,10 @@ describe("feeRateText", () => {
     const text = Object.fromEntries(FEE_LINES.map((l) => [l.code, feeRateText(l)]));
     expect(text.D2).toContain("0.75");
     expect(text.D2).toContain("0.90");
-    expect(text.D1).toContain("0");
+    expect(text.D1.replace(/\s/g, " ")).toContain("1.5 %");
+    expect(text.D1).toContain("TVA");
     expect(text.D5).toContain("15");
-    expect(text.D6).toContain("240");
+    expect(text.S2).toBeUndefined();
+    expect(text.D6).toBe("No dossier fee");
   });
 });

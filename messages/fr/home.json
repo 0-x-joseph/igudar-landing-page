@@ -44,8 +44,8 @@
         "note": "Par projet, par paliers de {step}."
       },
       "entry": {
-        "label": "Frais d'entrée",
-        "note": "La souscription ne coûte rien. La grille tarifaire complète est publiée."
+        "label": "Frais de structuration",
+        "note": "Plus la TVA, payés une fois à la souscription. Tout le reste est prélevé au sein de la société propriétaire avant que vous soyez payé."
       },
       "exit": {
         "figure": "Tous les {months, plural, =1 {# mois} other {# mois}}",

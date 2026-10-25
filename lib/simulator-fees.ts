@@ -5,7 +5,11 @@
 import { FEE_GRID, TAX, feeLinesForTicket, type SimulationResult } from "@/lib/finance";
 
 export interface InvestorFeeSummary {
+  /** D1 structuring fee incl. VAT, paid on top of the ticket at subscription. */
   entryMad: number;
+  /** Cash out at subscription: ticket + D1 incl. VAT. */
+  outlayMad: number;
+  entryRate: number;
   platformPerYearHtMad: number;
   platformPerYearTtcMad: number;
   /** Investor's share of the exit fee borne by the SAS (incl. TVA). */
@@ -20,6 +24,8 @@ export function investorFeeSummary(result: SimulationResult): InvestorFeeSummary
   const platformHt = amount("D2");
   return {
     entryMad: amount("D1"),
+    outlayMad: result.outlayMad,
+    entryRate: FEE_GRID.D1_ENTRY,
     platformPerYearHtMad: platformHt,
     platformPerYearTtcMad: platformHt * (1 + TAX.TVA_ON_FEES),
     exitFeeShareMad: result.share * result.exit.saleMad * FEE_GRID.D3_EXIT_HT * (1 + TAX.TVA_ON_FEES),

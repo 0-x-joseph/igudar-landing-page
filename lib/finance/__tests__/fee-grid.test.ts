@@ -14,10 +14,16 @@ import {
 
 describe('constants', () => {
 	it('matches spec section 2', () => {
-		expect(FEE_GRID.D1_ENTRY).toBe(0);
+		expect(FEE_GRID.S1_SYNDICATION).toBe(0.03);
+		expect(FEE_GRID.D1_ENTRY).toBe(0.015);
 		expect(FEE_GRID.D2_PLATFORM_HT).toBe(0.0075);
+		expect(FEE_GRID.D3_EXIT_HT).toBe(0.015);
+		expect(FEE_GRID.D4_TRANSFER_HT).toBe(0.01);
 		expect(FEE_GRID.D5_PERFORMANCE).toBe(0.15);
-		expect(FEE_GRID.D6_ANALYTICS_MAD.b2b).toBe(6000);
+		expect(FEE_GRID.D6_DOSSIER).toBe(0);
+		expect(LIMITS.BANK_DEPOSIT_RATE).toBe(0.0182);
+		expect('S2_STRUCTURING' in FEE_GRID).toBe(false);
+		expect('D6_ANALYTICS_MAD' in FEE_GRID).toBe(false);
 		expect(TAX.TVA_ON_FEES).toBe(0.2);
 		expect(LIMITS.MIN_TICKET_MAD).toBe(25_000);
 		expect(MIN_TICKET_MAD).toBe(25_000);
@@ -28,8 +34,8 @@ describe('constants', () => {
 		expect(Object.values(PROMOTIONS).every((v) => v === false)).toBe(true);
 	});
 
-	it('lists the eight fee lines in order', () => {
-		expect(FEE_LINES.map((l) => l.code)).toEqual(['S1', 'S2', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']);
+	it('lists the seven fee lines in order', () => {
+		expect(FEE_LINES.map((l) => l.code)).toEqual(['S1', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']);
 		expect(FEE_LINES.find((l) => l.code === 'D2')?.rate).toBe(0.0075);
 		expect(FEE_LINES.find((l) => l.code === 'D6')?.rate).toBe(0);
 	});
@@ -132,7 +138,7 @@ describe('test-vectors.json defaults stay in sync with the grid', () => {
 		expect(d.fees.D5_performance).toBe(FEE_GRID.D5_PERFORMANCE);
 		expect(d.fees.D5_hurdle).toBe(FEE_GRID.D5_HURDLE);
 		expect(d.fees.S1_syndication_seller).toBe(FEE_GRID.S1_SYNDICATION);
-		expect(d.fees.S2_structuring_operator).toBe(FEE_GRID.S2_STRUCTURING);
+		expect(d.fees.D6_dossier).toBe(FEE_GRID.D6_DOSSIER);
 	});
 
 	it('matches tax and limits', () => {

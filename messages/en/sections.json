@@ -87,7 +87,7 @@
     },
     "fees": {
       "title": "The fee grid: who pays what, and when",
-      "body": "The same for every investor, published in full. Sellers and operators pay their own fees; they never reduce your return.",
+      "body": "The same for every investor, published in full. You pay one fee yourself, at subscription; everything else is taken inside the property company before you are paid.",
       "grid": "See the full fee grid",
       "calculator": "Work out your own share in the calculator",
       "simulator": "Open the simulator"

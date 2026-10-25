@@ -19,20 +19,23 @@ lib/finance/
 
 Money is computed in floating point inside the engine, then **rounded to the centime only for display**. Stored amounts elsewhere in the platform stay integer cents.
 
-## 2. The fee grid (IGUDAR grid, recommended, 7 Oct 2026)
+## 2. The fee grid (v6, final 22 Oct 2026)
 
 | Code | Fee | Paid by | Rate | When |
 |---|---|---|---|---|
-| S1 | Syndication | Seller / developer, **only if the raise closes** | 3.5 % of capital raised | Closing |
-| S2 | Master-lease structuring | Operator (master-lessee) | 1.5 % of capital raised | Lease signature |
-| D1 | Entry fee | Investor | **0 %** | Subscription |
-| D2 | Platform fee (all-in, covers SAS running costs) | Investor, via the SAS | **0.75 %/yr** of capital, HT (0.90 % with non-recoverable TVA) | Quarterly |
-| D3 | Exit fee | SAS, deductible | 1.5 % of sale value, HT | Asset sale / block sale |
-| D4 | Secondary transfer | Selling associate | 1.5 % of amount traded | Each transfer window |
-| D5 | Performance fee | SAS at exit | 15 % of gain above a **6 %/yr** hurdle | Exit |
-| D6 | Analytics (optional) | User | 240 / 1,800 MAD/yr (B2B 6,000) | Annual — **never** priority access to assets |
+| S1 | Syndication | Seller / developer, **only if the raise closes** | 3 % of capital raised | Closing |
+| D1 | Structuring fee | **Investor, the only fee paid directly** | **1.5 % + 20 % VAT** on the amount invested (450 MAD on 25,000), shown before payment | Subscription |
+| D2 | Platform fee (all-in, covers SAS running costs) | SAS, from the rent, before payouts | **0.75 %/yr** of capital raised, HT (0.90 % with non-recoverable VAT) | Quarterly, before payouts |
+| D3 | Exit fee | SAS, deductible | 1.5 % of sale price, HT | Asset sale / block sale |
+| D4 | Secondary transfer | Selling investor | 1 % of the transfer amount | Each transfer window (every 6 months after year 1) |
+| D5 | Performance fee | SAS at exit | 15 % of profit above a **6 %/yr** hurdle | Exit |
+| D6 | Dossier fee | Nobody | 0 | None |
 
-Supply-side fees (S1, S2) do **not** reduce the investor's return. Failed raise → full refund by the escrow bank, no investor fee kept. All fees appear in the DIC and the règlement de gestion. Fees are a disclosed service charge; never netted against a promised yield.
+S2 (operator structuring) is **removed**. Analytics subscription plans and Family Circle are out of scope until Gate 3 and are not advertised. No agency referral fees. The investor pays only D1 directly; D2/D3/D5 are inside the property company before payouts; D4 only when selling early. Outlay at subscription = ticket + D1 incl. VAT (25,450 on 25,000).
+
+At 25,000 MAD over 5 years: Base 1,122.51 MAD/yr net (4.49 % cash yield), profit +3,796.26 MAD, net IRR 3.0683 %; Pessimistic IRR 1.395 %, profit +1,696.55 MAD (below the 1.82 % bank deposit, shown honestly).
+
+Seller fee (S1) does **not** reduce the investor's return. Failed raise → full refund by the escrow bank. All fees appear in the DIC and the règlement de gestion. Fees are a disclosed service charge; never netted against a promised yield.
 
 Promotions from the Gate 2 pricing document, **off by default, behind config flags** (decided later, and only after the licence):
 - Platform fee waived in year 1 for founding investors (projects 1–4).
@@ -56,7 +59,7 @@ No cash bonuses, no price discounts, no return promises.
 | IS (SAS) | 20 %; cotisation minimale 0.25 % of rent, min 3,000 MAD, from year 4 |
 | Withholding on dividends / liquidation surplus (resident individual) | 10 % (**flagged in the model: 10 % vs 11.25 % for 2026 to confirm**) |
 | TVA on IGUDAR fees | 20 %, not recoverable by the SAS |
-| Bank-deposit benchmark | 2.6 %/yr (12-month deposit) |
+| Bank-deposit benchmark | 1.82 %/yr (12-month deposit) |
 
 ## 3. Scenarios
 
@@ -93,9 +96,9 @@ investor:
   cash flow year 0 = −upfront
   cash flow year t = s × div_t × (1 − WHT)  (+ in the exit year) s × (proceeds − perf − surplus × WHT)
 outputs: net IRR, net cash year 1 (and yield on ticket), net exit proceeds, net profit, money multiple,
-         bank-deposit profit = ticket × (1.026^hold − 1), "beats bank deposit?" flag,
+         bank-deposit profit = outlay × (1.0182^hold − 1), "beats bank deposit?" flag,
          rent bridge (where each 100 MAD of rent goes: reserve/vacancy, IGUDAR fee, IS, withholding, you).
-early exit (secondary window in year k ≥ 1): seller pays D4 = 1.5 % of the traded value (+ registration duty and tax on gain — show as "to confirm with counsel").
+early exit (secondary window in year k ≥ 1): seller pays D4 = 1 % of the traded value (+ registration duty and tax on gain — show as "to confirm with counsel").
 ```
 
 ## 5. Reference results at the 25,000 MAD minimum (5-year hold)

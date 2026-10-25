@@ -69,6 +69,10 @@ export interface SimulationResult {
 	readonly netIrr: number | null;
 	readonly netCashYear1Mad: number;
 	readonly netCashYieldYear1: number;
+	/** D1 structuring fee incl. VAT, paid on top of the ticket at subscription. */
+	readonly entryFeeMad: number;
+	/** Cash out at subscription: ticket + D1 TTC. */
+	readonly outlayMad: number;
 	readonly netExitProceedsMad: number;
 	readonly netProfitMad: number;
 	readonly moneyMultiple: number;
@@ -198,16 +202,18 @@ function run(input: SimulationInput, keyOverride?: ScenarioKey): SimulationResul
 	const surplus = Math.max(0, proceeds - performanceFee - raise);
 	const exitInvestorNet = share * (proceeds - performanceFee - surplus * TAX.WITHHOLDING_INDIVIDUAL);
 
-	// D1 and any dossier/onboarding fee are 0 today, so upfront = ticket.
-	const cashFlows: number[] = [-ticket * (1 + FEE_GRID.D1_ENTRY * TVA_FACTOR)];
+	// D1 (structuring, HT + VAT) is charged on top of the ticket at subscription.
+	// The dossier fee D6 is 0. Outlay = ticket + D1 TTC (25,450 on 25,000).
+	const entryFee = ticket * FEE_GRID.D1_ENTRY * TVA_FACTOR;
+	const outlay = ticket + entryFee + FEE_GRID.D6_DOSSIER;
+	const cashFlows: number[] = [-outlay];
 	for (const row of perYear) {
 		cashFlows.push(row.investorNetMad + (row.year === holdYears ? exitInvestorNet : 0));
 	}
 
-	// Profit and multiple are measured against the ticket, which equals the upfront
-	// outlay while D1 = 0. If an entry fee is introduced, switch these to -cashFlows[0].
-	const netProfit = cashFlows.slice(1).reduce((sum, cf) => sum + cf, 0) - ticket;
-	const bankProfit = ticket * (Math.pow(1 + LIMITS.BANK_DEPOSIT_RATE, holdYears) - 1);
+	// Profit and multiple are measured against the full outlay (ticket + D1 TTC).
+	const netProfit = cashFlows.slice(1).reduce((sum, cf) => sum + cf, 0) - outlay;
+	const bankProfit = outlay * (Math.pow(1 + LIMITS.BANK_DEPOSIT_RATE, holdYears) - 1);
 	const year1 = perYear[0];
 
 	return {
@@ -235,9 +241,11 @@ function run(input: SimulationInput, keyOverride?: ScenarioKey): SimulationResul
 		// From the year row, not cashFlows[1]: with a 1-year hold that entry includes the exit.
 		netCashYear1Mad: year1.investorNetMad,
 		netCashYieldYear1: year1.investorNetMad / ticket,
+		entryFeeMad: entryFee,
+		outlayMad: outlay,
 		netExitProceedsMad: exitInvestorNet,
 		netProfitMad: netProfit,
-		moneyMultiple: (ticket + netProfit) / ticket,
+		moneyMultiple: (outlay + netProfit) / outlay,
 		bankDepositProfitMad: bankProfit,
 		beatsBankDeposit: netProfit > bankProfit,
 		rentBridge: rentBridge(a, year1, raise),
@@ -278,7 +286,7 @@ export function simulateAll(
 }
 
 /**
- * D4 secondary-transfer fee paid by the selling associate: 1.5 % of the amount traded.
+ * D4 secondary-transfer fee paid by the selling associate: 1 % of the amount traded.
  * Spec section 2 / 4. Computed HT: the vectors' definition applies no TVA, so TVA is
  * not added here. Registration duty and tax on gain are "to confirm with counsel" and excluded.
  */
@@ -291,7 +299,7 @@ export function earlyExitFeeMad(amountMad: number): number {
 
 /**
  * Fee table for one ticket (spec section 2). D2 is the yearly amount on the ticket,
- * HT, with the TTC figure in the label. D3 and D5 depend on the sale, S1 and S2 are
+ * HT, with the TTC figure in the label. D3 and D5 depend on the sale, S1 is
  * not paid by the investor, so their amounts are null.
  */
 export function feeLinesForTicket(ticketMad: number, holdYears: number = LIMITS.HOLD_YEARS): FeeLineWithAmount[] {
@@ -300,7 +308,7 @@ export function feeLinesForTicket(ticketMad: number, holdYears: number = LIMITS.
 	return FEE_LINES.map((line): FeeLineWithAmount => {
 		switch (line.code) {
 			case 'D1':
-				return { ...line, amountMad: ticketMad * FEE_GRID.D1_ENTRY };
+				return { ...line, amountMad: ticketMad * FEE_GRID.D1_ENTRY * TVA_FACTOR };
 			case 'D2': {
 				const ht = ticketMad * FEE_GRID.D2_PLATFORM_HT;
 				const ttc = ht * TVA_FACTOR;

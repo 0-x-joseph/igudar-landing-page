@@ -25,7 +25,14 @@ export function ScenarioCompare({
       <h2 id="sim-compare-title" className="mb-1 text-lg font-bold text-foreground">
         {t("title")}
       </h2>
-      <p className="mb-4 text-sm text-muted-foreground">{t("intro")}</p>
+      <p className="mb-2 text-sm text-muted-foreground">{t("intro")}</p>
+      <p data-testid="compare-outlay" className="financial-number mb-4 text-sm font-semibold text-foreground">
+        {t("outlay", {
+          ticket: mad(all.base.input.ticketMad, { decimals: 0 }),
+          fee: mad(all.base.entryFeeMad, { decimals: 0 }),
+          total: mad(all.base.outlayMad, { decimals: 0 }),
+        })}
+      </p>
       <ul className="grid gap-3 sm:grid-cols-3">
         {SCENARIO_KEYS.map((key) => {
           const r = all[key];

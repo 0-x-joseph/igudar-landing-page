@@ -8,10 +8,10 @@ import { messagesFor, renderIntl } from "@/lib/__tests__/helpers/intl";
 type TableMessages = { table: { headers: { fee: string; paidBy: string }; meaning: { notCharged: string } } };
 
 describe("PricingTable", () => {
-  it("has one row per fee line: eight", () => {
+  it("has one row per fee line: seven", () => {
     const { container } = renderIntl(<PricingTable />);
-    expect(FEE_LINES).toHaveLength(8);
-    expect(container.querySelectorAll("tbody tr")).toHaveLength(8);
+    expect(FEE_LINES).toHaveLength(7);
+    expect(container.querySelectorAll("tbody tr")).toHaveLength(7);
     for (const line of FEE_LINES) {
       expect(screen.getAllByText(line.label).length).toBeGreaterThan(0);
     }
@@ -30,25 +30,34 @@ describe("PricingTable", () => {
     expect(d2Row).toHaveTextContent("225.00 MAD TTC");
   });
 
-  it("shows the entry fee as 0 MAD", () => {
+  it("shows D1 as 1.5% + VAT (never rounded to 2%), worth 450 MAD on 25,000 MAD", () => {
     const { container } = renderIntl(<PricingTable />);
     const d1Row = within(container.querySelector("table")!).getByText("D1").closest("tr")!;
-    expect(d1Row).toHaveTextContent("0 MAD");
-    expect(d1Row).not.toHaveTextContent("0.00 MAD");
+    expect(d1Row).toHaveTextContent(/1\.5\s%\s\+\s20\s%\sVAT/);
+    expect(d1Row.textContent).not.toMatch(/(^|[^d.])2 ?%/);
+    expect(d1Row).toHaveTextContent("450 MAD incl. VAT");
+    expect(d1Row).toHaveTextContent("Investor, at subscription");
   });
 
-  it("says the seller and operator fees are not charged to the investor", () => {
+  it("has no operator structuring row (S2) and no analytics row", () => {
     const { container } = renderIntl(<PricingTable />);
-    for (const code of ["S1", "S2"]) {
+    const text = container.textContent ?? "";
+    expect(within(container.querySelector("table")!).queryByText("S2")).toBeNull();
+    expect(text).not.toMatch(/structuring.*operator|master-lease|Analytics/i);
+  });
+
+  it("says the seller fee is not charged to the investor", () => {
+    const { container } = renderIntl(<PricingTable />);
+    for (const code of ["S1"]) {
       const row = within(container.querySelector("table")!).getByText(code).closest("tr")!;
       expect(row).toHaveTextContent("Not charged to you");
     }
   });
 
-  it("never offers priority access with the analytics add-on", () => {
+  it("shows the dossier fee as nothing to pay", () => {
     const { container } = renderIntl(<PricingTable />);
     const d6 = within(container.querySelector("table")!).getByText("D6").closest("tr")!;
-    expect(d6).toHaveTextContent("never priority access");
+    expect(d6).toHaveTextContent("Nothing to pay");
   });
 
   it("reads in French with French number marks", () => {
@@ -65,7 +74,7 @@ describe("PricingTable", () => {
     const { container } = renderIntl(<PricingTable />, { locale: "ar" });
     expect(screen.getByRole("columnheader", { name: ar.headers.paidBy })).toBeInTheDocument();
     const table = container.querySelector("table")!;
-    expect(within(table).getByText("S2").closest("tr")).toHaveTextContent(ar.meaning.notCharged);
+    expect(within(table).getByText("S1").closest("tr")).toHaveTextContent(ar.meaning.notCharged);
     expect(within(table).getByText("D1").closest("tr")).toHaveTextContent("درهم");
   });
 });
@@ -73,8 +82,11 @@ describe("PricingTable", () => {
 describe("pricing page content", () => {
   it("has the 'what you don't pay' block, the notice and the calculator link", () => {
     renderIntl(<PricingPageContent />);
-    expect(screen.getByRole("heading", { level: 1, name: "One property, three ways to invest" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /What you don.t pay/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "One fee for you, the rest inside the company" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /What you pay, and what you don.t/ })).toBeInTheDocument();
+    expect(
+      screen.getByText(/You pay one fee yourself: a structuring fee of 1\.5\s%\s\+ VAT when you subscribe \(450\sMAD on 25,000\sMAD\)\. Everything else is taken inside the property company before you are paid\./),
+    ).toBeInTheDocument();
     expect(screen.getByText(INDICATIVE_NOTICE)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /calculator/i })).toHaveAttribute("href", "/calculator");
     expect(screen.getByRole("link", { name: /FAQ/ })).toHaveAttribute("href", "/faq");
@@ -90,7 +102,7 @@ describe("pricing page content", () => {
     const { container } = renderIntl(<PricingPageContent />);
     const text = container.textContent ?? "";
     expect(text).not.toMatch(/1,000 MAD/);
-    expect(text).not.toMatch(/Discovery|Premium|Get Started/);
+    expect(text).not.toMatch(/Discovery|Premium|Get Started|Family Circle|Institutional|analytics/i);
     expect(text).not.toMatch(/founding|referral|waived|priority in allocation/i);
   });
 });
