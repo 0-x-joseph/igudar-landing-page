@@ -54,7 +54,7 @@
     },
     "raiseFails": {
       "q": "Que se passe-t-il si la levée échoue ?",
-      "a": "Votre argent attend sur un compte séquestre dans une banque régulée, un compte par projet, et n'est versé à la société propriétaire du bien que si la levée atteint son objectif. Si elle échoue, ou si le délai expire, la banque vous rembourse intégralement et IGUDAR ne prélève aucuns frais sur vous."
+      "a": "Votre argent attend sur un compte séquestre dans une banque régulée, un compte par projet, et n'est versé à la société propriétaire du bien que si la levée atteint son objectif. Si elle échoue, ou si le délai expire, la banque vous rembourse intégralement, frais de structuration compris, et IGUDAR ne prélève aucuns frais sur vous. Il en va de même si vous annulez pendant le délai de rétractation."
     },
     "irrVsYield": {
       "q": "Pourquoi le TRI est-il inférieur au rendement en cash ?",

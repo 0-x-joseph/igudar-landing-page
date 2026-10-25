@@ -54,7 +54,7 @@
     },
     "raiseFails": {
       "q": "What happens if the raise fails?",
-      "a": "Your money waits in an escrow account at a regulated bank, one account per project, and is only released to the property company if the raise reaches its target. If it fails, or the deadline passes, the bank refunds you in full and IGUDAR keeps no fee from you."
+      "a": "Your money waits in an escrow account at a regulated bank, one account per project, and is only released to the property company if the raise reaches its target. If it fails, or the deadline passes, the bank refunds you in full, structuring fee included, and IGUDAR keeps no fee from you. The same applies if you cancel during the cooling-off period."
     },
     "irrVsYield": {
       "q": "Why is the IRR lower than the cash yield?",

@@ -213,7 +213,7 @@ function run(input: SimulationInput, keyOverride?: ScenarioKey): SimulationResul
 
 	// Profit and multiple are measured against the full outlay (ticket + D1 TTC).
 	const netProfit = cashFlows.slice(1).reduce((sum, cf) => sum + cf, 0) - outlay;
-	const bankProfit = outlay * (Math.pow(1 + LIMITS.BANK_DEPOSIT_RATE, holdYears) - 1);
+	const bankProfit = ticket * (Math.pow(1 + LIMITS.BANK_DEPOSIT_RATE, holdYears) - 1);
 	const year1 = perYear[0];
 
 	return {

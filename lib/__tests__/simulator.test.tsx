@@ -41,7 +41,7 @@ describe("HeroSimulator", () => {
     renderIntl(<HeroSimulator />);
     expect(screen.getByText(nbsp("1,122.51 MAD"))).toBeInTheDocument();
     expect(screen.getByText(nbsp("3,796.26 MAD"))).toBeInTheDocument();
-    expect(screen.getByText(nbsp("2,401.80 MAD"))).toBeInTheDocument();
+    expect(screen.getByText(nbsp("2,359.33 MAD"))).toBeInTheDocument();
     expect(screen.getByText(nbsp("25,450.00 MAD"))).toBeInTheDocument();
     expect(screen.getByText(nbsp("25,000 MAD invested + 450 MAD structuring fee (1.5 % + VAT). Same in every scenario."))).toBeInTheDocument();
   });

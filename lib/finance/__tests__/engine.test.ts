@@ -110,8 +110,8 @@ describe('fee grid v6 check figures at 25,000 MAD, 5 years', () => {
 		expect(base.beatsBankDeposit).toBe(true);
 	});
 
-	it('measures the bank deposit on the same outlay at 1.82 %', () => {
-		expect(base.bankDepositProfitMad).toBeCloseTo(25_450 * (1.0182 ** 5 - 1), 8);
+	it('measures the bank deposit on the ticket at 1.82 %', () => {
+		expect(base.bankDepositProfitMad).toBeCloseTo(25_000 * (1.0182 ** 5 - 1), 8);
 	});
 });
 

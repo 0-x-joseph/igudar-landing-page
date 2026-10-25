@@ -23,7 +23,7 @@ Controls:
 
 Results:
 - Big numbers: **net cash per year**, **net profit over 5 years**, **net IRR**, **money multiple**. Each with a "?" explainer.
-- **Bank-deposit comparison** bar (same outlay, 1.82 %/yr, 5 years). If the scenario loses to the deposit, say it: "In this scenario a bank deposit would have earned more."
+- **Bank-deposit comparison** bar (same ticket, 1.82 %/yr, 5 years). If the scenario loses to the deposit, say it: "In this scenario a bank deposit would have earned more."
 - **Year-by-year chart:** cumulative cash (year 0 = −ticket, distributions each year, exit in year 5). Neutral colours; received money in zellige green.
 - **"Where your rent goes"** — horizontal stacked bar per 100 MAD of rent: reserve · IGUDAR fee · corporate tax · withholding · **you**. This is the most educational element; make it beautiful.
 - **"What you pay IGUDAR"** mini-table for the chosen amount: entry 0 MAD · platform fee per year (your share, incl. TVA) · exit fee (your share) · transfer fee only if you sell early.

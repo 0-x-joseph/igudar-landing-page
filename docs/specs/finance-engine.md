@@ -96,7 +96,7 @@ investor:
   cash flow year 0 = −upfront
   cash flow year t = s × div_t × (1 − WHT)  (+ in the exit year) s × (proceeds − perf − surplus × WHT)
 outputs: net IRR, net cash year 1 (and yield on ticket), net exit proceeds, net profit, money multiple,
-         bank-deposit profit = outlay × (1.0182^hold − 1), "beats bank deposit?" flag,
+         bank-deposit profit = ticket × (1.0182^hold − 1), "beats bank deposit?" flag,
          rent bridge (where each 100 MAD of rent goes: reserve/vacancy, IGUDAR fee, IS, withholding, you).
 early exit (secondary window in year k ≥ 1): seller pays D4 = 1 % of the traded value (+ registration duty and tax on gain — show as "to confirm with counsel").
 ```
